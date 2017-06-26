@@ -1,0 +1,12 @@
+.section-table {
+	padding: 1rem;
+}
+
+.section-table .table-header {
+	margin: 1rem 0;
+}
+
+.section-table .table-header .btn-action {
+	color: #fff !important;
+	cursor: pointer;
+}
