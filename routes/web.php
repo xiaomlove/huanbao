@@ -28,4 +28,5 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth
     Route::get('/', 'IndexController@index')->name('admin.index');
     Route::get('test', 'IndexController@test');
     Route::resource('users', 'UsersController');
+    Route::resource('forums', 'ForumsController');
 });

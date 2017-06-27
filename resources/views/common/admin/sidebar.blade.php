@@ -11,11 +11,10 @@
       <ul id="side-main-menu" class="side-menu list-unstyled">                  
         <li @if(Route::currentRouteName() == 'admin.index')class="active" @endif><a href="{{ route('admin.index') }}"> <i class="fa fa-home"></i><span>首页</span></a></li>
         <li @if(Route::currentRouteName() == 'users.index')class="active" @endif><a href="{{ route('users.index') }}"><i class="fa fa-users"></i><span>用户</span></a></li>
-        <li> <a href="charts.html"><i class="fa fa-table"></i><span>版块</span></a></li>
+        <li @if(Route::currentRouteName() == 'forums.index')class="active" @endif> <a href="{{ route('forums.index') }}"><i class="fa fa-table"></i><span>版块</span></a></li>
         <li> <a href="tables.html"> <i class="fa fa-pencil"></i><span>话题</span></a></li>
         <li> <a href="login.html"> <i class="icon-interface-windows"></i><span>Login page</span></a></li>
-        <li> <a href="#"> <i class="icon-mail"></i><span>Demo</span>
-            <div class="badge badge-warning">6 New</div></a></li>
+        <li> <a href="#"> <i class="icon-mail"></i><span>Demo</span><div class="badge badge-warning">6 New</div></a></li>
       </ul>
     </div>
     <div class="admin-menu">

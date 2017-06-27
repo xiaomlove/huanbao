@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class CreateTableForum extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('forums', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->default('')->comment('用户名');
-            $table->string('email')->comment('邮箱');
-            $table->string('password')->comment('密码');
-            $table->rememberToken()->comment('记住我凭证');
+            $table->string('name')->comment('版块名称');
+            $table->text('description')->comment('描述');
+            $table->integer('pid')->default(0)->comment('父级ID');
+            $table->integer('display_order')->default(0)->comment('显示顺序');
             $table->timestamps();
-            $table->unique('email', 'uk_email');
             $table->unique('name', 'uk_name');
         });
     }
@@ -32,6 +31,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('forums');
     }
 }

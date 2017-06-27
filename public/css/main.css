@@ -10,3 +10,7 @@
 	color: #fff !important;
 	cursor: pointer;
 }
+
+input[type=submit] {
+	cursor: pointer
+}

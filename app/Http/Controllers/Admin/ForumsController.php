@@ -4,30 +4,20 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\User;
-use Auth;
-use Input;
-use DB;
+use App\Models\Forums;
+use Illuminate\Validation\Rule;
 
-class UsersController extends Controller
+class ForumsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $users = User::when($request->id, function($query) use ($request) {
-            return $query->where('id', intval($request->id));
-        })->when($request->q, function($query) use ($request) {
-            return $query->where(function($query) use ($request) {
-                return $query->where('name', 'like', "%{$request->q}%")
-                ->orWhere('email', 'like', "%{$request->q}%");
-            });
-        })->paginate(10);
-        
-        return view('admin.users.index', compact('users'));
+        $forums = Forums::paginate(10);
+        return view('admin.forums.index', compact('forums'));
     }
 
     /**
@@ -37,7 +27,7 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('admin.users.create');
+        return view('admin.forums.create');
     }
 
     /**
@@ -49,15 +39,18 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|max:20|confirmed',
+            'name' => 'required|max:20',
+            'description' => 'nullable|max:200',
+            'pid' => 'numeric',
+            'display_order' => 'nullable|numeric',
         ]);
-        $user = User::create([
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
+        $forum = Forums::create([
+            'name' => $request->name,
+            'description' => strval($request->description),
+            'pid' => intval($request->pid),
+            'display_order' => intval($request->display_order),
         ]);
-        
-        return redirect()->route('users.index');
+        return redirect()->route('forums.index');
     }
 
     /**
@@ -79,7 +72,8 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        //
+        $forum = Forums::findOrFail($id);
+        return view('admin.forums.create', compact('forum'));
     }
 
     /**

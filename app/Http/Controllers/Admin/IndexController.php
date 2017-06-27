@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Route;
+use Carbon\Carbon;
 
 class IndexController extends Controller
 {
@@ -86,6 +87,6 @@ class IndexController extends Controller
     
     public function test()
     {
-        dd(env('APP_NAME'));
+        echo Carbon::now();
     }
 }
