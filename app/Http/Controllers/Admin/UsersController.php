@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use Auth;
+use Input;
+use DB;
 
 class UsersController extends Controller
 {
@@ -14,9 +16,17 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::paginate(10);
+        $users = User::when($request->id, function($query) use ($request) {
+            return $query->where('id', intval($request->id));
+        })->when($request->q, function($query) use ($request) {
+            return $query->where(function($query) use ($request) {
+                return $query->where('name', 'like', "%{$request->q}%")
+                ->orWhere('email', 'like', "%{$request->q}%");
+            });
+        })->paginate(10);
+        
         return view('admin.users.index', compact('users'));
     }
 

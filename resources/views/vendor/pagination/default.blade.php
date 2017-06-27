@@ -1,5 +1,11 @@
 @if ($paginator->hasPages())
     <ul class="pagination justify-content-end">
+    	<li class="page-item">
+    		<span class="page-link">
+    		总数：{{ $paginator->total() }}，
+    		每页：{{ $paginator->perPage() }}
+    		</span>
+    	</li>
         {{-- Previous Page Link --}}
         @if ($paginator->onFirstPage())
             <li class="page-item disabled"><span class="page-link">&laquo;</span></li>

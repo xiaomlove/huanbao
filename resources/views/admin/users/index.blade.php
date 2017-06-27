@@ -4,8 +4,8 @@
 <section class="section-table">
 	<div class="table-header">
     	<form class="form-inline search-form d-inline-block" method="get">
-          <input type="text" name="id" class="form-control mb-2 mr-sm-2 mb-sm-0" id="" placeholder="输入ID">
-          <input type="text" name="q" class="form-control mb-2 mr-sm-2 mb-sm-0" id="" placeholder="输入昵称或邮箱">
+          <input type="text" name="id" value="{{ request('id') }}" class="form-control mb-2 mr-sm-2 mb-sm-0" id="" placeholder="输入ID">
+          <input type="text" name="q"  value="{{ request('q') }}" class="form-control mb-2 mr-sm-2 mb-sm-0" id="" placeholder="输入昵称或邮箱">
           <button type="submit" class="btn btn-primary">筛选</button>
         </form>
         <span class="float-right">
