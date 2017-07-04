@@ -21,7 +21,7 @@
               <h2 class="h5 display">新建用户</h2>
             </div>
             <div class="card-block">
-              <form class="form-horizontal" method="post" action="{{ route('users.store') }}">
+              <form class="form-horizontal" method="post" action="{{ route('user.store') }}">
               	{{ csrf_field() }}
                 <div class="form-group row{{$errors->has('email') ? ' has-danger' : ''}}">
                   <label class="col-sm-2">Email</label>

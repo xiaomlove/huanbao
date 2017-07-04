@@ -23,6 +23,9 @@
     <script src="https://use.fontawesome.com/99347ac47f.js"></script>
     <!-- Font Icons CSS-->
     <link rel="stylesheet" href="https://file.myfontastic.com/da58YPMQ7U5HY8Rb6UxkNf/icons.css">
+    <script src="//cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/tether/1.4.0/js/tether.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
@@ -35,12 +38,7 @@
     	@yield('content')
     	@include('common.admin.footer')
     </div>
-    
-    <script src="//cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-    <script src="//cdn.bootcss.com/tether/1.4.0/js/tether.min.js"></script>
-    <script src="//cdn.bootcss.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
     <script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-    <script src="{{ asset('dashboard/js/grasp_mobile_progress_circle-1.0.0.min.js') }}"></script>
     <script src="{{ asset('dashboard/js/grasp_mobile_progress_circle-1.0.0.min.js') }}"></script>
     <script src="{{ asset('dashboard/js/jquery.nicescroll.min.js') }}"></script>
     <script src="{{ asset('dashboard/js/jquery.validate.min.js') }}"></script>

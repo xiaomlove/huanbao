@@ -26,7 +26,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 //后台路由
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth'], function() {
     Route::get('/', 'IndexController@index')->name('admin.index');
-    Route::get('test', 'IndexController@test');
-    Route::resource('users', 'UsersController');
-    Route::resource('forums', 'ForumsController');
+    Route::get('test', 'IndexController@test')->name('admin.test');
+    Route::resource('user', 'UserController');
+    Route::resource('forum', 'ForumController');
+    Route::resource('topic', 'TopicController');
 });

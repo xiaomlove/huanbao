@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Route;
-use Carbon\Carbon;
+use App\Models\Forums;
 
 class IndexController extends Controller
 {
@@ -87,6 +86,7 @@ class IndexController extends Controller
     
     public function test()
     {
-        echo Carbon::now();
+        $r = Forums::listTreeOneDimensional();
+        dd($r);
     }
 }

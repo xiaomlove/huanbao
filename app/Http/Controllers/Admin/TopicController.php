@@ -4,20 +4,29 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Forums;
-use Illuminate\Validation\Rule;
+use App\Models\Topic;
+use App\Models\Forum;
+use App\Http\Requests\TopicRequest;
 
-class ForumsController extends Controller
+class TopicController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $forums = Forums::paginate(10);
-        return view('admin.forums.index', compact('forums'));
+        $topics = Topic::when($request->id, function($query) use ($request) {
+            return $query->where('id', intval($request->id));
+        })->when($request->q, function($query) use ($request) {
+            return $query->where(function($query) use ($request) {
+                return $query->where('name', 'like', "%{$request->q}%")
+                ->orWhere('email', 'like', "%{$request->q}%");
+            });
+        })->paginate(10);
+        
+        return view('admin.topic.index', compact('topics'));
     }
 
     /**
@@ -27,7 +36,12 @@ class ForumsController extends Controller
      */
     public function create()
     {
-        return view('admin.forums.create');
+        $forums = (new Forum())->listTreeOneDimensional();
+        $forumOptions = (object)[
+            'name' => 'fid',
+            'selected' => null,
+        ];
+        return view('admin.topic.create', compact('forums', 'forumOptions'));
     }
 
     /**
@@ -36,21 +50,13 @@ class ForumsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TopicRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required|max:20',
-            'description' => 'nullable|max:200',
-            'pid' => 'numeric',
-            'display_order' => 'nullable|numeric',
+        $topic = Topic::create([
+            'title' => $request->title,
+            'fid' => $request->fid,
+            'uid' => \Auth::user()->id,
         ]);
-        $forum = Forums::create([
-            'name' => $request->name,
-            'description' => strval($request->description),
-            'pid' => intval($request->pid),
-            'display_order' => intval($request->display_order),
-        ]);
-        return redirect()->route('forums.index');
     }
 
     /**
@@ -72,8 +78,7 @@ class ForumsController extends Controller
      */
     public function edit($id)
     {
-        $forum = Forums::findOrFail($id);
-        return view('admin.forums.create', compact('forum'));
+        //
     }
 
     /**

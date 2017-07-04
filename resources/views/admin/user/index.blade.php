@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', '版块列表')
+@section('title', '用户列表')
 @section('content')
 <section class="section-table">
 	<div class="table-header">
@@ -9,34 +9,31 @@
           <button type="submit" class="btn btn-primary">筛选</button>
         </form>
         <span class="float-right">
-        	<a class="btn btn-success btn-action" href="{{ route('forums.create') }}"><i class="fa fa-plus"></i>创建</a>
+        	<a class="btn btn-success btn-action" href="{{ route('user.create') }}"><i class="fa fa-plus"></i>创建</a>
         </span>
     </div>
 	<table class="table table-hover">
       <thead>
         <tr>
           <th>ID</th>
-          <th>名称</th>
-          <th>描述</th>
-          <th>创建时间</th>
+          <th>用户名</th>
+          <th>邮箱</th>
+          <th>注册时间</th>
           <th>操作</th>
         </tr>
       </thead>
       <tbody>
-      @foreach($forums as $forum)
+      @foreach($users as $user)
         <tr>
-          <th scope="row">{{ $forum->id }}</th>
-          <td>{{ $forum->name }}</td>
-          <td>{{ $forum->description }}</td>
-          <td>{{ $forum->created_at }}</td>
-          <td>
-          	<a href="{{ route('forums.edit', $forum->id) }}">编辑</a>
-          	<a href="{{ route('forums.destroy', $forum->id) }}">删除</a>
-          </td>
+          <th scope="row">{{ $user->id }}</th>
+          <td>{{ $user->name }}</td>
+          <td>{{ $user->email }}</td>
+          <td>{{ $user->created_at }}</td>
+          <td><a href="{{ route('user.show', $user->id) }}">详情</a></td>
         </tr>
       @endforeach
       </tbody>
     </table>
-    {!! $forums->links() !!}
+    {!! $users->links() !!}
 </section>
 @stop

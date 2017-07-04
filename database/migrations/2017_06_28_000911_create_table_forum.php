@@ -16,11 +16,12 @@ class CreateTableForum extends Migration
         Schema::create('forums', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->comment('版块名称');
+            $table->string('slug')->comment('别名');
             $table->text('description')->comment('描述');
             $table->integer('pid')->default(0)->comment('父级ID');
             $table->integer('display_order')->default(0)->comment('显示顺序');
             $table->timestamps();
-            $table->unique('name', 'uk_name');
+            $table->unique('slug', 'uk_slug');
         });
     }
 

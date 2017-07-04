@@ -5,11 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
-use Auth;
-use Input;
-use DB;
 
-class UsersController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +24,7 @@ class UsersController extends Controller
             });
         })->paginate(10);
         
-        return view('admin.users.index', compact('users'));
+        return view('admin.user.index', compact('users'));
     }
 
     /**
@@ -37,7 +34,7 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('admin.users.create');
+        return view('admin.user.create');
     }
 
     /**
@@ -57,7 +54,7 @@ class UsersController extends Controller
             'password' => bcrypt($request->password),
         ]);
         
-        return redirect()->route('users.index');
+        return redirect()->route('user.index');
     }
 
     /**

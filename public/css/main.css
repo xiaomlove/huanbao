@@ -11,6 +11,39 @@
 	cursor: pointer;
 }
 
+.forums-table td {
+	position: relative;
+}
+.forums-table td .fa {
+	position: absolute;
+	left: 0;
+	top: 15px;
+	cursor: pointer;
+}
+
 input[type=submit] {
 	cursor: pointer
+}
+.forums-ul {
+	list-style-type: none;
+}
+.forums-ul.thead li {
+	line-height: 40px;
+	font-weight: bold;
+	font-size: 18px;
+}
+.forums-ul.tbody li {
+	border-top: 1px dotted #ddd;
+	line-height: 34px;
+}
+.forums-ul.tbody .arrow {
+	cursor: pointer;
+	position: absolute;
+	top: 10px;
+	left: -12px;
+}
+.forums-ul li>span{
+	display: inline-block;
+	width: 16%;
+	position: relative;
 }
