@@ -6,10 +6,24 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Topic;
 use App\Models\Forum;
+use App\Models\Comment;
+use App\Models\CommentDetail;
 use App\Http\Requests\TopicRequest;
+use App\Repositories\TopicRepository;
+use App\Repositories\CommentRepository;
+
 
 class TopicController extends Controller
 {
+    protected $topic;
+    
+    protected $comment;
+    
+    public function __construct(TopicRepository $topic, CommentRepository $comment)
+    {
+        $this->topic = $topic;
+        $this->comment = $comment;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,16 +31,25 @@ class TopicController extends Controller
      */
     public function index(Request $request)
     {
-        $topics = Topic::when($request->id, function($query) use ($request) {
-            return $query->where('id', intval($request->id));
-        })->when($request->q, function($query) use ($request) {
-            return $query->where(function($query) use ($request) {
-                return $query->where('name', 'like', "%{$request->q}%")
-                ->orWhere('email', 'like', "%{$request->q}%");
-            });
-        })->paginate(10);
-        
-        return view('admin.topic.index', compact('topics'));
+        $params = [];
+        $params['fid'] = request('fid');
+        $params['uid'] = request('uid');
+        $params['include_total'] = true;
+        $params['per_page'] = 10;
+        $params['page'] = request('page', 1);
+        $result = $this->topic->listAll($params);
+//         dd($result);
+        if ($result['ret'] == 0)
+        {
+            $list = $result['data']['list'];
+            $total = $result['data']['total'];
+            $paginator = new \LengthAwarePaginator($list, $total, $params['per_page'], $params['page'], ['path' => url()->current()]);
+            return view('admin.topic.index', compact('list', 'paginator'));
+        }
+        else
+        {
+            return response($result['msg'], 500);
+        }
     }
 
     /**
@@ -52,11 +75,18 @@ class TopicController extends Controller
      */
     public function store(TopicRequest $request)
     {
-        $topic = Topic::create([
-            'title' => $request->title,
-            'fid' => $request->fid,
-            'uid' => \Auth::user()->id,
-        ]);
+        $data = $request->all();
+        $data['uid'] = \Auth::user()->id;
+        $result = $this->topic->create($data);
+//         dd($result);
+        if ($result['ret'] == 0)
+        {
+            return redirect()->route('topic.create')->with("success", "新建话题成功");
+        }
+        else 
+        {
+            return back()->with("danger", $result['msg'])->withInput();
+        }
     }
 
     /**
@@ -67,7 +97,37 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        //
+        $topic = Topic::findOrFail($id);
+        $isAjax = request()->ajax();
+        $params = [];
+        $params['tid'] = $id;
+        $params['root_id'] = request('root_id');
+        $params['pid'] = $isAjax ? null : 0;
+        $params['include_total'] = true;
+        $params['per_page'] = 10;
+        $params['page'] = request('page', 1);
+        $result = $this->comment->listAll($params);
+//         dd($params, $result);
+        if ($result['ret'] == 0)
+        {
+            $list = $result['data']['list'];
+            $total = $result['data']['total'];
+            $paginator = new \LengthAwarePaginator($list, $total, $params['per_page'], $params['page'], ['path' => url()->current()]);
+            if (request()->ajax())
+            {
+                $view = view('admin.topic.comment_comment', compact('list', 'paginator'));
+                return normalize(0, "OK", ['html' => $view->render()]);
+            }
+            else
+            {
+                return view('admin.topic.show', compact('topic', 'list', 'paginator'));
+            }
+        }
+        else
+        {
+            return response($result['msg'], 500);
+        }
+        
     }
 
     /**
@@ -78,7 +138,15 @@ class TopicController extends Controller
      */
     public function edit($id)
     {
-        //
+        $topic = Topic::findOrFail($id);
+        $comment = Comment::where('tid', $topic->id)->where('floor_num', 1)->firstOrFail();
+        $commentDetail = CommentDetail::where('cid', $comment->id)->firstOrFail();
+        $forums = (new Forum())->listTreeOneDimensional();
+        $forumOptions = (object)[
+            'name' => 'fid',
+            'selected' => $topic->fid,
+        ];
+        return view('admin.topic.edit', compact('topic', 'forums', 'forumOptions', 'commentDetail'));
     }
 
     /**
@@ -88,9 +156,18 @@ class TopicController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TopicRequest $request, $id)
     {
-        //
+        $data = $request->all();
+        $result = $this->topic->update($data, $id);
+        if ($result['ret'] == 0)
+        {
+            return redirect()->route('topic.edit', $id)->with("success", "更新话题成功");
+        }
+        else
+        {
+            return back()->with("danger", $result['msg'])->withInput();
+        }
     }
 
     /**

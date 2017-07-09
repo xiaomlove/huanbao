@@ -18,14 +18,28 @@ class CreateCommentsTable extends Migration
             $table->integer('uid')->comment('用户ID');
             $table->integer('tid')->comment('帖子ID');
             $table->integer('pid')->default(0)->comment('父级评论ID');
-            $table->integer('floor_num')->comment('楼层号');
+            $table->integer('root_id')->default(0)->comment('一级评论ID');
+            $table->integer('floor_num')->default(-1)->comment('楼层号');
             
-            $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            $table->integer('comment_count')->default(0)->comment('评论数');
+            $table->integer('like_count')->default(0)->comment('被顶数');
+            $table->integer('dislike_count')->default(0)->comment('被踩数');
+            $table->integer('favor_count')->default(0)->comment('收藏数');
+            
+            $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             
             $table->index('uid', 'idx_uid');
             $table->index('tid', 'idx_tid');
+            $table->index('pid', 'idx_pid');
+            $table->index('root_id', 'idx_root_id');
             $table->index('floor_num', 'idx_floor_num');
+            
+            $table->index('comment_count', 'idx_comment_count');
+            $table->index('like_count', 'idx_like_count');
+            $table->index('dislike_count', 'idx_dislike_count');
+            $table->index('favor_count', 'idx_favor_count');
+            
             $table->index('created_at', 'idx_created_at');
             $table->index('updated_at', 'idx_updated_at');
         });

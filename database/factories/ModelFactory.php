@@ -14,13 +14,59 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     static $password;
-    $dateTime = sprintf("%s %s", $faker->date, $faker->time);
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
         'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
-        'created_at' => $dateTime,
-        'updated_at' => $dateTime,
+    ];
+});
+
+
+$factory->define(App\Models\Topic::class, function (Faker\Generator $faker) {
+    static $users, $forums;
+    if (empty($users))
+    {
+        $users = App\User::all();
+    }
+    if (empty($forums))
+    {
+        $forums = App\Models\Forum::all();
+    }
+    return [
+        'title' => $faker->sentence,
+        'uid' => function() use($users) {
+            return $users->random()->id;
+        },
+        'fid' => function() use($forums) {
+            return $forums->random()->id;
+        },
+    ];
+});
+
+$factory->define(App\Models\Comment::class, function (Faker\Generator $faker) {
+    static $users, $topics;
+    if (empty($users))
+    {
+        $users = App\User::all();
+    }
+    if (empty($topics))
+    {
+        $topics = App\Models\Topic::all();
+    }
+    
+    return [
+        'uid' => function() use($users) {
+            return $users->random()->id;
+        },
+        'tid' => function() use($topics) {
+            return $topics->random()->id;
+        },
+    ];
+});
+
+$factory->define(App\Models\CommentDetail::class, function (Faker\Generator $faker) {
+    return [
+        'content' => $faker->paragraph,
     ];
 });

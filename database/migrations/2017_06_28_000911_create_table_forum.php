@@ -20,9 +20,15 @@ class CreateTableForum extends Migration
             $table->text('description')->comment('描述');
             $table->integer('pid')->default(0)->comment('父级ID');
             $table->integer('display_order')->default(0)->comment('显示顺序');
-            $table->timestamps();
+            $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
+            $table->dateTime('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            
             $table->unique('slug', 'uk_slug');
+            
+            $table->index('created_at', 'idx_created_at');
+            $table->index('updated_at', 'idx_updated_at');
         });
+        \DB::statement("ALTER TABLE `forums` comment '版块表'");
     }
 
     /**

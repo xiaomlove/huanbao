@@ -16,6 +16,7 @@
       </header>
       <div class="row">
         <div class="col-lg-6">
+          @include('common.admin.message')
           <div class="card">
             <div class="card-header d-flex align-items-center">
               <h2 class="h5 display">新建话题</h2>

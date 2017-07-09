@@ -179,7 +179,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-//         Barryvdh\Debugbar\ServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 //         Collective\Html\HtmlServiceProvider::class,
 
     ],
@@ -233,8 +233,9 @@ return [
         
         'Input' => Illuminate\Support\Facades\Input::class,
         'Carbon' => Carbon\Carbon::class,
+        'LengthAwarePaginator' => Illuminate\Pagination\LengthAwarePaginator::class,
         
-//         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
 //         'Form' => Collective\Html\FormFacade::class,
 //         'Html' => Collective\Html\HtmlFacade::class,
 

@@ -26,25 +26,25 @@
         </tr>
       </thead>
       <tbody>
-      @foreach($topics as $topic)
+      @foreach($list as $topic)
         <tr>
           <th scope="row">{{ $topic->id }}</th>
           <td>{{ $topic->title }}</td>
-          <td>{{ $topic->fid }}</td>
-          <td>{{ $topic->uid }}</td>
+          <td>{{ $topic->forum->name }}</td>
+          <td>{{ $topic->user->name }}</td>
           <td>{{ $topic->view_count }}/{{ $topic->comment_count }}</td>
           <td>{{ $topic->created_at }}</td>
           <td>{{ $topic->last_comment_time }}</td>
           <td>
-          	<a href="{{ route('topics.edit', $topic->id) }}">编辑</a>
-          	<a href="{{ route('topics.show', $topic->id) }}">详情</a>
-          	<a href="javascript:;" class="destroy" data-url="{{ route('topics.destroy', $topic->id) }}">删除</a>
+          	<a href="{{ route('topic.edit', $topic->id) }}">编辑</a>
+          	<a href="{{ route('topic.show', $topic->id) }}">详情</a>
+          	<a href="javascript:;" class="destroy" data-url="{{ route('topic.destroy', $topic->id) }}">删除</a>
           </td>
         </tr>
         @endforeach
       </tbody>
     </table>
-    {!! $topics->links() !!}
+    {!! $paginator->links() !!}
 </section>
 <script>
 var $table = $("#topics-table");

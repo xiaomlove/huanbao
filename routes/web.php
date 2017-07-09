@@ -30,4 +30,5 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth
     Route::resource('user', 'UserController');
     Route::resource('forum', 'ForumController');
     Route::resource('topic', 'TopicController');
+    Route::resource('comment', 'CommentController');
 });

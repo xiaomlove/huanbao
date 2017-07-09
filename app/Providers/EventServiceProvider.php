@@ -13,11 +13,11 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
+        'App\Events\CommentCreated' => [
+            'App\Listeners\CommentCreated', 
         ],
     ];
-
+    
     /**
      * Register any events for your application.
      *
@@ -29,4 +29,5 @@ class EventServiceProvider extends ServiceProvider
 
         //
     }
+    
 }

@@ -1,3 +1,14 @@
+/*全局*/
+input[type=submit] {
+	cursor: pointer
+}
+.alert {
+	text-align: center;
+}
+.pointer {
+	cursor: pointer
+}
+/**/
 .section-table {
 	padding: 1rem;
 }
@@ -21,9 +32,6 @@
 	cursor: pointer;
 }
 
-input[type=submit] {
-	cursor: pointer
-}
 .forums-ul {
 	list-style-type: none;
 }
@@ -46,4 +54,37 @@ input[type=submit] {
 	display: inline-block;
 	width: 16%;
 	position: relative;
+}
+
+
+.topic-detail .left-part{
+	width: 12%;
+	text-align: center;
+}
+.topic-detail .left-part .name{
+	margin-bottom: 6px;
+}
+.topic-detail .left-part .stat-box th{
+	text-align: center;
+}
+.topic-detail .table {
+	margin-bottom: 0;
+}
+.topic-detail .tr-action>td:nth-child(1) {
+	border-top: none;
+}
+.topic-detail .tr-action>td:nth-child(2) {
+	border-top: 1px dotted #eceeef;
+}
+.topic-detail .tr-action>td:nth-child(2)>span {
+	margin: 0 2px;
+}
+
+.topic-detail .comment-content {
+	font-size: 1rem;
+	text-align: left;
+}
+
+.topic-detail .comment-comment .reply-to-someone {
+	margin-left: 6px;
 }

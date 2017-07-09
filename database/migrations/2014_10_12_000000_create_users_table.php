@@ -19,10 +19,18 @@ class CreateUsersTable extends Migration
             $table->string('email')->comment('邮箱');
             $table->string('password')->comment('密码');
             $table->rememberToken()->comment('记住我凭证');
-            $table->timestamps();
-            $table->unique('email', 'uk_email');
+            $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
+            $table->dateTime('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+            
             $table->unique('name', 'uk_name');
+            $table->unique('email', 'uk_email');
+            $table->index('password', 'idx_password');
+            $table->index('remember_token', 'idx_remember_token');
+            
+            $table->index('created_at', 'idx_created_at');
+            $table->index('updated_at', 'idx_updated_at');
         });
+        \DB::statement("ALTER TABLE `users` comment '用户表'");
     }
 
     /**

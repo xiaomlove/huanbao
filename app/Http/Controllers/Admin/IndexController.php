@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Forums;
+use App\Models\Comment;
+use App\Events\CommentCreatedEvent;
 
 class IndexController extends Controller
 {
@@ -86,7 +88,7 @@ class IndexController extends Controller
     
     public function test()
     {
-        $r = Forums::listTreeOneDimensional();
-        dd($r);
+        $comment = Comment::find(1);
+        event(new CommentCreatedEvent($comment));
     }
 }
