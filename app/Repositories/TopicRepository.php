@@ -107,11 +107,11 @@ class TopicRepository
         $args = array_merge($defaults, $params);
         $offset = ($args['page'] - 1) * $args['per_page'];
         $where = [];
-        if ($args['fid'] && ctype_digit(strval($args['fid'])))
+        if (!is_null($args['fid']) && ctype_digit(strval($args['fid'])))
         {
             $where[] = ['fid', '=', (int)$args['fid']];
         }
-        if ($args['uid'] && ctype_digit(strval($args['uid'])))
+        if (!is_null($args['uid']) && ctype_digit(strval($args['uid'])))
         {
             $where[] = ['uid', '=', (int)$args['uid']];
         }
@@ -131,11 +131,13 @@ class TopicRepository
         $fidArr = [];
         $uidArr = [];
         $idArr = [];
+        $cidArr = [];
         foreach ($list as $value)
         {
             $fidArr[] = $value->fid;
             $uidArr[] = $value->uid;
             $idArr[] = $value->id;
+            $cidArr[] = $value->last_comment_id;
         }
         reset($list);
         unset($value);
@@ -146,7 +148,14 @@ class TopicRepository
         ->get()
         ->pluck(null, 'id');
     
+        //获取最后回复
+        $lastComments = $this->comment
+        ->whereIn('id', array_unique($cidArr))
+        ->get()
+        ->pluck(null, 'id');
+        
         //获取用户
+        $uidArr = array_merge($uidArr, $lastComments->pluck('uid')->all());
         $uses = $this->user
         ->whereIn('id', array_unique($uidArr))
         ->get()
@@ -157,6 +166,11 @@ class TopicRepository
         {
             $value->user = $uses[$value->uid];
             $value->forum = $forums[$value->fid];
+            if ($value->last_comment_id)
+            {
+                $value->last_comment = $lastComments[$value->last_comment_id];
+                $value->last_comment_user = $uses[$value->last_comment->uid];
+            }
         }
         return normalize(0, "OK", ['list' => $list, 'total' => $count]);
     }

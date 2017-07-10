@@ -56,6 +56,12 @@ input[type=submit] {
 	position: relative;
 }
 
+.topic-table td small {
+	display: block;
+}
+.topic-table td, .topic-table th {
+	vertical-align: middle;
+}
 
 .topic-detail .left-part{
 	width: 12%;

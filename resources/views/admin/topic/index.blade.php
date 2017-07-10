@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('title', '话题列表')
 @section('content')
+@inject('topicPresenter', 'App\Presenters\TopicPresenter')
 <section class="section-table">
 	<div class="table-header">
     	<form class="form-inline search-form d-inline-block" method="get">
@@ -12,7 +13,7 @@
         	<a class="btn btn-success btn-action" href="{{ route('topic.create') }}"><i class="fa fa-plus"></i>创建</a>
         </span>
     </div>
-	<table id="topics-table" class="table table-hover topics-table">
+	<table id="topic-table" class="table table-hover topic-table">
       <thead>
         <tr>
           <th>ID</th>
@@ -20,7 +21,6 @@
           <th>所在版块</th>
           <th>作者</th>
           <th>阅读/回复</th>
-          <th>发表时间</th>
           <th>最后回复</th>
           <th>操作</th>
         </tr>
@@ -31,10 +31,15 @@
           <th scope="row">{{ $topic->id }}</th>
           <td>{{ $topic->title }}</td>
           <td>{{ $topic->forum->name }}</td>
-          <td>{{ $topic->user->name }}</td>
-          <td>{{ $topic->view_count }}/{{ $topic->comment_count }}</td>
-          <td>{{ $topic->created_at }}</td>
-          <td>{{ $topic->last_comment_time }}</td>
+          <td>
+          	<small>{{ $topic->user->name }}</small>
+          	<small>{{ $topic->created_at->format('Y-m-d H:i') }}</small>
+          </td>
+          <td>
+          	<small>{{ $topic->view_count }}</small>
+          	<small>{{ $topic->comment_count }}</small>
+          </td>
+          <td>{!! $topicPresenter->getLastReply($topic) !!}</td>
           <td>
           	<a href="{{ route('topic.edit', $topic->id) }}">编辑</a>
           	<a href="{{ route('topic.show', $topic->id) }}">详情</a>
@@ -47,7 +52,7 @@
     {!! $paginator->links() !!}
 </section>
 <script>
-var $table = $("#topics-table");
+var $table = $("#topic-table");
 $table.on("click", ".arrow", function(e) {
 	var $fa = $(this);
 	var $tbody = $fa.closest("li").children(".topics-ul");

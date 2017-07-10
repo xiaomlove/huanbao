@@ -80,7 +80,6 @@ class CommentRepository
             return normalize(1, $e->getMessage(), $data);
         }
         //先插入，再更新楼层号
-        \Log::info(__METHOD__ . ", pid = $pid");
         if ($pid == 0)
         {
             //非楼中楼，更新帖子的信息
@@ -90,7 +89,6 @@ class CommentRepository
             ->where('id', '<=', $comment->id)
             ->count();
             $comment->update(['floor_num' => $count]);
-            \Log::info(__METHOD__ . ", topic: " . json_encode($topic));
             $topic->update([
                 'comment_count' => $count,
                 'last_comment_time' => time(),

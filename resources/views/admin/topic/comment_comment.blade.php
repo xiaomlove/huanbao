@@ -1,4 +1,4 @@
-
+@if(count($list))
 <div class="comment-comment">
 	@foreach($list as $comment)
 	<div class="media">
@@ -12,3 +12,4 @@
     {!! $paginator->links() !!}
     <p><a href="javascript:;" class="reply-to-main-comment">我也说一句</a></p>
 </div>
+@endif

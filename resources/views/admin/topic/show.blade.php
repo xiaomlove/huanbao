@@ -52,11 +52,14 @@
                 <tr class="tr-action">
                 	<td class="left-part"></td>
                 	<td class="text-right">
-                		<span>{{ $commentPresenter->getFloorNumHuman($comment) }}</span>
-                		<span>{{ $comment->created_at->diffForHumans() }}</span>
-                		<span class="show-comment-comment" data-expanded="0" data-pid="{{ $comment->id }}"><a href="javascript:;">回复@if($comment->comment_count > 0)({{ $comment->comment_count }})@endif</a></span>
-                		<span><a href="{{ $commentPresenter->getEditLink($comment) }}">编辑</a></span>
-                		<span title="赞" class="pointer"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></span>
+                		<div class="action-wrap">
+                    		<span>{{ $commentPresenter->getFloorNumHuman($comment) }}</span>
+                    		<span>{{ $comment->created_at->diffForHumans() }}</span>
+                    		<span class="show-comment-comment" data-expanded="0" data-pid="{{ $comment->id }}"><a href="javascript:;">回复@if($comment->comment_count > 0)({{ $comment->comment_count }})@endif</a></span>
+                    		<span><a href="{{ $commentPresenter->getEditLink($comment) }}">编辑</a></span>
+                    		<span title="赞" class="pointer"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></span>
+                		</div>
+                		<div class="comment-comment-wrap"></div>
                 	</td>
                 </tr>
              </tbody>
@@ -129,7 +132,7 @@ $topicDetail.on("click", ".show-comment-comment", function(e){
 			if (response.ret == 0) {
 				$this.attr("data-expanded", 1);
 				$commentFormTextarea.removeAttr("placeholder");
-				$td.append(response.data.html);
+				$td.find(".comment-comment-wrap").append(response.data.html);
 				showFormTo($this);
 			}
 		}).fail(function() {
@@ -149,7 +152,7 @@ $topicDetail.on("click", ".reply-to-main-comment", function(e){
 });
 
 function showFormTo($elem) {
-	$elem.closest("td").append($commentForm);
+	$elem.closest("td").find(".comment-comment-wrap").append($commentForm);
 	$commentFormTextarea.removeAttr("placeholder");
 	$commentFormCancel.show();
 	if ($elem.hasClass("reply-to-main-comment")) {

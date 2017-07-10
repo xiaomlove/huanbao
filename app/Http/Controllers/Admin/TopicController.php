@@ -113,7 +113,7 @@ class TopicController extends Controller
             $list = $result['data']['list'];
             $total = $result['data']['total'];
             $paginator = new \LengthAwarePaginator($list, $total, $params['per_page'], $params['page'], ['path' => url()->current()]);
-            if (request()->ajax())
+            if ($isAjax)
             {
                 $view = view('admin.topic.comment_comment', compact('list', 'paginator'));
                 return normalize(0, "OK", ['html' => $view->render()]);
