@@ -14,7 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
+//注册常用认证路由，如注册，登录/退出，找回密码。@see Illuminate\Routing\Router::auth()
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
