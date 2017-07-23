@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class TopicRequest extends FormRequest
 {
+    use FormatErrorsTrait;
+    
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -33,7 +35,7 @@ class TopicRequest extends FormRequest
         $v = \Validator::make(\Input::all(), [
             'title' => 'required|min:2|max:40',
             'fid' => 'required|exists:forums,id',
-            'content' => 'required|min:2',
+            'content' => 'required|min:2|max:1000',
         ]);
         return $v;
     }

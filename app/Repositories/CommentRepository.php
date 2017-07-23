@@ -55,10 +55,12 @@ class CommentRepository
                 if ($parentComment->root_id > 0)
                 {
                     $rootId = $parentComment->root_id;
+                    $rootComment = $this->comment->where('id', $rootId)->where('tid', $topic->id)->firstOrFail();
                 }
                 else 
                 {
                     $rootId = $parentComment->id;
+                    $rootComment = $parentComment;
                 }
             }
             
@@ -98,8 +100,17 @@ class CommentRepository
         else
         {
             //楼中楼，更新根评论的信息
-            $count = $comment->where('tid', '=', $topic->id)->where('root_id', $rootId)->count();
-            $this->comment->where('id', $rootId)->update(['comment_count' => $count]);
+            $count = $this->comment->where('tid', '=', $topic->id)->where('root_id', $rootId)->count();
+            $sql = sprintf("update %s set comment_count = %s", $comment->getTable(), $count);
+            $bind = [$count];
+            if ($count < 15)
+            {
+                $sql .= ", first_comment_ids = if(isnull(first_comment_ids), {$comment->id}, concat(first_comment_ids, ',{$comment->id}'))";
+                array_push($bind, $comment->id, $comment->id);
+            }
+            $sql .= " where id = {$rootComment->id}";
+            $bind[] = $rootComment->id;
+            \DB::update($sql);
             $topic->update([
                 'last_comment_time' => time(),
                 'last_comment_id' => $comment->id,
@@ -109,7 +120,12 @@ class CommentRepository
         //插入评论成功，触发“评论添加事件”
         event(new CommentCreated($comment));
         
-        return normalize(0, "OK", [$topic, $comment, $commentDetail]);
+        return normalize(0, "OK", [
+            'topic' => $topic, 
+            'comment' => $comment, 
+            'comment_detail' => $commentDetail,
+            
+        ]);
     }
     
     /**
@@ -208,5 +224,37 @@ class CommentRepository
             $value->detail = $commentDetails[$value->id];
         }
         return normalize(0, "OK", ['list' => $list, 'total' => $count]);
+    }
+    
+    /**
+     * 列出一个话题下的评论，话题详情页，包含楼中楼数据
+     * 
+     * @param array $params
+     * @return number[]|string[]|array[]
+     */
+    public function listOfTopic($params = [])
+    {
+        $defaults = [
+            'page' => 1,
+            'per_page' => 10,
+            'order' => 'id asc',
+            'tid' => 0,
+        ];
+        $args = array_merge($defaults, $params);
+        $where = [];
+        $where[] = ['pid', 0];
+        if (empty($args['tid']) || !ctype_digit(strval($args['tid'])))
+        {
+            return normalize("非法tid: {$args['tid']}", $args);
+        }
+        $where[] = ['tid', '=', (int)$args['tid']];
+    
+        $list = $this->comment
+        ->where($where)
+        ->with(['user', 'detail', 'first_comments', 'first_comments.user', 'first_comments.detail'])
+        ->orderByRaw(\DB::raw($args['order']))
+        ->paginate($args['per_page'], ['*'], 'page', $args['page']);
+        
+        return normalize(0, "OK", ['list' => $list]);
     }
 }

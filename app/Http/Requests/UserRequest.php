@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class ForumRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     use FormatErrorsTrait;
     
@@ -26,25 +25,17 @@ class ForumRequest extends FormRequest
      */
     public function rules()
     {
-        
+        return [
+            //
+        ];
     }
     
     public function validator()
     {
         $v = \Validator::make(\Input::all(), [
-            'name' => 'required|max:20',
-            'slug' => [
-                'required', 
-                'regex:/^[\w-]+$/', 
-                Rule::unique('forums')->ignore(\Route::current()->parameter('forum')),
-            ],
-            'description' => 'nullable|max:200',
-            'display_order' => 'nullable|numeric',
+            'email' => 'required|email|unique:users',
+            'password' => ['required', 'regex:/^[\w]+$/', 'min:6', 'max:20'],
         ]);
-        $v->sometimes('pid', 'nullable|numeric|exists:forums', function($input) {
-            return $input->pid > 0;
-        });
-        
         return $v;
     }
 }

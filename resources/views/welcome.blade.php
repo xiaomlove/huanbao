@@ -8,7 +8,6 @@
         <title>Laravel</title>
 
         <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
 
         <!-- Styles -->
         <style>
@@ -79,15 +78,12 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    Huanbao
                 </div>
 
                 <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                    <a href="{{ url('/admin') }}">后台</a>
+                    <a href="{{ url('/api') }}">API</a>
                 </div>
             </div>
         </div>

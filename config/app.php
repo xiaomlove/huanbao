@@ -180,8 +180,9 @@ return [
         
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
-//         Collective\Html\HtmlServiceProvider::class,
-
+        
+        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+        Spatie\Fractal\FractalServiceProvider::class,
     ],
 
     /*
@@ -236,9 +237,10 @@ return [
         'LengthAwarePaginator' => Illuminate\Pagination\LengthAwarePaginator::class,
         
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
-//         'Form' => Collective\Html\FormFacade::class,
-//         'Html' => Collective\Html\HtmlFacade::class,
-
+        
+        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
+        'Fractal' => Spatie\Fractal\FractalFacade::class,
     ],
 
 ];

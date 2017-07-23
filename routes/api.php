@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,6 +11,14 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+//API 路由
+
+Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
+    Route::post('login', 'AuthenticateController@login')->name('login');
+    Route::group(['middleware' => ['jwt.auth']], function() {
+        Route::resource('user', 'UserController');
+        Route::resource('forum', 'ForumController');
+        Route::resource('topic', 'TopicController');
+    });
 });
+

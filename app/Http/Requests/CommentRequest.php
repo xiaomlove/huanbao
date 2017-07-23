@@ -7,6 +7,8 @@ use Illuminate\Validation\Rule;
 
 class CommentRequest extends FormRequest
 {
+    use FormatErrorsTrait;
+    
     /**
      * Determine if the user is authorized to make this request.
      *

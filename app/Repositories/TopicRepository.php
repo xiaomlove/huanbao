@@ -62,7 +62,12 @@ class TopicRepository
             \DB::rollBack();
             return normalize(1, $e->getMessage(), $data);
         }
-        return normalize(0, "OK", [$topic, $comment, $commentDetail]);
+        return normalize(0, "OK", [
+            'topic' => $topic, 
+            'comment' => $comment, 
+            'comment_detail' => $commentDetail
+            
+        ]);
     }
     
     /**
@@ -90,7 +95,11 @@ class TopicRepository
             return normalize(1, $e->getMessage(), $data);
         }
     
-        return normalize(0, "OK", [$topic, $comment, $commentDetail]);
+        return normalize(0, "OK", [
+            'topic' => $topic, 
+            'comment' => $comment, 
+            'comment_detail' => $commentDetail
+        ]);
     }
     
     public function listAll($params = [])
@@ -173,5 +182,36 @@ class TopicRepository
             }
         }
         return normalize(0, "OK", ['list' => $list, 'total' => $count]);
+    }
+    
+
+    public function listAll2($params = [])
+    {
+        $defaults = [
+            'page' => 1,
+            'per_page' => 10,
+            'order' => 'id desc',
+            'fid' => null,
+            'uid' => null,
+        ];
+        $args = array_merge($defaults, $params);
+        $offset = ($args['page'] - 1) * $args['per_page'];
+        $where = [];
+        if (!is_null($args['fid']) && ctype_digit(strval($args['fid'])))
+        {
+            $where[] = ['fid', '=', (int)$args['fid']];
+        }
+        if (!is_null($args['uid']) && ctype_digit(strval($args['uid'])))
+        {
+            $where[] = ['uid', '=', (int)$args['uid']];
+        }
+    
+        $list = $this->topic
+        ->with(['user', 'forum', 'last_comment', 'last_comment.user'])
+        ->where($where)
+        ->orderByRaw(\DB::raw($args['order']))
+        ->paginate($args['per_page'], ['*'], 'page', $args['page']);
+    
+        return normalize(0, "OK", ['list' => $list]);
     }
 }

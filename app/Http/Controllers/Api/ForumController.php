@@ -1,17 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Forum;
-use App\Models\Comment;
-use App\Events\CommentCreatedEvent;
-use App\Models\Topic;
-use App\Repositories\TopicRepository;
+use App\Repositories\ForumRepository;
+use App\Transformers\ForumTransformer;
 
-class IndexController extends Controller
+class ForumController extends Controller
 {
+    protected $forum;
+    
+    public function __construct(ForumRepository $forum)
+    {
+        $this->forum = $forum;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +22,13 @@ class IndexController extends Controller
      */
     public function index()
     {
-        return view('admin.index');
+        $result = $this->forum->listAll(['max_depth' => 0]);
+        if ($result['ret'] != 0)
+        {
+            return $result;
+        }
+        $apiData = fractal()->collection($result['data'], new ForumTransformer())->toArray();
+        return normalize(0, 'OK', $apiData['data']);
     }
 
     /**
@@ -86,14 +95,5 @@ class IndexController extends Controller
     public function destroy($id)
     {
         //
-    }
-    
-    public function test(Request $request)
-    {
-        //$r = (new Forum)->listTree(['max_depth' => 1]);
-//         $r = app('App\Repositories\TopicRepository')->listAll2();
-//         $r = app('App\Models\Comment')->find(277)->first_comments()->with('detail')->get();
-       $r = resource_path('views/');
-        dd($r);
     }
 }

@@ -13,10 +13,14 @@ class Forum extends Model
         echo __METHOD__;
     }
     
-    public function listTree()
+    public function listTree(array $params = [])
     {
+        $defaults = [
+            'max_depth' => null,
+        ];
+        $args = array_merge($defaults, $params);
         $list = self::all();
-        $tree = self::buildTree($list);
+        $tree = self::buildTree($list, 0, 0, $args['max_depth']);
         return $tree;
     }
     
@@ -27,15 +31,19 @@ class Forum extends Model
         return $tree;
     }
     
-    private static function buildTree($resource, $pid = 0, $depth = 0)
+    private static function buildTree($resource, $pid = 0, $depth = 0, $maxDepth = null)
     {
         $out = [];
+        if (!is_null($maxDepth) && $depth > $maxDepth)
+        {
+            return [];
+        }
         foreach ($resource as $item)
         {
             if ($item->pid == $pid)
             {
                 $item->depth = $depth;
-                $children = self::buildTree($resource, $item->id, $depth + 1);
+                $children = self::buildTree($resource, $item->id, $depth + 1, $maxDepth);
                 if (empty($children))
                 {
                     $item->is_leaf = true;

@@ -20,6 +20,7 @@ class CreateCommentsTable extends Migration
             $table->integer('pid')->default(0)->comment('父级评论ID');
             $table->integer('root_id')->default(0)->comment('一级评论ID');
             $table->integer('floor_num')->default(-1)->comment('楼层号');
+            $table->text('first_comment_ids')->nullable()->comment('评论的评论前几个的ID，逗号分割');
             
             $table->integer('comment_count')->default(0)->comment('评论数');
             $table->integer('like_count')->default(0)->comment('被顶数');

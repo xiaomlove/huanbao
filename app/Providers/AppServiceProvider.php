@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
         
         //记录sql语句
         $this->logSql();
+        
+        //监听jwt事件
+        $this->listenJWTEvents();
+        
     }
 
     /**
@@ -56,6 +60,16 @@ class AppServiceProvider extends ServiceProvider
                 PHP_EOL
             );
             file_put_contents(storage_path() . '/logs/sql.log', $log, FILE_APPEND);
+        });
+    }
+    
+    private function listenJWTEvents()
+    {
+        \Event::listen('tymon.jwt.*', function($error) {
+            if ($error != 'tymon.jwt.valid')
+            {
+                return response()->json(normalize($error, \Input::all()), 400);
+            }
         });
     }
 }

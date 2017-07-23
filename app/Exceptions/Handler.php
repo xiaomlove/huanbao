@@ -42,9 +42,17 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Exception $e)
     {
-        return parent::render($request, $exception);
+        
+        if (!config('app.debug') && ($request->expectsJson()))
+        {
+            $modelName = get_class($e);
+            $modelName = substr($modelName, strrpos($modelName, '\\') + 1);
+            $msg = sprintf("%s %s", $modelName, $e->getMessage());
+            return response()->json(normalize($msg, $request->all()), 500);
+        }
+        return parent::render($request, $e);
     }
 
     /**
