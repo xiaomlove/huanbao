@@ -28,6 +28,11 @@ class CommentTransformer extends TransformerAbstract
         return $this->item($comment->user, new UserTransformer());
     }
     
+    public function includeDetail(Comment $comment)
+    {
+        return $this->item($comment->detail, new CommentDetailTransformer());
+    }
+    
     public function includeFirstComments(Comment $comment)
     {
         $firstComments = $comment->first_comments;
@@ -35,11 +40,6 @@ class CommentTransformer extends TransformerAbstract
         {
             return $this->collection($firstComments, new CommentCommentTransformer());
         }
-    }
-    
-    public function includeDetail(Comment $comment)
-    {
-        return $this->item($comment->detail, new CommentDetailTransformer());
     }
 }
 

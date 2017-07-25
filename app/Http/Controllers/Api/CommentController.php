@@ -1,17 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Forum;
-use App\Models\Comment;
-use App\Events\CommentCreatedEvent;
-use App\Models\Topic;
-use App\Repositories\TopicRepository;
+use App\Http\Requests\CommentRequest;
+use App\Repositories\CommentRepository;
 
-class IndexController extends Controller
+class CommentController extends Controller
 {
+    
+    public function __construct(CommentRepository $comment)
+    {
+        $this->comment = $comment;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +21,7 @@ class IndexController extends Controller
      */
     public function index()
     {
-        return view('admin.index');
+        //
     }
 
     /**
@@ -38,9 +40,13 @@ class IndexController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CommentRequest $request)
     {
-        //
+        $data = $request->all();
+        $data['uid'] = $this->apiUser()->id;
+        $data['pid'] = $request->get('pid', 0);
+        $result = $this->comment->create($data);
+        return $result;
     }
 
     /**
@@ -86,14 +92,5 @@ class IndexController extends Controller
     public function destroy($id)
     {
         //
-    }
-    
-    public function test(Request $request)
-    {
-        //$r = (new Forum)->listTree(['max_depth' => 1]);
-//         $r = app('App\Repositories\TopicRepository')->listAll2();
-        $r = app('App\Models\Comment')->find(1138)->first_comments()->with('detail')->get();
-//        $r = resource_path('views/');
-        dd($r);
     }
 }

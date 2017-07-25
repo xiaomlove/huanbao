@@ -40,9 +40,4 @@ class Comment extends Model
         return $this->hasOne(User::class, 'id', 'uid');
     }
     
-    public function first_comments()
-    {
-        return $this->hasMany(__CLASS__, 'root_id', 'id');
-    }
-    
 }

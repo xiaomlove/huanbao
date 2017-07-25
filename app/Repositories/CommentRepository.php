@@ -63,17 +63,15 @@ class CommentRepository
                     $rootComment = $parentComment;
                 }
             }
-            
+            //创建评论
             $comment = $this->comment->create([
                 'uid' => $data['uid'],
                 'tid' => $topic->id,
                 'pid' => $pid,
                 'root_id' => $rootId,
             ]);
-            $commentDetail = $this->commentDetail->create([
-                'cid' => $comment->id,
-                'content' => $data['content'],
-            ]);
+            //创建详情
+            $commentDetail = $comment->detail()->create(['content' => $data['content']]);
             \DB::commit();
         }
         catch (\Exception $e)
@@ -101,16 +99,19 @@ class CommentRepository
         {
             //楼中楼，更新根评论的信息
             $count = $this->comment->where('tid', '=', $topic->id)->where('root_id', $rootId)->count();
-            $sql = sprintf("update %s set comment_count = %s", $comment->getTable(), $count);
-            $bind = [$count];
-            if ($count < 15)
+            $rootCommentUpdate = [];
+            $rootCommentUpdate['comment_count'] = $count;
+            $cid = $comment->id;
+            if ($count == 1)
             {
-                $sql .= ", first_comment_ids = if(isnull(first_comment_ids), {$comment->id}, concat(first_comment_ids, ',{$comment->id}'))";
-                array_push($bind, $comment->id, $comment->id);
+                $rootCommentUpdate['first_comment_ids'] = $cid;
             }
-            $sql .= " where id = {$rootComment->id}";
-            $bind[] = $rootComment->id;
-            \DB::update($sql);
+            elseif ($count < 5)
+            {
+                $rootCommentUpdate['first_comment_ids'] = \DB::raw("concat(first_comment_ids, ',$cid')");
+            }
+            $rootComment->update($rootCommentUpdate);
+            //更新帖子信息
             $topic->update([
                 'last_comment_time' => time(),
                 'last_comment_id' => $comment->id,
@@ -242,18 +243,46 @@ class CommentRepository
         ];
         $args = array_merge($defaults, $params);
         $where = [];
-        $where[] = ['pid', 0];
         if (empty($args['tid']) || !ctype_digit(strval($args['tid'])))
         {
             return normalize("非法tid: {$args['tid']}", $args);
         }
         $where[] = ['tid', '=', (int)$args['tid']];
+        $where[] = ['pid', 0];
     
         $list = $this->comment
         ->where($where)
-        ->with(['user', 'detail', 'first_comments', 'first_comments.user', 'first_comments.detail'])
+        ->with(['user', 'detail'])
         ->orderByRaw(\DB::raw($args['order']))
         ->paginate($args['per_page'], ['*'], 'page', $args['page']);
+        
+//         dd($list);
+        //取楼中楼数据
+        $commentCommentIdArr = [];
+        foreach ($list->getIterator() as $item)
+        {
+            $ids = $item->first_comment_ids;
+            if (!empty($ids))
+            {
+                $commentCommentIdArr = array_merge($commentCommentIdArr, explode(',', $ids));
+            }
+        }
+//         dd($list);
+        $commentComments = $this->comment
+        ->whereIn('id', $commentCommentIdArr)
+        ->with(['user', 'detail'])
+        ->get()
+        ->groupBy('root_id');
+        
+        foreach ($list->getIterator() as $item)
+        {
+            $rootId = $item->id;
+            $firstComments = $commentComments->get($rootId);
+            if ($firstComments)
+            {
+                $item->setRelation('first_comments', $firstComments);
+            }
+        }
         
         return normalize(0, "OK", ['list' => $list]);
     }

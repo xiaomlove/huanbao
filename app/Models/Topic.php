@@ -46,4 +46,14 @@ class Topic extends Model
         return $this->hasOne(Comment::class, 'id', 'last_comment_id');
     }
     
+    /**
+     * 话题主楼
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function main_floor()
+    {
+        return $this->hasOne(Comment::class, 'tid', 'id');
+    }
+    
 }

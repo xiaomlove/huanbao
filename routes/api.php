@@ -19,6 +19,7 @@ Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
         Route::resource('user', 'UserController');
         Route::resource('forum', 'ForumController');
         Route::resource('topic', 'TopicController');
+        Route::resource('comment', 'CommentController');
     });
 });
 

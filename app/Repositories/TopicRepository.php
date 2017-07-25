@@ -45,16 +45,15 @@ class TopicRepository
         \DB::beginTransaction();
         try
         {
+            //创建话题
             $topic = $this->topic->create($data);
-            $comment = $this->comment->create([
+            //创建主楼
+            $comment = $topic->main_floor()->create([
                 'uid' => $topic->uid,
-                'tid' => $topic->id,
                 'floor_num' => 1,//创建帖子时候创建的评论，肯定是1楼
             ]);
-            $commentDetail = $this->commentDetail->create([
-                'cid' => $comment->id,
-                'content' => $data['content'],
-            ]);
+            //创建主楼详情
+            $commentDetail = $comment->detail()->create(['content' => $data['content']]);
             \DB::commit();
         }
         catch (\Exception $e)
