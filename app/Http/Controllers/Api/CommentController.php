@@ -23,10 +23,8 @@ class CommentController extends Controller
      */
     public function index()
     {
-        $tid = request('tid');
-        $topic = Topic::findOrFail($tid);
         $params = [];
-        $params['tid'] = $tid;
+        $params['tid'] = request('tid');
         $params['root_id'] = request('root_id');
         $params['per_page'] = request('per_page', 10);
         $params['page'] = request('page', 1);

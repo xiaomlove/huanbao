@@ -11,7 +11,7 @@ class CommentsTableSeeder extends Seeder
      */
     public function run()
     {
-        $comments = factory(App\Models\Comment::class, 1000)->create()->each(function ($comment) {
+        $comments = factory(App\Models\Comment::class, 100)->create()->each(function ($comment) {
             //创建评论详情
             $commentDetail = App\Models\CommentDetail::create([
                 'cid' => $comment->id,
