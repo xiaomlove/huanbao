@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\CommentDetail;
 use App\User;
+use App\Models\Topic;
 
 class Comment extends Model
 {
@@ -20,6 +21,8 @@ class Comment extends Model
         'dislike_count',
         'favor_count',
     ];
+    
+    protected $touches = ['topic'];
     
     /**
      * 回复的详情
@@ -38,6 +41,40 @@ class Comment extends Model
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'uid');
+    }
+    
+    /**
+     * 所属话题
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function topic()
+    {
+        return $this->belongsTo(Topic::class, 'tid', 'id');
+    }
+    
+    /**
+     * 回复的回复
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany(__CLASS__, 'root_id', 'id');
+    }
+    
+    /**
+     * 所属根评论
+     */
+    public function rootComment()
+    {
+        return $this->belongsTo(__CLASS__, 'root_id', 'id');
+    }
+    
+    /**
+     * 所属父评论
+     */
+    public function parentComment()
+    {
+        return $this->belongsTo(__CLASS__, 'pid', 'id');
     }
     
 }

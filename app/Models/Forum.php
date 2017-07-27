@@ -3,14 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Topic;
 
 class Forum extends Model
 {
     protected $fillable = ['name', 'slug', 'pid', 'description', 'display_order'];
     
-    public function tt()
+    /**
+     * 一个版块有多个主题
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function topics()
     {
-        echo __METHOD__;
+        return $this->hasMany(Topic::class, 'fid', 'id');
     }
     
     public function listTree(array $params = [])

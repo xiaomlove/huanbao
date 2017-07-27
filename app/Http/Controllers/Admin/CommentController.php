@@ -23,9 +23,46 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $isAjax = $request->ajax();
+        $params = [];
+        $params['tid'] = request('tid');
+        $params['root_id'] = request('root_id');
+        $params['per_page'] = request('per_page', 10);
+        $params['page'] = request('page', 1);
+        
+        if ($isAjax)
+        {
+            $params['order'] = request('order', 'id asc');
+            $params['with'] = ['user', 'detail'];
+        }
+        else
+        {
+            $params['order'] = request('order', 'id desc');
+            $params['with'] = ['user', 'detail', 'topic', 'topic.forum', 'rootComment'];
+        }
+        
+        $result = $this->comment->listAll($params);
+//         dd($result);
+        
+        if ($result['ret'] == 0)
+        {
+            $comments = $result['data']['list'];
+            if ($isAjax)
+            {
+                $view = view('admin.topic.comment_comment', compact('comments'));
+                return normalize(0, 'OK', ['html' => $view->render()]);
+            }
+            else 
+            {
+                return view('admin.comment.index', compact('comments'));
+            }
+        }
+        else
+        {
+            return normalize($result['msg'], \Input::all());
+        }
     }
 
     /**

@@ -38,7 +38,6 @@ class TopicController extends Controller
         $params['per_page'] = 10;
         $params['page'] = request('page', 1);
         $result = $this->topic->listAll($params);
-//         dd($result);
         if ($result['ret'] == 0)
         {
             $list = $result['data']['list'];
@@ -98,30 +97,17 @@ class TopicController extends Controller
     public function show($id)
     {
         $topic = Topic::findOrFail($id);
-        $isAjax = request()->ajax();
         $params = [];
         $params['tid'] = $id;
-        $params['root_id'] = request('root_id');
-        $params['pid'] = $isAjax ? null : 0;
-        $params['include_total'] = true;
-        $params['per_page'] = 10;
+        $params['per_page'] = request('per_page', 10);
         $params['page'] = request('page', 1);
-        $result = $this->comment->listAll($params);
-//         dd($params, $result);
+        $params['order'] = request('order', 'id asc');
+        $result = $this->comment->listOfTopic($params);
+//         dd($result);
         if ($result['ret'] == 0)
         {
             $list = $result['data']['list'];
-            $total = $result['data']['total'];
-            $paginator = new \LengthAwarePaginator($list, $total, $params['per_page'], $params['page'], ['path' => url()->current()]);
-            if ($isAjax)
-            {
-                $view = view('admin.topic.comment_comment', compact('list', 'paginator'));
-                return normalize(0, "OK", ['html' => $view->render()]);
-            }
-            else
-            {
-                return view('admin.topic.show', compact('topic', 'list', 'paginator'));
-            }
+            return view('admin.topic.show', compact('topic', 'list'));
         }
         else
         {

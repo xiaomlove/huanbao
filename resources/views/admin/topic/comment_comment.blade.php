@@ -1,6 +1,6 @@
-@if(count($list))
+@if(count($comments))
 <div class="comment-comment">
-	@foreach($list as $comment)
+	@foreach($comments as $comment)
 	<div class="media">
       <img class="d-flex mr-3" data-src="/dashboard/img/avatar-3.jpg" alt="32x32" src="/dashboard/img/avatar-3.jpg" data-holder-rendered="true" style="width: 32px; height: 32px;">
       <div class="media-body">
@@ -9,7 +9,7 @@
       </div>
     </div>
     @endforeach
-    {!! $paginator->links() !!}
+    {!! $comments->links() !!}
     <p><a href="javascript:;" class="reply-to-main-comment">我也说一句</a></p>
 </div>
 @endif

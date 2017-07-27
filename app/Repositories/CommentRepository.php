@@ -156,77 +156,6 @@ class CommentRepository
         return normalize(0, "OK", [$comment, $commentDetail]);
     }
     
-    public function listAll($params = [])
-    {
-        $defaults = [
-            'page' => 1,
-            'per_page' => 10,
-            'order' => 'floor_num asc',
-            'not_in' => null,
-            'tid' => null,
-            'pid' => null, //父评论ID
-            'root_id' => null, //根评论
-            'include_total' => false, //是否包含数量
-        ];
-        $args = array_merge($defaults, $params);
-        $offset = ($args['page'] - 1) * $args['per_page'];
-        $where = [];
-        if (!is_null($args['tid']) && ctype_digit(strval($args['tid'])))
-        {
-            $where[] = ['tid', '=', (int)$args['tid']];
-        }
-        if (!is_null($args['pid']) && ctype_digit(strval($args['pid'])))
-        {
-            $where[] = ['pid', '=', (int)$args['pid']];
-        }
-        if (!is_null($args['root_id']) && ctype_digit(strval($args['root_id'])))
-        {
-            $where[] = ['root_id', '=', (int)$args['root_id']];
-        }
-        
-        $list = $this->comment
-        ->where($where)
-        ->orderByRaw(\DB::raw($args['order']))
-        ->offset($offset)
-        ->limit($args['per_page'])
-        ->get();
-        
-        $count = null;
-        if ($args['include_total'])
-        {
-            $count = $this->comment->where($where)->count();
-        }
-        $cidArr = [];
-        $uidArr = [];
-        foreach ($list as $value)
-        {
-            $cidArr[] = $value->id;
-            $uidArr[] = $value->uid;
-        }
-        reset($list);
-        unset($value);
-        
-        //获取详情
-        $commentDetails = $this->commentDetail
-        ->whereIn('cid', $cidArr)
-        ->get()
-        ->pluck(null, 'cid');
-        
-        //获取用户
-        $uses = $this->user
-        ->whereIn('id', array_unique($uidArr))
-        ->get()
-        ->pluck(null, 'id');
-        
-        //追加到评论列表中
-        foreach ($list as &$value)
-        {
-            $value->user = $uses[$value->uid];
-            $value->detail = $commentDetails[$value->id];
-        }
-        return normalize(0, "OK", ['list' => $list, 'total' => $count]);
-    }
-    
     /**
      * 列出一个话题下的评论，话题详情页，包含楼中楼数据
      * 
@@ -284,6 +213,42 @@ class CommentRepository
             }
         }
         
+        return normalize(0, "OK", ['list' => $list]);
+    }
+    
+    /**
+     * 取所有评论
+     * 
+     * @param array $params
+     * @return number[]|string[]|array[]
+     */
+    public function listAll($params = [])
+    {
+        $defaults = [
+            'page' => 1,
+            'per_page' => 10,
+            'order' => 'id asc',
+            'tid' => 0,
+            'root_id' => null,
+            'with' => [],
+        ];
+        $args = array_merge($defaults, $params);
+        $where = [];
+        if (!is_null($args['tid']))
+        {
+            $where[] = ['tid', '=', (int)$args['tid']];
+        }
+        if (!is_null($args['root_id']))
+        {
+            $where[] = ['root_id', '=', (int)$args['root_id']];
+        }
+    
+        $list = $this->comment
+        ->where($where)
+        ->with($args['with'])
+        ->orderByRaw(\DB::raw($args['order']))
+        ->paginate($args['per_page'], ['*'], 'page', $args['page']);
+    
         return normalize(0, "OK", ['list' => $list]);
     }
 }

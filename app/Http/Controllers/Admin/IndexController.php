@@ -92,7 +92,7 @@ class IndexController extends Controller
     {
         //$r = (new Forum)->listTree(['max_depth' => 1]);
 //         $r = app('App\Repositories\TopicRepository')->listAll2();
-        $r = app('App\Models\Comment')->find(1138)->first_comments()->with('detail')->get();
+        $r = app('App\Models\Comment')->where('id', 1145)->with('parentComment')->first();
 //        $r = resource_path('views/');
         dd($r);
     }

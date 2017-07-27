@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommentRequest;
 use App\Repositories\CommentRepository;
+use App\Models\Topic;
+use App\Transformers\CommentCommentTransformer;
 
 class CommentController extends Controller
 {
@@ -21,7 +23,34 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
+        $tid = request('tid');
+        $topic = Topic::findOrFail($tid);
+        $params = [];
+        $params['tid'] = $tid;
+        $params['root_id'] = request('root_id');
+        $params['per_page'] = request('per_page', 10);
+        $params['page'] = request('page', 1);
+        $params['order'] = request('order', 'id asc');
+        $params['with'] = ['user', 'detail'];
+        $result = $this->comment->listAll($params);
+        if ($result['ret'] == 0)
+        {
+            $data = $result['data']['list'];
+//             dd($data->items());
+            $comments = fractal()
+            ->collection($data->items())
+            ->transformWith(new CommentCommentTransformer())
+            ->toArray();
+            
+            $out = $data->toArray();
+            unset($out['data']);
+            $out['list'] = $comments;
+            return normalize(0, 'OK', $out);
+        }
+        else
+        {
+            return $result;
+        }
     }
 
     /**

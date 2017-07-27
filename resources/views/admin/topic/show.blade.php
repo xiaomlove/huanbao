@@ -66,7 +66,7 @@
             </table>
          @endforeach
         </div>
-        {!! $paginator->links() !!}
+        {!! $list->links() !!}
         <div class="add-comment">
         	<table class="table">
               <tbody>
@@ -168,7 +168,7 @@ function showFormTo($elem) {
 
 function getComments(rootId, page)
 {
-	var url = "{{ route('topic.show', $topic->id)}}";
+	var url = "{{ route('comment.index')}}";
 	var data = {
 		tid: "{{ $topic->id }}",
 		root_id: rootId,
