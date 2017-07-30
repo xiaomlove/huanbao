@@ -12,7 +12,7 @@ class ForumTransformer extends TransformerAbstract
     public function transform(Forum $forum)
     {
         return [
-            'id' => $forum->id,
+            'key' => $forum->id,
             'name' => $forum->name,
         ];
     }

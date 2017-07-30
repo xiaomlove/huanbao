@@ -28,7 +28,8 @@ class ForumController extends Controller
             return $result;
         }
         $apiData = fractal()->collection($result['data'], new ForumTransformer())->toArray();
-        return normalize(0, 'OK', $apiData['data']);
+        $apiData['key'] = "全部";
+        return normalize(0, 'OK', $apiData);
     }
 
     /**
