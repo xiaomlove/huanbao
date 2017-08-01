@@ -33,7 +33,7 @@ class TopicController extends Controller
         $params = [];
         $params['fid'] = request('fid');
         $params['uid'] = request('uid');
-        $params['per_page'] = request('per_page', 3);
+        $params['per_page'] = request('per_page', 10);
         $params['page'] = request('page', 1);
         $result = $this->topic->listAll2($params);
 //         return $result;

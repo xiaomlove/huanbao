@@ -206,7 +206,7 @@ class TopicRepository
         }
     
         $list = $this->topic
-        ->with(['user', 'forum', 'last_comment', 'last_comment.user'])
+        ->with(['user', 'main_floor', 'main_floor.detail', 'main_floor.user'])
         ->where($where)
         ->orderByRaw(\DB::raw($args['order']))
         ->paginate($args['per_page'], ['*'], 'page', $args['page']);
