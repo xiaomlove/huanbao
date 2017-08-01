@@ -10,13 +10,17 @@ class TopicTransformer extends TransformerAbstract
 {
     protected $defaultIncludes = ['user'];
     
-    protected $availableIncludes = ['forum', 'last_comment'];
+    protected $availableIncludes = ['forum', 'last_comment', 'main_floor'];
     
     public function transform(Topic $topic)
     {
+        $lastCommentTime = \Carbon::createFromTimestamp($topic->last_comment_time);
         return [
             'id' => $topic->id,
+            'key' => $topic->id,
             'title' => $topic->title,
+            'last_comment_time' => $topic->last_comment_time,
+            'last_comment_time_human' => $lastCommentTime->diffForHumans(),
         ];
     }
     
@@ -37,6 +41,10 @@ class TopicTransformer extends TransformerAbstract
         {
             return $this->item($lastComment, new CommentTransformer());
         }
+    }
+    public function includeMainFloor(Topic $topic)
+    {
+        return $this->item($topic->main_floor, new CommentCommentTransformer());
     }
 }
 

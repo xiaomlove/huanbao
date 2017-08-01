@@ -45,7 +45,7 @@ class TopicController extends Controller
         $apiData = fractal()
         ->collection($list->getCollection())
         ->transformWith(new TopicTransformer())
-        ->parseIncludes(['forum', 'last_comment'])
+        ->parseIncludes(['main_floor'])
         ->paginateWith(new IlluminatePaginatorAdapter($list))
         ->toArray();
         return normalize(0, 'OK', [
