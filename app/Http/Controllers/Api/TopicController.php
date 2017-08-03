@@ -113,7 +113,7 @@ class TopicController extends Controller
         ->toArray();
         
         return normalize(0, 'OK', [
-            'comments' => $comments['data'], 
+            'list' => $comments['data'], 
             'pagination' => $comments['meta']['pagination'],
             'topic' => $topicInfo
         ]);
