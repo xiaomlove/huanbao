@@ -8,6 +8,7 @@ use App\Http\Requests\CommentRequest;
 use App\Repositories\CommentRepository;
 use App\Models\Topic;
 use App\Transformers\CommentCommentTransformer;
+use App\Transformers\PaginationTransformer;
 
 class CommentController extends Controller
 {
@@ -40,10 +41,15 @@ class CommentController extends Controller
             ->transformWith(new CommentCommentTransformer())
             ->toArray();
             
-            $out = $data->toArray();
-            unset($out['data']);
-            $out['list'] = $comments;
-            return normalize(0, 'OK', $out);
+            $pagination = fractal()
+            ->item($data)
+            ->transformWith(new PaginationTransformer())
+            ->toArray();
+         
+            return normalize(0, 'OK', [
+                'list' => $comments['data'],
+                'pagination' => $pagination['data'],
+            ]);
         }
         else
         {
