@@ -91,7 +91,7 @@ class TopicController extends Controller
         $topic = Topic::with('user')->findOrFail($id);
         $params = [];
         $params['tid'] = $id;
-        $params['per_page'] = request('per_page', 3);
+        $params['per_page'] = request('per_page', 10);
         $params['page'] = request('page', 1);
         $params['order'] = request('order', 'id asc');
         $result = $this->comment->listOfTopic($params);
