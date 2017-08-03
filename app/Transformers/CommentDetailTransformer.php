@@ -13,6 +13,7 @@ class CommentDetailTransformer extends TransformerAbstract
     {
         return [
             'id' => $commentDetail->id,
+            'key' => $commentDetail->id,
             'cid' => $commentDetail->cid,
             'content' => $commentDetail->content,
         ];
