@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -44,8 +45,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        
-        if (!config('app.debug') && ($request->expectsJson()))
+        if 
+        (
+            !config('app.debug') 
+            && ($request->expectsJson()) 
+            && !($e instanceof ValidationException) //验证要是拦截了，就不能本地化等了，提示也不正确
+        )
         {
             $modelName = get_class($e);
             $modelName = substr($modelName, strrpos($modelName, '\\') + 1);
