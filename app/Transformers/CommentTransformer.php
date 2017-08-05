@@ -17,6 +17,7 @@ class CommentTransformer extends TransformerAbstract
         return [
             'id' => $comment->id,
             'key' => $comment->id,
+            'tid' => $comment->tid,
             'created_at' => $comment->created_at->format('Y-m-d H:i'),
             'created_at_human' => $comment->created_at->diffForHumans(),
             'floor_num' => $comment->floor_num,
