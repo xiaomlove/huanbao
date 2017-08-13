@@ -103,7 +103,7 @@ class TopicController extends Controller
         $comments = fractal()
         ->collection($commentList->getCollection())
         ->transformWith(new CommentTransformer())
-        ->parseIncludes(['detail', 'first_comments'])
+        ->parseIncludes(['detail', 'attachments', 'first_comments'])
         ->paginateWith(new IlluminatePaginatorAdapter($commentList))
         ->toArray();
         

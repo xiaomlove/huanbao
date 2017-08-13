@@ -46,6 +46,7 @@
                   <td class="right-part">
                   	<div class="comment-content">
                   		{{ $comment->detail->content }}
+                  		{!! $commentPresenter->listAttachmentImages($comment) !!}
                   	</div>
                   </td>
                 </tr>
@@ -78,7 +79,7 @@
                   	</div>
                   </td>
                   <td id="comment-form-wrap">
-                      <form id="comment-form" method="post" action="{{ route('comment.store') }}">
+                      <form id="comment-form" method="post" action="{{ route('comment.store') }}" enctype="multipart/form-data">
                       	{{ csrf_field() }}
                       	<input type="hidden" name="tid" value="{{ $topic->id }}" />
                       	<input type="hidden" name="pid" value="0" />
@@ -90,6 +91,14 @@
                         <div class="form-group row{{$errors->has('content') ? ' has-danger' : ''}}">
                           <div class="col-sm-6">
                             <textarea rows="4" class="form-control" name="content"></textarea>
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <div class="col-sm-6">
+                          	<table style="display: none" class="table-image-preview">
+                          		
+                          	</table>
+                            <input type="file" class="form-control-file" id="input-upload-file" name="image[]" multiple accept="image/jpg, image/jpeg, image/png, image/gif">
                           </div>
                         </div>
                         <div class="form-group row">
@@ -181,6 +190,18 @@ function getComments(rootId, page)
 		dataType: "json",
 	});
 }
+
+
+//图片预览
+$topicDetail.on("click", ".attachment-image", function(e) {
+	var $this = $(this);
+	if (!$this.data("expand")) {
+		$this.css({maxWidth: 800, maxHeight: 800}).data("expand", 1);
+	} else {
+		$this.removeAttr("style").data("expand", 0);
+	}
+})
+
 
 </script>
 @stop

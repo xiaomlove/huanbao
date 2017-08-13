@@ -6,6 +6,8 @@ use App\Models\Comment;
 use App\Models\CommentDetail;
 use App\User;
 use App\Events\CommentCreated;
+use App\Repositories\AttachmentRepository;
+use App\Models\AttachmentRelationship;
 
 class CommentRepository
 {
@@ -17,12 +19,22 @@ class CommentRepository
     
     protected $user;
     
-    public function __construct(Topic $topic, Comment $comment, CommentDetail $commentDetail, User $user)
+    protected $attachment;
+    
+    public function __construct
+    (
+        Topic $topic, 
+        Comment $comment, 
+        CommentDetail $commentDetail, 
+        User $user, 
+        AttachmentRepository $attachment
+    )
     {
         $this->topic = $topic;
         $this->comment = $comment;
         $this->commentDetail = $commentDetail;
         $this->user = $user;
+        $this->attachment = $attachment;
     }
     
     /**
@@ -33,36 +45,59 @@ class CommentRepository
      */
     public function create(array $data)
     {
+        $topic = $this->topic->findOrFail($data['tid']);
+        $rootId = $pid = 0;
+        $parentComment = null;
+        
+        //判断 pid是否有效
+        if ($data['pid'] > 0)
+        {
+            $parentComment = $this->comment->where('id', $data['pid'])->where('tid', $topic->id)->firstOrFail();
+            if ($parentComment->floor_num == 1)
+            {
+                $parentComment = null;//回复的是主楼，相当于新楼层，不能对主楼评论进行回复
+            }
+        }
+        if ($parentComment)
+        {
+            $pid = $parentComment->id;
+            if ($parentComment->root_id > 0)
+            {
+                $rootId = $parentComment->root_id;
+                $rootComment = $this->comment->where('id', $rootId)->where('tid', $topic->id)->firstOrFail();
+            }
+            else
+            {
+                $rootId = $parentComment->id;
+                $rootComment = $parentComment;
+            }
+        }
+        
+        //先保存附件
+        $attachments = [];
+        if (!empty($data['image']))
+        {
+            if (is_object($data['image'][0]))
+            {
+                //没先传好
+                $imageResult = $this->attachment->create($data['image'], $data['uid']);
+                if ($imageResult['ret'] != 0)
+                {
+                    return $imageResult;
+                }
+                $attachments = $imageResult['data'];
+            }
+            else
+            {
+                //图片已经传好并获取ID
+                $attachmentIdArr = is_array($data['image']) ? $data['image'] : implode(',', $data['image']);
+                $attachments = $this->attachment->findOrFail($attachmentIdArr);
+            }
+        }
+        
         \DB::beginTransaction();
         try
         {
-            $topic = $this->topic->findOrFail($data['tid']);
-            $rootId = $pid = 0;
-            $parentComment = null;
-            
-            //判断 pid是否有效
-            if ($data['pid'] > 0)
-            {
-                $parentComment = $this->comment->where('id', $data['pid'])->where('tid', $topic->id)->firstOrFail();
-                if ($parentComment->floor_num == 1)
-                {
-                    $parentComment = null;//回复的是主楼，相当于新楼层，不能对主楼评论进行回复
-                }
-            }
-            if ($parentComment)
-            {
-                $pid = $parentComment->id;
-                if ($parentComment->root_id > 0)
-                {
-                    $rootId = $parentComment->root_id;
-                    $rootComment = $this->comment->where('id', $rootId)->where('tid', $topic->id)->firstOrFail();
-                }
-                else 
-                {
-                    $rootId = $parentComment->id;
-                    $rootComment = $parentComment;
-                }
-            }
             //创建评论
             $comment = $this->comment->create([
                 'uid' => $data['uid'],
@@ -72,6 +107,13 @@ class CommentRepository
             ]);
             //创建详情
             $commentDetail = $comment->detail()->create(['content' => $data['content']]);
+            //保存附件
+            foreach ($attachments as $attachment)
+            {
+                $comment->attachments()->save($attachment, ['target_type' => AttachmentRelationship::TARGET_TYPE_COMMENT]);
+            }
+            unset($attachment);
+            
             \DB::commit();
         }
         catch (\Exception $e)
@@ -181,7 +223,7 @@ class CommentRepository
     
         $list = $this->comment
         ->where($where)
-        ->with(['user', 'detail'])
+        ->with(['user', 'detail', 'attachments'])
         ->orderByRaw(\DB::raw($args['order']))
         ->paginate($args['per_page'], ['*'], 'page', $args['page']);
         

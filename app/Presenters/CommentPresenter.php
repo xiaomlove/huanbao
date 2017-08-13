@@ -70,4 +70,21 @@ class CommentPresenter
         
         return implode(' -> ', array_reverse($out));
     }
+    
+    public function listAttachmentImages(Comment $comment)
+    {
+        if (count($comment->attachments) == 0)
+        {
+            return '';
+        }
+        $imageArr = [];
+        foreach ($comment->attachments as $image)
+        {
+            $imageArr[] = sprintf(
+                '<img src="%s" class="attachment-image" />',
+                asset(sprintf("storage/%s/%s", $image->dirname, $image->basename))
+            );
+        }
+        return '<p class="attachment-wrap">' . implode('', $imageArr) . '</p>';
+    }
 }

@@ -10,7 +10,7 @@ class CommentTransformer extends TransformerAbstract
 {
     protected $defaultIncludes = ['user'];
     
-    protected $availableIncludes = ['detail', 'first_comments'];
+    protected $availableIncludes = ['detail', 'first_comments', 'attachments'];
     
     public function transform(Comment $comment)
     {
@@ -41,6 +41,15 @@ class CommentTransformer extends TransformerAbstract
         if ($firstComments)
         {
             return $this->collection($firstComments, new CommentCommentTransformer());
+        }
+    }
+    
+    public function includeAttachments(Comment $comment)
+    {
+        $attachments = $comment->attachments;
+        if ($attachments)
+        {
+            return $this->collection($attachments, new AttachmentTransformer());
         }
     }
 }

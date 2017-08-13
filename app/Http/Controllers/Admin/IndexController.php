@@ -92,8 +92,9 @@ class IndexController extends Controller
     {
         //$r = (new Forum)->listTree(['max_depth' => 1]);
 //         $r = app('App\Repositories\TopicRepository')->listAll2();
-        $r = app('App\Models\Comment')->where('id', 1145)->with('parentComment')->first();
+//         $r = app('App\Models\Comment')->where('id', 1145)->with('parentComment')->first();
 //        $r = resource_path('views/');
+        $r = ini_get('session.upload_progress_enabled');
         dd($r);
     }
 }

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\CommentDetail;
 use App\User;
 use App\Models\Topic;
+use App\Models\Attachment;
+use App\Models\AttachmentRelationship;
 
 class Comment extends Model
 {
@@ -75,6 +77,23 @@ class Comment extends Model
     public function parentComment()
     {
         return $this->belongsTo(__CLASS__, 'pid', 'id');
+    }
+    
+    /**
+     * 拥有的附件
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function attachments()
+    {
+        return $this->belongsToMany(
+            Attachment::class, 
+            AttachmentRelationship::TABLE_NAME,
+            'target_id',
+            'attachment_id'
+        )
+        ->withTimestamps()
+        ->wherePivot('target_type', AttachmentRelationship::TARGET_TYPE_COMMENT);
     }
     
 }

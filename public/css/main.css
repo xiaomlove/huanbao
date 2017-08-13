@@ -90,7 +90,27 @@ input[type=submit] {
 	font-size: 1rem;
 	text-align: left;
 }
-
+.topic-detail .comment-content .attachment-wrap {
+	margin-top: 10px
+}
+.topic-detail .comment-content .attachment-wrap .attachment-image{
+	max-width: 200px;
+	max-height: 200px;
+	cursor: pointer;
+	display: block;
+}
 .topic-detail .comment-comment .reply-to-someone {
 	margin-left: 6px;
+}
+
+/*图片上传*/
+#comment-form .table-image-preview {
+	display: none;
+}
+#comment-form .table-image-preview .btn {
+	cursor: pointer;
+	margin-right: 5px;
+}
+#comment-form .table-image-preview td {
+	vertical-align: middle;
 }

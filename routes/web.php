@@ -35,4 +35,5 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth
     Route::resource('forum', 'ForumController');
     Route::resource('topic', 'TopicController');
     Route::resource('comment', 'CommentController');
+    Route::post('upload/image', 'UploadController@image')->name("upload.image");
 });

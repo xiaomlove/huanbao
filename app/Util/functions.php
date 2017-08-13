@@ -26,3 +26,13 @@ function normalize($ret = 0, $msg = '', array $data = [])
         'timeuse' => (float)number_format(microtime(true) - LARAVEL_START, 3),
     ];
 }
+
+function apiUser()
+{
+    static $user;
+    if (is_null($user))
+    {
+        $user = \JWTAuth::parseToken()->authenticate();
+    }
+    return $user;
+}

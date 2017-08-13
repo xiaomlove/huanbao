@@ -9,6 +9,7 @@ use App\Repositories\CommentRepository;
 use App\Models\Comment;
 use App\Models\CommentDetail;
 use App\Models\Topic;
+use App\Repositories\UploadRepository;
 
 class CommentController extends Controller
 {
