@@ -20,6 +20,7 @@ Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
         Route::resource('forum', 'ForumController');
         Route::resource('topic', 'TopicController');
         Route::resource('comment', 'CommentController');
+        Route::post('upload', 'UploadController@image')->name('upload.image');
     });
 });
 
