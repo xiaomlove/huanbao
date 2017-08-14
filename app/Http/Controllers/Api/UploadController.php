@@ -18,6 +18,7 @@ class UploadController extends Controller
     
     public function image(Request $request)
     {
+        \Log::info(sprintf("%s, uploaded: %s", __METHOD__, json_encode($request->files)));
         $user = $this->apiUser();
         $result = $this->attachment->create($request->file('image'), $user->id);
         if ($result['ret'] != 0)
