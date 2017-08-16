@@ -21,7 +21,6 @@ class UploadController extends Controller
         \Log::info(sprintf("%s, uploaded: %s", __METHOD__, var_export($request->files, true)));
         \Log::info(sprintf("%s, uploaded: %s", __METHOD__, var_export($request->file('image'), true)));
         \Log::info(sprintf("%s, uploaded: %s", __METHOD__, var_export($_FILES, true)));
-        return normalize("test OK");
         $user = $this->apiUser();
         $result = $this->attachment->create($request->file('image'), $user->id);
         if ($result['ret'] != 0)
