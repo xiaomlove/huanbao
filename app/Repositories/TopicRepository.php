@@ -54,6 +54,8 @@ class TopicRepository
             ]);
             //创建主楼详情
             $commentDetail = $comment->detail()->create(['content' => $data['content']]);
+            //保存附件
+            
             \DB::commit();
         }
         catch (\Exception $e)

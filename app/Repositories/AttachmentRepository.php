@@ -31,7 +31,6 @@ class AttachmentRepository
             {
                 return normalize(sprintf("附件数据不是  %s 的实例", UploadedFile::class));
             }
-            \Log::info(sprintf("%s, file: %s", __METHOD__, var_export($file, true)));
             $mimeType = $file->getClientMimeType();
             $savePath = sprintf("%s/%s", substr($mimeType, 0, strpos($mimeType, '/')), date('Ym'));
             $saveResult = \Storage::putFile($savePath, $file);
