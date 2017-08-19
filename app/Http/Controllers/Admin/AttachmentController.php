@@ -15,7 +15,7 @@ class AttachmentController extends Controller
      */
     public function index()
     {
-        $list = Attachment::with('attached', 'attached.topic', 'attached.detail')->paginate(10);
+        $list = Attachment::with('user', 'attached', 'attached.topic', 'attached.detail')->paginate(10);
 //         dd($list);
         
         return view('admin.attachment.index', compact('list'));

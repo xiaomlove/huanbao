@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Comment;
+use App\User;
 
 class Attachment extends Model
 {
@@ -14,6 +15,11 @@ class Attachment extends Model
         'basename',
         'size',
     ];
+    
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'uid');
+    }
     
     /**
      * 附件依附于的评论

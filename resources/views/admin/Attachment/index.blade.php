@@ -34,7 +34,7 @@
           <td>{{ $value->mime_type }}</td>
           <td>{{ $value->dirname . '/' . $value->basename}}</td>
           <td>
-          	<small>{{ $value->uid }}</small>
+          	<small>{{ $value->user->name }}</small>
           	<small>{{ $value->created_at->format('Y-m-d H:i')}}</small>
           </td>
           <td>{{ round($value->size / 1024) . " KB"}}</td>
