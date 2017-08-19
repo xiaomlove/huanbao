@@ -35,7 +35,8 @@ class TopicController extends Controller
         $params['uid'] = request('uid');
         $params['per_page'] = request('per_page', 10);
         $params['page'] = request('page', 1);
-        $result = $this->topic->listAll2($params);
+        $params['with'] = ['user', 'main_floor', 'main_floor.user', 'main_floor.detail', 'main_floor.attachments'];
+        $result = $this->topic->listAll($params);
 //         return $result;
         if ($result['ret'] != 0)
         {
@@ -45,7 +46,7 @@ class TopicController extends Controller
         $apiData = fractal()
         ->collection($list->getCollection())
         ->transformWith(new TopicTransformer())
-        ->parseIncludes(['main_floor'])
+        ->parseIncludes(['main_floor', 'main_floor.attachments'])
         ->paginateWith(new IlluminatePaginatorAdapter($list))
         ->toArray();
         return normalize(0, 'OK', [

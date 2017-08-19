@@ -6,6 +6,8 @@ use App\Models\Comment;
 use App\Models\CommentDetail;
 use App\User;
 use App\Models\Forum;
+use App\Models\AttachmentRelationship;
+use App\Repositories\AttachmentRepository;
 
 class TopicRepository
 {
@@ -19,13 +21,16 @@ class TopicRepository
     
     protected $forum;
     
+    protected $attachment;
+    
     public function __construct
     (
         Topic $topic, 
         Comment $comment, 
         CommentDetail $commentDetail, 
         User $user, 
-        Forum $forum
+        Forum $forum,
+        AttachmentRepository $attachment
     )
     {
         $this->topic = $topic;
@@ -33,6 +38,7 @@ class TopicRepository
         $this->commentDetail = $commentDetail;
         $this->user = $user;
         $this->forum = $forum;
+        $this->attachment = $attachment;
     }
     
     /**
@@ -42,6 +48,21 @@ class TopicRepository
      */
     public function create(array $data)
     {
+        //先保存附件
+        $attachmentResult = $this->attachment->getFromRequestData($data);
+        if ($attachmentResult['ret'] != 0)
+        {
+            return $attachmentResult;
+        }
+        //@see https://stackoverflow.com/questions/27230672/laravel-sync-how-to-sync-an-array-and-also-pass-additional-pivot-fields
+        $attachments = [];
+        foreach ($attachmentResult['data'] as $attachment)
+        {
+            $attachments[$attachment->id] = ['target_type' => AttachmentRelationship::TARGET_TYPE_COMMENT];
+        }
+        unset($attachmentResult, $attachment);
+//         dd($attachments);
+        
         \DB::beginTransaction();
         try
         {
@@ -55,6 +76,7 @@ class TopicRepository
             //创建主楼详情
             $commentDetail = $comment->detail()->create(['content' => $data['content']]);
             //保存附件
+            $comment->attachments()->sync($attachments);
             
             \DB::commit();
         }
@@ -79,14 +101,29 @@ class TopicRepository
      */
     public function update(array $data, $id)
     {
+        //先保存附件
+        $attachmentResult = $this->attachment->getFromRequestData($data);
+        if ($attachmentResult['ret'] != 0)
+        {
+            return $attachmentResult;
+        }
+        //@see https://stackoverflow.com/questions/27230672/laravel-sync-how-to-sync-an-array-and-also-pass-additional-pivot-fields
+        $attachments = [];
+        foreach ($attachmentResult['data'] as $attachment)
+        {
+            $attachments[$attachment->id] = ['target_type' => AttachmentRelationship::TARGET_TYPE_COMMENT];
+        }
+        unset($attachmentResult, $attachment);
+//         dd($attachments);
+        
         \DB::beginTransaction();
         try
         {
-            $topic = $this->topic->findOrFail($id);
-            $comment = $this->comment->where('tid', $topic->id)->where('floor_num', 1)->firstOrFail();
-            $commentDetail = $this->commentDetail->where('cid', $comment->id)->firstOrFail();
+            $topic = $this->topic->with('main_floor', 'main_floor.detail', 'main_floor.attachments')->findOrFail($id);
             $topic->update($data);
-            $commentDetail->update($data);
+            $topic->main_floor->update($data);
+            $topic->main_floor->detail->update($data);
+            $topic->main_floor->attachments()->sync($attachments);
             
             \DB::commit();
         }
@@ -98,8 +135,6 @@ class TopicRepository
     
         return normalize(0, "OK", [
             'topic' => $topic, 
-            'comment' => $comment, 
-            'comment_detail' => $commentDetail
         ]);
     }
     
@@ -109,10 +144,9 @@ class TopicRepository
             'page' => 1,
             'per_page' => 10,
             'order' => 'id desc',
-            'not_in' => null,
             'fid' => null,
             'uid' => null,
-            'include_total' => false, //是否包含数量
+            'with' => [],
         ];
         $args = array_merge($defaults, $params);
         $offset = ($args['page'] - 1) * $args['per_page'];
@@ -127,88 +161,7 @@ class TopicRepository
         }
     
         $list = $this->topic
-        ->where($where)
-        ->orderByRaw(\DB::raw($args['order']))
-        ->offset($offset)
-        ->limit($args['per_page'])
-        ->get();
-    
-        $count = null;
-        if ($args['include_total'])
-        {
-            $count = $this->topic->where($where)->count();
-        }
-        $fidArr = [];
-        $uidArr = [];
-        $idArr = [];
-        $cidArr = [];
-        foreach ($list as $value)
-        {
-            $fidArr[] = $value->fid;
-            $uidArr[] = $value->uid;
-            $idArr[] = $value->id;
-            $cidArr[] = $value->last_comment_id;
-        }
-        reset($list);
-        unset($value);
-    
-        //获取版块
-        $forums = $this->forum
-        ->whereIn('id', array_unique($fidArr))
-        ->get()
-        ->pluck(null, 'id');
-    
-        //获取最后回复
-        $lastComments = $this->comment
-        ->whereIn('id', array_unique($cidArr))
-        ->get()
-        ->pluck(null, 'id');
-        
-        //获取用户
-        $uidArr = array_merge($uidArr, $lastComments->pluck('uid')->all());
-        $uses = $this->user
-        ->whereIn('id', array_unique($uidArr))
-        ->get()
-        ->pluck(null, 'id');
-    
-        //追加到主题列表中
-        foreach ($list as &$value)
-        {
-            $value->user = $uses[$value->uid];
-            $value->forum = $forums[$value->fid];
-            if ($value->last_comment_id)
-            {
-                $value->last_comment = $lastComments[$value->last_comment_id];
-                $value->last_comment_user = $uses[$value->last_comment->uid];
-            }
-        }
-        return normalize(0, "OK", ['list' => $list, 'total' => $count]);
-    }
-    
-
-    public function listAll2($params = [])
-    {
-        $defaults = [
-            'page' => 1,
-            'per_page' => 10,
-            'order' => 'id desc',
-            'fid' => null,
-            'uid' => null,
-        ];
-        $args = array_merge($defaults, $params);
-        $offset = ($args['page'] - 1) * $args['per_page'];
-        $where = [];
-        if (!is_null($args['fid']) && ctype_digit(strval($args['fid'])))
-        {
-            $where[] = ['fid', '=', (int)$args['fid']];
-        }
-        if (!is_null($args['uid']) && ctype_digit(strval($args['uid'])))
-        {
-            $where[] = ['uid', '=', (int)$args['uid']];
-        }
-    
-        $list = $this->topic
-        ->with(['user', 'main_floor', 'main_floor.detail', 'main_floor.user'])
+        ->with($args['with'])
         ->where($where)
         ->orderByRaw(\DB::raw($args['order']))
         ->paginate($args['per_page'], ['*'], 'page', $args['page']);

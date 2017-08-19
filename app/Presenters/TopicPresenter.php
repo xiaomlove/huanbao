@@ -14,7 +14,7 @@ class TopicPresenter
         }
         return sprintf(
             '<small>%s</small><small>%s</small>', 
-            $topic->last_comment_user->name,
+            $topic->last_comment->user->name,
             $topic->last_comment->created_at->format('Y-m-d H:i')
         );
     }

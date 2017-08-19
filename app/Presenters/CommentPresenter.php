@@ -3,6 +3,7 @@
 namespace App\Presenters;
 
 use App\Models\Comment;
+use App\Models\Attachment;
 
 class CommentPresenter
 {
@@ -82,9 +83,14 @@ class CommentPresenter
         {
             $imageArr[] = sprintf(
                 '<img src="%s" class="attachment-image" />',
-                asset(sprintf("storage/%s/%s", $image->dirname, $image->basename))
+                $this->getAttachmentImageLink($image)
             );
         }
         return '<p class="attachment-wrap">' . implode('', $imageArr) . '</p>';
+    }
+    
+    public function getAttachmentImageLink(Attachment $attachment)
+    {
+        return asset(sprintf("storage/%s/%s", $attachment->dirname, $attachment->basename));
     }
 }

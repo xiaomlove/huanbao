@@ -23,7 +23,7 @@ Route::get('api', function() {
 });
 
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
-    Route::match(['get', 'put', 'patch', 'post'], 'test', 'IndexController@test');
+    Route::match(['get', 'put', 'patch', 'post'], 'test', 'IndexController@test')->name('admin.test');
 });
 
 
@@ -35,5 +35,6 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth
     Route::resource('forum', 'ForumController');
     Route::resource('topic', 'TopicController');
     Route::resource('comment', 'CommentController');
+    Route::resource('attachment', 'AttachmentController');
     Route::post('upload/image', 'UploadController@image')->name("upload.image");
 });

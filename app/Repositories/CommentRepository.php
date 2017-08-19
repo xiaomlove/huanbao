@@ -74,26 +74,17 @@ class CommentRepository
         }
         
         //先保存附件
-        $attachments = [];
-        if (!empty($data['image']))
+        $attachmentResult = $this->attachment->getFromRequestData($data);
+        if ($attachmentResult['ret'] != 0)
         {
-            if (is_object($data['image'][0]))
-            {
-                //没先传好
-                $imageResult = $this->attachment->create($data['image'], $data['uid']);
-                if ($imageResult['ret'] != 0)
-                {
-                    return $imageResult;
-                }
-                $attachments = $imageResult['data'];
-            }
-            else
-            {
-                //图片已经传好并获取ID
-                $attachmentIdArr = is_array($data['image']) ? $data['image'] : implode(',', $data['image']);
-                $attachments = $this->attachment->findOrFail($attachmentIdArr);
-            }
+            return $attachmentResult;
         }
+        $attachments = [];
+        foreach ($attachmentResult['data'] as $attachment)
+        {
+            $attachments[$attachment->id] = ['target_type' => AttachmentRelationship::TARGET_TYPE_COMMENT];
+        }
+        unset($attachmentResult, $attachment);
         
         \DB::beginTransaction();
         try
@@ -108,11 +99,7 @@ class CommentRepository
             //创建详情
             $commentDetail = $comment->detail()->create(['content' => $data['content']]);
             //保存附件
-            foreach ($attachments as $attachment)
-            {
-                $comment->attachments()->save($attachment, ['target_type' => AttachmentRelationship::TARGET_TYPE_COMMENT]);
-            }
-            unset($attachment);
+            $comment->attachments()->sync($attachments);
             
             \DB::commit();
         }
@@ -132,7 +119,7 @@ class CommentRepository
             ->count();
             $comment->update(['floor_num' => $count]);
             $topic->update([
-                'comment_count' => $count,
+                'comment_count' => $count - 1, //主楼的不算
                 'last_comment_time' => time(),
                 'last_comment_id' => $comment->id,
             ]);
@@ -172,7 +159,7 @@ class CommentRepository
     }
     
     /**
-     * 更新评论。只有评论详情可以更新
+     * 更新评论。只有评论详情可以更新, 以及附件
      * 
      * @param array $data
      * @param unknown $id
@@ -180,12 +167,25 @@ class CommentRepository
      */
     public function update(array $data, $id)
     {
+        //先保存附件
+        $attachmentResult = $this->attachment->getFromRequestData($data);
+        if ($attachmentResult['ret'] != 0)
+        {
+            return $attachmentResult;
+        }
+        $attachments = [];
+        foreach ($attachmentResult['data'] as $attachment)
+        {
+            $attachments[$attachment->id] = ['target_type' => AttachmentRelationship::TARGET_TYPE_COMMENT];
+        }
+        unset($attachmentResult, $attachment);
+        
         \DB::beginTransaction();
         try
         {
-            $comment = $this->comment->findOrFail($id);
-            $commentDetail = $this->commentDetail->where('cid', $comment->id)->firstOrFail();
-            $commentDetail->update($data);
+            $comment = $this->comment->with('detail', 'attachments')->findOrFail($id);
+            $comment->detail->update($data);
+            $comment->attachments()->sync($attachments);
             
             \DB::commit();
         }
@@ -195,7 +195,7 @@ class CommentRepository
             return normalize(1, $e->getMessage(), $data);
         }
     
-        return normalize(0, "OK", [$comment, $commentDetail]);
+        return normalize(0, "OK", [$comment]);
     }
     
     /**

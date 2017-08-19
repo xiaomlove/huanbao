@@ -37,13 +37,13 @@ class TopicController extends Controller
         $params['include_total'] = true;
         $params['per_page'] = 10;
         $params['page'] = request('page', 1);
+        $params['with'] = ['user', 'forum', 'main_floor', 'main_floor.detail', 'last_comment', 'last_comment.user'];
         $result = $this->topic->listAll($params);
+//         dd($result);
         if ($result['ret'] == 0)
         {
             $list = $result['data']['list'];
-            $total = $result['data']['total'];
-            $paginator = new \LengthAwarePaginator($list, $total, $params['per_page'], $params['page'], ['path' => url()->current()]);
-            return view('admin.topic.index', compact('list', 'paginator'));
+            return view('admin.topic.index', compact('list'));
         }
         else
         {
@@ -75,12 +75,14 @@ class TopicController extends Controller
     public function store(TopicRequest $request)
     {
         $data = $request->all();
+//         dd($data);
         $data['uid'] = \Auth::user()->id;
         $result = $this->topic->create($data);
 //         dd($result);
         if ($result['ret'] == 0)
         {
-            return redirect()->route('topic.create')->with("success", "新建话题成功");
+            $id = $result['data']['topic']->id;
+            return redirect()->route('topic.show', $id)->with("success", "新建话题成功");
         }
         else 
         {
@@ -124,15 +126,13 @@ class TopicController extends Controller
      */
     public function edit($id)
     {
-        $topic = Topic::findOrFail($id);
-        $comment = Comment::where('tid', $topic->id)->where('floor_num', 1)->firstOrFail();
-        $commentDetail = CommentDetail::where('cid', $comment->id)->firstOrFail();
+        $topic = Topic::with('main_floor', 'main_floor.attachments', 'main_floor.detail')->findOrFail($id);
         $forums = (new Forum())->listTreeOneDimensional();
         $forumOptions = (object)[
             'name' => 'fid',
             'selected' => $topic->fid,
         ];
-        return view('admin.topic.edit', compact('topic', 'forums', 'forumOptions', 'commentDetail'));
+        return view('admin.topic.edit', compact('topic', 'forums', 'forumOptions'));
     }
 
     /**
@@ -145,6 +145,7 @@ class TopicController extends Controller
     public function update(TopicRequest $request, $id)
     {
         $data = $request->all();
+        $data['uid'] = \Auth::user()->id;
         $result = $this->topic->update($data, $id);
         if ($result['ret'] == 0)
         {

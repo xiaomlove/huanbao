@@ -14,6 +14,7 @@
         <li @if(Route::currentRouteName() == 'forum.index')class="active" @endif> <a href="{{ route('forum.index') }}"><i class="fa fa-table"></i><span>版块</span></a></li>
         <li @if(Route::currentRouteName() == 'topic.index')class="active" @endif> <a href="{{ route('topic.index') }}"> <i class="fa fa-pencil"></i><span>话题</span></a></li>
         <li @if(Request::routeIs('comment.index'))class="active" @endif> <a href="{{ route('comment.index') }}"> <i class="fa fa-comment"></i><span>回复</span></a></li>
+        <li @if(Request::routeIs('attachment.index'))class="active" @endif> <a href="{{ route('attachment.index') }}"> <i class="fa fa-file"></i><span>附件</span></a></li>
         <li> <a href="login.html"> <i class="icon-interface-windows"></i><span>Login page</span></a></li>
         <li> <a href="#"> <i class="icon-mail"></i><span>Demo</span><div class="badge badge-warning">6 New</div></a></li>
       </ul>

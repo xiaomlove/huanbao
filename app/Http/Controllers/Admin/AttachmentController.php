@@ -4,13 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Forum;
-use App\Models\Comment;
-use App\Events\CommentCreatedEvent;
-use App\Models\Topic;
-use App\Repositories\TopicRepository;
+use App\Models\Attachment;
 
-class IndexController extends Controller
+class AttachmentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +15,10 @@ class IndexController extends Controller
      */
     public function index()
     {
-        return view('admin.index');
+        $list = Attachment::with('attached', 'attached.topic', 'attached.detail')->paginate(10);
+//         dd($list);
+        
+        return view('admin.attachment.index', compact('list'));
     }
 
     /**
@@ -86,16 +85,5 @@ class IndexController extends Controller
     public function destroy($id)
     {
         //
-    }
-    
-    public function test(Request $request)
-    {
-        //$r = (new Forum)->listTree(['max_depth' => 1]);
-//         $r = app('App\Repositories\TopicRepository')->listAll2();
-//         $r = app('App\Models\Comment')->where('id', 1145)->with('parentComment')->first();
-//        $r = resource_path('views/');
-        //$r = ini_get('session.upload_progress_enabled');
-        $r = config('app.env');
-        dd($r);
     }
 }

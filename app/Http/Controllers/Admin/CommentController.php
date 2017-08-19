@@ -118,10 +118,10 @@ class CommentController extends Controller
      */
     public function edit($id)
     {
-        $comment = Comment::findOrFail($id);
-        $topic = Topic::findOrFail($comment->tid);
-        $commentDetail = CommentDetail::where('cid', $comment->id)->firstOrFail();
-        return view('admin.comment.edit', compact('topic', 'commentDetail'));
+        $comment = Comment::with('topic', 'detail', 'attachments')->findOrFail($id);
+//         dd($comment);
+        
+        return view('admin.comment.edit', compact('comment'));
     }
 
     /**
@@ -134,6 +134,7 @@ class CommentController extends Controller
     public function update(CommentRequest $request, $id)
     {
         $data = $request->all();
+        $data['uid'] = \Auth::user()->id;
         $result = $this->comment->update($data, $id);
 //                 dd($result);
         if ($result['ret'] == 0)

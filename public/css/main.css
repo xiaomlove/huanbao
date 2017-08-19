@@ -98,6 +98,7 @@ input[type=submit] {
 	max-height: 200px;
 	cursor: pointer;
 	display: block;
+	margin-bottom: 10px;
 }
 .topic-detail .comment-comment .reply-to-someone {
 	margin-left: 6px;
@@ -113,4 +114,35 @@ input[type=submit] {
 }
 #comment-form .table-image-preview td {
 	vertical-align: middle;
+}
+
+/*话题  + 回复 编辑*/
+#form-edit-topic .attachment-image {
+	display: inline-block;
+	margin-right: 10px;
+	position: relative;
+}
+#form-edit-topic .attachment-image:hover {
+	outline: 1px solid red;
+}
+#form-edit-topic .attachment-image:hover .remove{
+	display: inline-block;
+}
+#form-edit-topic .attachment-image .remove {
+	cursor: pointer;
+	position: absolute;
+	right: -8px;
+	top: -8px;
+	color: red;
+	display: none;
+}
+#form-edit-topic .attachment-image img{
+	max-width: 100px;
+	max-height: 100px;
+}
+
+/*附件*/
+#table-attachment-index td img {
+	max-width: 40px;
+	max-height: 40px;
 }

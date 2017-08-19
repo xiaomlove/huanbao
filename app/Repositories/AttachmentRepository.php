@@ -21,9 +21,8 @@ class AttachmentRepository
      * @param integer $uid
      * @return array
      */
-    public function create($uploadedFile, $uid = 0)
+    public function create(array $uploadedFile, $uid = 0)
     {
-        $uploadedFile = (array)$uploadedFile;
         $created = [];
         foreach ($uploadedFile as $file)
         {
@@ -49,5 +48,38 @@ class AttachmentRepository
             $created[] = $this->attachment->create($data);
         }
         return normalize(0, "OK", $created);
+    }
+    
+    /**
+     * 处理前端传过来的附件（图片）
+     * 
+     * @param array $data
+     */
+    public function getFromRequestData(array $data)
+    {
+        $attachments = [];
+        //对于新上传的，规定name为image
+        if (!empty($data['image']))
+        {
+            $images = is_array($data['image']) ? $data['image'] : [$data['image']];
+            if (is_object($images[0]))
+            {
+                $imageResult = $this->create($images, $data['uid']);
+                if ($imageResult['ret'] != 0)
+                {
+                    return $imageResult;
+                }
+                $attachments = array_merge($attachments, $imageResult['data']);
+            }
+        }
+        //对于已存在的，规定name为 attachment_id
+        if (!empty($data['attachment_id']))
+        {
+            //图片已经传好并获取ID
+            $attachmentIdArr = is_array($data['attachment_id']) ? $data['attachment_id'] : implode(',', $data['attachment_id']);
+            $rows = $this->attachment->findOrFail($attachmentIdArr);
+            $attachments = array_merge($attachments, $rows->all());
+        }
+        return normalize(0, "OK", $attachments);
     }
 }

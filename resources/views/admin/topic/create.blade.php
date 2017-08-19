@@ -22,7 +22,7 @@
               <h2 class="h5 display">新建话题</h2>
             </div>
             <div class="card-block">
-              <form class="form-horizontal" method="post" action="{{ route('topic.store') }}">
+              <form class="form-horizontal" method="post" action="{{ route('topic.store') }}" enctype="multipart/form-data">
               	{{ csrf_field() }}
                 <div class="form-group row{{$errors->has('title') ? ' has-danger' : ''}}">
                   <label class="col-sm-2">标题</label>
@@ -49,6 +49,12 @@
                     @if($errors->has('content'))
                     <small class="form-text">{{ $errors->first('content') }}</small>
                     @endif
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-sm-2">图片</label>
+                  <div class="col-sm-10">
+                    <input type="file" class="form-control-file" id="input-upload-file" name="image" multiple accept="image/jpg, image/jpeg, image/png, image/gif">
                   </div>
                 </div>
                 <div class="form-group row">       

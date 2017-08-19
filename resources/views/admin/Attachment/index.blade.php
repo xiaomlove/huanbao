@@ -1,7 +1,7 @@
 @extends('layouts.admin')
-@section('title', '话题列表')
+@section('title', '附件列表')
 @section('content')
-@inject('topicPresenter', 'App\Presenters\TopicPresenter')
+@inject('attachmentPresenter', 'App\Presenters\AttachmentPresenter')
 <section class="section-table">
 	<div class="table-header">
     	<form class="form-inline search-form d-inline-block" method="get">
@@ -13,36 +13,34 @@
         	<a class="btn btn-success btn-action" href="{{ route('topic.create') }}"><i class="fa fa-plus"></i>创建</a>
         </span>
     </div>
-	<table id="topic-table" class="table table-hover topic-table">
+	<table id="table-attachment-index" class="table table-hover topic-table">
       <thead>
         <tr>
           <th>ID</th>
-          <th>标题</th>
-          <th>所在版块</th>
-          <th>作者</th>
-          <th>阅读/回复</th>
-          <th>最后回复</th>
+          <th>缩略图</th>
+          <th>类型</th>
+          <th>路径</th>
+          <th>上传者</th>
+          <th>大小</th>
+          <th>依附于</th>
           <th>操作</th>
         </tr>
       </thead>
       <tbody>
-      @foreach($list as $topic)
+      @foreach($list as $value)
         <tr>
-          <th scope="row">{{ $topic->id }}</th>
-          <td><a href="{{ route('topic.show', $topic->id) }}">{{ $topic->title }}</a></td>
-          <td>{{ $topic->forum->name }}</td>
+          <th scope="row">{{ $value->id }}</th>
+          <td><a target="_blank" href="{{ $attachmentPresenter->getAttachmentImageLink($value, false) }}"><img src="{{ $attachmentPresenter->getAttachmentImageLink($value, true) }}"/></a></td>
+          <td>{{ $value->mime_type }}</td>
+          <td>{{ $value->dirname . '/' . $value->basename}}</td>
           <td>
-          	<small>{{ $topic->user->name }}</small>
-          	<small>{{ $topic->created_at->format('Y-m-d H:i') }}</small>
+          	<small>{{ $value->uid }}</small>
+          	<small>{{ $value->created_at->format('Y-m-d H:i')}}</small>
           </td>
+          <td>{{ round($value->size / 1024) . " KB"}}</td>
+          <td>{!! $attachmentPresenter->getAttached($value) !!}</td>
           <td>
-          	<small>{{ $topic->view_count }}</small>
-          	<small>{{ $topic->comment_count }}</small>
-          </td>
-          <td>{!! $topicPresenter->getLastReply($topic) !!}</td>
-          <td>
-          	<a href="{{ route('topic.edit', $topic->id) }}">编辑</a>
-          	<a href="javascript:;" class="destroy" data-url="{{ route('topic.destroy', $topic->id) }}">删除</a>
+          	<a href="javascript:;">删除</a>
           </td>
         </tr>
         @endforeach
