@@ -49,6 +49,7 @@ class TopicRepository
     public function create(array $data)
     {
         //先保存附件
+        \Log::info(sprintf('%s, data: %s', __METHOD__, var_export($data, true)));
         $attachmentResult = $this->attachment->getFromRequestData($data);
         if ($attachmentResult['ret'] != 0)
         {
@@ -61,6 +62,7 @@ class TopicRepository
             $attachments[$attachment->id] = ['target_type' => AttachmentRelationship::TARGET_TYPE_COMMENT];
         }
         unset($attachmentResult, $attachment);
+        \Log::info(sprintf('%s, attachmentsata: %s', __METHOD__, var_export($attachments, true)));
 //         dd($attachments);
         
         \DB::beginTransaction();
