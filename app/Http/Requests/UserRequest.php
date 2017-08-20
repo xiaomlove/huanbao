@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserRequest extends FormRequest
 {
@@ -32,10 +33,23 @@ class UserRequest extends FormRequest
     
     public function validator()
     {
+        $uid = \Route::current()->parameter('user');
+        $uid = intval($uid);
         $v = \Validator::make(\Input::all(), [
-            'email' => 'required|email|unique:users',
-            'password' => ['required', 'regex:/^[\w]+$/', 'min:6', 'max:20'],
+            'name' => [
+                Rule::unique('users')->ignore($uid),
+            ],
+            'email' => [
+                'required', 
+                'email', 
+                Rule::unique('users')->ignore($uid),
+            ],
         ]);
+        $v->sometimes(
+            'password', 
+            ['confirmed', 'regex:/^[\w]+$/', 'min:6', 'max:20'], 
+            function($input) {return $input->password != '';}
+        );
         return $v;
     }
 }

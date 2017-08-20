@@ -21,15 +21,22 @@ class Attachment extends Model
         return $this->hasOne(User::class, 'id', 'uid');
     }
     
-    /**
-     * 附件依附于的评论
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function attached()
+    public function users()
     {
-        return $this->belongsToMany(
+        return $this->morphedByMany(
+            User::class, 
+            'target',
+            AttachmentRelationship::TABLE_NAME,
+            'attachment_id',
+            'target_id'
+        );
+    }
+    
+    public function comments()
+    {
+        return $this->morphedByMany(
             Comment::class,
+            'target',
             AttachmentRelationship::TABLE_NAME,
             'attachment_id',
             'target_id'

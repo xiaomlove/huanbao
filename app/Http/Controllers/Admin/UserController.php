@@ -3,11 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
 use App\User;
+use App\Repositories\UserRepository;
 
 class UserController extends Controller
 {
+    protected $user;
+    
+    public function __construct(UserRepository $user)
+    {
+        $this->user = $user;
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -65,7 +74,15 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $result = $this->user->listMainProfileData($id);
+        if ($result['ret'] != 0)
+        {
+            return response($result['msg'], 500);
+        }
+//         $r = $result['data']['base']->avatars->first();
+//         dd($r);
+//         dd($result);
+        return view('admin.user.show', ['user' => $result['data']['base']]);
     }
 
     /**
@@ -86,9 +103,19 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
-        //
+        $data = $request->all();
+        $data['uid'] = \Auth::user()->id;
+        $result = $this->user->update($data, $id);
+        if ($result['ret'] == 0)
+        {
+            return redirect()->route('user.show', $id)->with("success", "更新用户信息成功");
+        }
+        else
+        {
+            return back()->with("danger", $result['msg'])->withInput();
+        }
     }
 
     /**

@@ -9,6 +9,7 @@ use App\Models\Comment;
 use App\Events\CommentCreatedEvent;
 use App\Models\Topic;
 use App\Repositories\TopicRepository;
+use App\User;
 
 class IndexController extends Controller
 {
@@ -95,7 +96,7 @@ class IndexController extends Controller
 //         $r = app('App\Models\Comment')->where('id', 1145)->with('parentComment')->first();
 //        $r = resource_path('views/');
         //$r = ini_get('session.upload_progress_enabled');
-        $r = config('app.env');
+        $r = User::find(1);
         dd($r);
     }
 }

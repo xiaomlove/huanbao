@@ -146,3 +146,14 @@ input[type=submit] {
 	max-width: 40px;
 	max-height: 40px;
 }
+
+/*用户主页*/
+#section-user-main-profile .avatar-box {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+#section-user-main-profile .avatar-box img {
+	max-width: 200px
+}

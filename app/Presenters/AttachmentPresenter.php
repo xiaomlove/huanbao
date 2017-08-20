@@ -6,21 +6,24 @@ use App\Models\Attachment;
 
 class AttachmentPresenter
 {
-    protected $uriSuffix = '';
-    
-    public function __construct()
+    public function getResizeStr($resize)
     {
+        if (empty($resize))
+        {
+            return '';
+        }
         $env = config('app.env');
         if ($env === 'product')
         {
-            $this->uriSuffix = "!r40x40";
+            return "!r" . $resize;
         }
+        return '';
     }
     
     public function getAttached(Attachment $attachment)
     {
         $html = '';
-        foreach ($attachment->attached as $comment)
+        foreach ($attachment->comments as $comment)
         {
             if ($comment->floornum == 1)
             {
@@ -41,16 +44,24 @@ class AttachmentPresenter
                 );
             }
         }
+        foreach ($attachment->users as $user)
+        {
+            $html .= sprintf(
+                '<small><a href="%s">%s</a></small>',
+                route('user.show', $user->id),
+                $user->name
+            );
+        }
         return $html;
     }
     
-    public function getAttachmentImageLink(Attachment $attachment, $resize = true)
+    public function getAttachmentImageLink(Attachment $attachment, $resize = null)
     {
         return asset(sprintf(
             "storage/%s/%s%s", 
             $attachment->dirname, 
             $attachment->basename,
-            $resize ? $this->uriSuffix : ""
+            $this->getResizeStr($resize)
         ));
     }
 }

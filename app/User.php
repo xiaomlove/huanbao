@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\Topic;
+use App\Models\AttachmentRelationship;
+use App\Models\Attachment;
 
 class User extends Authenticatable
 {
@@ -31,6 +33,23 @@ class User extends Authenticatable
     public function topics()
     {
         return $this->hasMany(Topic::class, 'uid');
+    }
+    
+    /**
+     * 用户头像。target_type = 'user_avatar'
+     * 
+     * @see App\Providers\AppServiceProvider::customMorphMap()
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function avatars()
+    {
+        return $this->morphToMany(
+            Attachment::class,
+            'target',
+            AttachmentRelationship::TABLE_NAME,
+            'target_id',
+            'attachment_id'
+        );
     }
     
 }

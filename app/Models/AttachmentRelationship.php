@@ -8,6 +8,8 @@ class AttachmentRelationship extends Model
 {
     const TARGET_TYPE_COMMENT = 'comment';
     
+    const TARGET_TYPE_USER_AVATAR = 'user_avatar';
+    
     const TABLE_NAME = 'attachment_relationships';
     
     protected $table = self::TABLE_NAME;

@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use App\Models\AttachmentRelationship;
+use App\Models\Comment;
+use App\User;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -22,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
         
         //监听jwt事件
         $this->listenJWTEvents();
+        
+        //自定义多态关联
+        $this->customMorphMap();
         
     }
 
@@ -71,5 +78,13 @@ class AppServiceProvider extends ServiceProvider
                 return response()->json(normalize($error, \Input::all()), 400);
             }
         });
+    }
+    
+    private function customMorphMap()
+    {
+        Relation::morphMap([
+            AttachmentRelationship::TARGET_TYPE_COMMENT => Comment::class,
+            AttachmentRelationship::TARGET_TYPE_USER_AVATAR => User::class,
+        ]);
     }
 }

@@ -80,20 +80,20 @@ class Comment extends Model
     }
     
     /**
-     * 拥有的附件
+     * 评论所有的附件。target_type = 'comment'
      * 
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @see App\Providers\AppServiceProvider::customMorphMap()
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
     public function attachments()
     {
-        return $this->belongsToMany(
-            Attachment::class, 
+        return $this->morphToMany(
+            Attachment::class,
+            'target',
             AttachmentRelationship::TABLE_NAME,
             'target_id',
             'attachment_id'
-        )
-        ->withTimestamps()
-        ->wherePivot('target_type', AttachmentRelationship::TARGET_TYPE_COMMENT);
+        );
     }
     
 }

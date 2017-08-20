@@ -76,8 +76,12 @@ class AttachmentRepository
         if (!empty($data['attachment_id']))
         {
             //图片已经传好并获取ID
-            $attachmentIdArr = is_array($data['attachment_id']) ? $data['attachment_id'] : implode(',', $data['attachment_id']);
-            $rows = $this->attachment->findOrFail($attachmentIdArr);
+            $attachmentIdArr = is_array($data['attachment_id']) ? $data['attachment_id'] : explode(',', $data['attachment_id']);
+            $rows = $this->attachment->find($attachmentIdArr);
+            if (empty($rows))
+            {
+                return normalize("invalid attachment_id: " . implode(',', $attachmentIdArr), $data);
+            }
             $attachments = array_merge($attachments, $rows->all());
         }
         return normalize(0, "OK", $attachments);

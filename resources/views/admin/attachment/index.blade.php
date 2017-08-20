@@ -30,7 +30,7 @@
       @foreach($list as $value)
         <tr>
           <th scope="row">{{ $value->id }}</th>
-          <td><a target="_blank" href="{{ $attachmentPresenter->getAttachmentImageLink($value, false) }}"><img src="{{ $attachmentPresenter->getAttachmentImageLink($value, true) }}"/></a></td>
+          <td><a target="_blank" href="{{ $attachmentPresenter->getAttachmentImageLink($value) }}"><img src="{{ $attachmentPresenter->getAttachmentImageLink($value, '40x40') }}"/></a></td>
           <td>{{ $value->mime_type }}</td>
           <td>{{ $value->dirname . '/' . $value->basename}}</td>
           <td>
