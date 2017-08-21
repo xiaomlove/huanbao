@@ -37,16 +37,16 @@ class AttachmentRepository
             {
                 return normalize(sprintf('%s 保存到  %s 失败', $file->getLinkTarget(), $savePath));
             }
-            $absPath = storage_path("app/public/$saveResult");
-            if (file_exists($absPath))
-            {
-                \Log::info(sprintf('%s, file: %s exists, will orientate().',__METHOD__, $absPath));
-                \Image::make($absPath)->orientate()->save($absPath);
-            }
-            else
-            {
-                \Log::info(sprintf('%s, file: %s NOT exists!',__METHOD__, $absPath));
-            }
+//             $absPath = storage_path("app/public/$saveResult");
+//             if (file_exists($absPath))
+//             {
+//                 \Log::info(sprintf('%s, file: %s exists, will orientate().',__METHOD__, $absPath));
+//                 \Image::make($absPath)->orientate()->save($absPath);
+//             }
+//             else
+//             {
+//                 \Log::info(sprintf('%s, file: %s NOT exists!',__METHOD__, $absPath));
+//             }
             
             $pathInfo = pathinfo($saveResult);
             $data = [
