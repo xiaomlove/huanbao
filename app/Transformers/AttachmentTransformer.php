@@ -18,11 +18,11 @@ class AttachmentTransformer extends TransformerAbstract
         $currentRouteName = \Route::currentRouteName();
         if ($currentRouteName == 'api.topic.index')
         {
-            $this->uriSuffix = '!r350x200';
+            $this->uriSuffix = '!r350x750';
         }
         else 
         {
-            $this->uriSuffix = '!r350x200';
+            $this->uriSuffix = '!r350x750';
         }
     }
     
