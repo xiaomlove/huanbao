@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <title>HuiSuo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="https://cdn.bootcss.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.bootcss.com/select2/4.0.3/css/select2.min.css" rel="stylesheet">
+  <style type="text/css">
+    .modal-body .row {
+      margin-bottom: 10px;
+    }
+    .modal-body .row .label{
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    .modal-body .btn-clip{
+      margin: 0 10px;
+    }
+    .modal-dialog {
+      margin-top: 150px;
+    }
+
+    #list li {
+      padding: 10px;
+    }
+     #list li:not(:last-child) {
+      border-bottom: 1px solid #ddd;
+    }
+    #list li p {
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form style="margin-top: 50px">
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <select id="do-select" class="form-control" multiple>
+            
+          </select>
+        </div>
+      </div>
+    </form>
+    <div class="row">
+      <div class="col-md-12">
+        <p class="text-right"><em>update at 2017-08-27</em></p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <ul class="list-unstyled" id="list">
+
+        </ul>
+      </div>
+    </div>
+  </div>
+<!-- Modal -->
+<div class="modal fade" id="select-modal" tabindex="-1">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">详情</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+        <div class="row">
+        <div class="col-xs-3 label">名称：</div>
+        <div class="col-xs-9 name"></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-3 label">客服：</div>
+          <div class="col-xs-9">
+            <span class="wechat"></span>
+            <a class="btn btn-sm btn-success btn-clip">复制</a>
+          </div>
+        </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.12.3/umd/popper.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/select2/4.0.3/js/select2.min.js"></script>
+<script src="https://cdn.bootcss.com/select2/4.0.3/js/i18n/zh-CN.js"></script>
+<script src="https://cdn.bootcss.com/clipboard.js/1.7.1/clipboard.min.js"></script>
+<script type="text/javascript">
+var data = [
+  {id: "MLY-梦丽缘桑拿休闲都会", text: "MLY-梦丽缘桑拿休闲都会", wechat: ""},
+  {id: "HY-皇苑壹号美食水疗会所", text: "HY-皇苑壹号美食水疗会所", wechat: ""},
+  {id: "HY-寰宇大酒店", text: "HY-寰宇大酒店", wechat: ""},
+  {id: "FRH-芙蓉花休闲会所", text: "FRH-芙蓉花休闲会所", wechat: "mm37620539"},
+  {id: "JLW-九龙湾水会", text: "JLW-九龙湾水会", wechat: ""},
+  {id: "SJ-水景海岸休闲会所", text: "SJ-水景海岸休闲会所", wechat: "13728817125"},
+  {id: "SJ-水景云天国际健康水会", text: "SJ-水景云天国际健康水会", wechat: ""},
+  {id: "RJ-瑞季精品酒店", text: "RJ-瑞季精品酒店", wechat: ""},
+  {id: "KH-美女速递", text: "KH-美女速递", wechat: ""},
+  {id: "FL-飞龙休闲会所", text: "FL-飞龙休闲会所", wechat: ""},
+  {id: "SYG-丝雅阁丝足", text: "SYG-丝雅阁丝足", wechat: ""},
+  {id: "PC-鹏城之星休闲会所", text: "PC-鹏城之星休闲会所", wechat: ""},
+  {id: "JYG-聚源港休闲会所", text: "JYG-聚源港休闲会所", wechat: "fei100816yin"},
+  {id: "XX-向西休闲会所", text: "XX-向西休闲会所", wechat: "xiejun718723"},
+  {id: "NF-南方桑拿", text: "NF-南方桑拿", wechat: ""},
+  {id: "XWC-新王朝桑拿", text: "XWC-新王朝桑拿", wechat: ""},
+  {id: "SYX-水云轩健康会所", text: "SYX-水云轩健康会所", wechat: ""},
+  {id: "FY-富源休闲会所", text: "FY-富源休闲会所", wechat: ""},
+  {id: "JH-俊濠休闲会所", text: "JH-俊濠休闲会所", wechat: "CHCH82187775"},
+  {id: "SDQ-三叠泉桑拿健康中心", text: "SDQ-三叠泉桑拿健康中心", wechat: "feidudu998727"},
+  {id: "THD-桃花岛桑拿", text: "THD-桃花岛桑拿", wechat: "xTpersistence"},
+  {id: "DF-东方圣泉国际水会", text: "DF-东方圣泉国际水会", wechat: ""},
+  {id: "PA-平安国际水会", text: "PA-平安国际水会", wechat: "au93556677"},
+  {id: "NF-南丰休闲会所", text: "NF-南丰休闲会所", wechat: "NF13554961759"},
+  {id: "SJ-三金休闲会所", text: "SJ-三金休闲会所", wechat: ""},
+  {id: "FH-飞鸿会所", text: "FH-飞鸿会所", wechat: ""},
+  {id: "YLG-御龙阁休闲会所", text: "YLG-御龙阁休闲会所", wechat: "yulongge221"},
+  {id: "MH-梅花会所", text: "MH-梅花会所", wechat: "bin351988"},
+  {id: "FL-富临水会", text: "FL-富临水会", wechat: "FLC25897900"},
+  {id: "XY-喜悦水疗会", text: "XY-喜悦水疗会", wechat: "XY85069"},
+  {id: "XFD-幸福岛休闲会所", text: "XFD-幸福岛休闲会所", wechat: ""},
+  {id: "HY-海燕大酒店桑拿中心", text: "HY-海燕大酒店桑拿中心", wechat: ""},
+  {id: "XHY-新濠源会所", text: "XHY-新濠源会所", wechat: ""},
+  {id: "HS-皇室至尊水疗会所", text: "HS-皇室至尊水疗会所", wechat: "psp8888888888pp"},
+  {id: "MH-梦幻休闲会所", text: "MH-梦幻休闲会所", wechat: "mr00008888aa"},
+  {id: "YH-英豪水疗会所", text: "YH-英豪水疗会所", wechat: "tfd8889"},
+  {id: "YH-银海休闲会所", text: "YH-银海休闲会所", wechat: ""},
+  {id: "XZH-新昭华会所", text: "XZH-新昭华会所", wechat: ""},
+  {id: "GY-港悦休闲会所", text: "GY-港悦休闲会所", wechat: ""},
+
+
+  {id: "STS-圣淘沙国际水疗会所", text: "STS-圣淘沙国际水疗会所", wechat: ""},
+  {id: "LH-罗湖大酒店桑拿中心", text: "LH-罗湖大酒店桑拿中心", wechat: "Lw13530142874"},
+  {id: "JGC-佳港城休闲会所", text: "JGC-佳港城休闲会所", wechat: ""},
+  {id: "SY-水域桑拿", text: "SY-水域桑拿", wechat: ""},
+  {id: "BH-宾濠会所", text: "BH-宾濠会所", wechat: "y18823832729"},
+  {id: "LGW-丽港湾休闲会所", text: "LGW-丽港湾休闲会所", wechat: "xhy686858"},
+  {id: "JH-锦鸿休闲会所", text: "JH-锦鸿休闲会所", wechat: "jojo999995"},
+  {id: "JST-金水滩休闲会所", text: "JST-金水滩休闲会所", wechat: "jst8889"},
+  {id: "XY-新悦水会", text: "XY-新悦水会", wechat: "XYSH25582369"},
+  {id: "GF-港富休闲会所", text: "GF-港富休闲会所", wechat: "T82323553"},
+  {id: "YH-樱花水会", text: "YH-樱花水会", wechat: "ym13823111674"},
+  {id: "KY-凯悦华庭水会", text: "KY-凯悦华庭水会", wechat: ""},
+  {id: "XQ-鑫泉会所", text: "XQ-鑫泉会所", wechat: "SH666888899"},
+  {id: "ZLQ-棕榈泉水疗会所", text: "ZLQ-棕榈泉水疗会所", wechat: ""},
+  {id: "JST-金沙滩", text: "JST-金沙滩", wechat: "l501250489l"},
+  {id: "YT-云涛桑拿", text: "YT-云涛桑拿", wechat: ""},
+  {id: "BSD-柏斯顿会所", text: "BSD-柏斯顿会所", wechat: ""},
+  {id: "XSW-浔水湾会所", text: "XSW-浔水湾会所", wechat: "sgsh22920988"},
+  {id: "FCW-翡翠湾桑拿", text: "FCW-翡翠湾桑拿", wechat: ""},
+  {id: "YDQ-浴都泉主题桑拿", text: "YDQ-浴都泉主题桑拿", wechat: "dslscn"},
+  {id: "YK-泳康桑拿中心", text: "YK-泳康桑拿中心", wechat: ""},
+  {id: "FY-福缘尊贵养生会所", text: "FY-福缘尊贵养生会所", wechat: ""},
+
+
+  {id: "JSG-金沙港", text: "JSG-金沙港", wechat: ""},
+  {id: "JB-金碧辉煌桑拿", text: "JB-金碧辉煌桑拿", wechat: ""},
+  {id: "MZ-明珠水会", text: "MZ-明珠水会", wechat: ""},
+  {id: "GT-港涛休闲会所", text: "GT-港涛休闲会所", wechat: "k15692095703"},
+  {id: "BH-滨海阳光休闲会所", text: "BH-滨海阳光休闲会所", wechat: "lgw004"},
+  {id: "MH-梦幻休闲会所", text: "MH-梦幻休闲会所", wechat: ""},
+  {id: "TLW-铜锣湾水会", text: "TLW-铜锣湾水会", wechat: "TLW188139"},
+  {id: "SH-深豪桑拿", text: "SH-深豪桑拿", wechat: "l771550537"},
+  {id: "JHG-金海港", text: "JHG-金海港", wechat: "WO611685"},
+  {id: "XH-西湖印象", text: "XH-西湖印象", wechat: "xihu25935233"},
+  {id: "HTW-海豚湾", text: "HTW-海豚湾", wechat: ""},
+  {id: "HM-皇马假日", text: "HM-皇马假日", wechat: ""},
+  {id: "YJ-迎君会所", text: "YJ-迎君会所", wechat: "xieshao1314m"},
+  {id: "JY-健源休闲会所", text: "JY-健源休闲会所", wechat: ""},
+  {id: "HJ-皇家海岸", text: "HJ-皇家海岸", wechat: "AHJHj666"},
+  {id: "GL-港龙休闲会所", text: "GL-港龙休闲会所", wechat: ""},
+  {id: "FH-凤凰水会", text: "FH-凤凰水会", wechat: ""},
+  {id: "SG-时光水会", text: "SG-时光水会", wechat: ""},
+  {id: "YFQ-渝富桥休闲会所", text: "YFQ-渝富桥休闲会所", wechat: ""},
+  {id: "JH-锦湖阳光休闲会所", text: "JH-锦湖阳光休闲会所", wechat: "zhongbao82183118"},
+  {id: "FK-富康水会", text: "FK-富康水会", wechat: ""},
+
+
+  {id: "TY-桃源休闲会所", text: "TY-桃源休闲会所", wechat: "Ty255647780"},
+  {id: "YC-银城水会", text: "YC-银城水会", wechat: "YC18900"},
+  {id: "HJ-皇家国际水会", text: "HJ-皇家国际水会", wechat: "piqiguai28"},
+
+
+  
+];
+var $modal = $('#select-modal').on("hide.bs.modal", function(e) {
+  $select.val(null).trigger("change");
+})
+var $dialog = $modal.find(".modal-dialog");
+
+var $select = $("#do-select").select2({
+  placeholder: "输入关键字快速搜索",
+  data: data,
+}).on("select2:select", function(e) {
+  var data = e.params.data;
+  $modal.find(".name").text(data.id);
+  $modal.find(".wechat").text(data.wechat);
+  if (data.wechat != "") {
+    $btnCopy.show();
+  } else {
+    $btnCopy.hide();
+  }
+  $modal.modal({
+    backdrop: "static"
+  });
+});
+
+var $btnCopy = $('.btn-clip').tooltip({
+  container: "body",
+  title: "复制成功",
+  trigger: "manual",
+}).on("shown.bs.tooltip", function(e) {
+  setTimeout(function() {
+    $btnCopy.tooltip("hide");
+  }, 1000)
+})
+
+var clipboard = new Clipboard('.btn-clip', {
+  container: $modal[0],
+  text: function(trigger) {
+    return $(trigger).prev().text();
+  }
+}).on('success', function(e) {
+  $btnCopy.tooltip("show");
+});
+
+
+var $list = $('#list');
+var lis = [];
+$.each(data, function(index, item) {
+  lis.push('<li><p><strong>名称：</strong>' + item.id + '</p><p><strong>客服：</strong>' + item.wechat + '</p>');
+});
+$list.html(lis.join(""));
+
+
+</script>
+</body>
+</html>
