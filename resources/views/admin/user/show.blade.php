@@ -59,6 +59,12 @@
                     @endif
                   </div>
                 </div>
+                <div class="form-group row">
+                  <label class="col-sm-2">用户组</label>
+                  <div class="col-sm-10">
+                    @include('common.admin.role')
+                  </div>
+                </div>
                 <div class="form-group row{{$errors->has('password') ? ' has-danger' : ''}}">
                   <label class="col-sm-2">Password</label>
                   <div class="col-sm-10">

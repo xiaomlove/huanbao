@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'locale' => 'zh-CN',
+    'locale' => 'zh-CN', //注意要使用中划线，不是下划线。Facker填充那里是下划线
 
     /*
     |--------------------------------------------------------------------------
@@ -185,6 +185,7 @@ return [
         Spatie\Fractal\FractalServiceProvider::class,
         
         Intervention\Image\ImageServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
     ],
 
     /*

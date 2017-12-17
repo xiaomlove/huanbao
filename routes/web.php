@@ -29,12 +29,22 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
 
 
 //后台路由
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth'], function() {
-    Route::get('/', 'IndexController@index')->name('admin.index');
-    Route::resource('user', 'UserController');
-    Route::resource('forum', 'ForumController');
-    Route::resource('topic', 'TopicController');
-    Route::resource('comment', 'CommentController');
-    Route::resource('attachment', 'AttachmentController');
-    Route::post('upload/image', 'UploadController@image')->name("upload.image");
+Route::group(['middleware' => ['auth', 'permission']], function() {
+    Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function() {
+        Route::get('/', 'IndexController@index')->name('admin.index');
+        Route::resource('user', 'UserController');
+        Route::resource('forum', 'ForumController');
+        Route::resource('topic', 'TopicController');
+        Route::resource('comment', 'CommentController');
+        Route::resource('attachment', 'AttachmentController');
+        Route::resource('huisuo', 'HuisuoJishiController');
+        Route::resource('jishi', 'HuisuoJishiController');
+        Route::resource('role', 'RoleController');
+        Route::resource('permission', 'PermissionController');
+        Route::post('upload/image', 'UploadController@image')->name("upload.image");
+    });
+    
+    Route::get('cnarea/province', 'CommonController@province')->name('cnarea.province');
+    Route::get('cnarea/city', 'CommonController@city')->name('cnarea.city');
+    Route::get('cnarea/district', 'CommonController@district')->name('cnarea.district');
 });

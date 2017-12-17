@@ -10,11 +10,23 @@
     <div class="main-menu">
       <ul id="side-main-menu" class="side-menu list-unstyled">                
         <li @if(Route::currentRouteName() == 'admin.index')class="active" @endif><a href="{{ route('admin.index') }}"> <i class="fa fa-home"></i><span>首页</span></a></li>
-        <li @if(Route::currentRouteName() == 'user.index')class="active" @endif><a href="{{ route('user.index') }}"><i class="fa fa-users"></i><span>用户</span></a></li>
+        <li @if(Route::currentRouteName() == 'user.index')class="active" @endif><a href="{{ route('user.index') }}"><i class="fa fa-user"></i><span>用户</span></a></li>
         <li @if(Route::currentRouteName() == 'forum.index')class="active" @endif> <a href="{{ route('forum.index') }}"><i class="fa fa-table"></i><span>版块</span></a></li>
         <li @if(Route::currentRouteName() == 'topic.index')class="active" @endif> <a href="{{ route('topic.index') }}"> <i class="fa fa-pencil"></i><span>话题</span></a></li>
         <li @if(Request::routeIs('comment.index'))class="active" @endif> <a href="{{ route('comment.index') }}"> <i class="fa fa-comment"></i><span>回复</span></a></li>
         <li @if(Request::routeIs('attachment.index'))class="active" @endif> <a href="{{ route('attachment.index') }}"> <i class="fa fa-file"></i><span>附件</span></a></li>
+        @can('view_huisuo_list')
+        <li @if(Request::routeIs('huisuo.index'))class="active" @endif> <a href="{{ route('huisuo.index') }}"> <i class="fa fa-h-square"></i><span>会所</span></a></li>
+        @endcan
+        @can('view_jishi_list')
+        <li @if(Request::routeIs('jishi.index'))class="active" @endif> <a href="{{ route('jishi.index') }}"> <i class="fa fa-female"></i><span>技师</span></a></li>
+        @endcan
+        @can('view_role_list')
+        <li @if(Request::routeIs('role.index'))class="active" @endif> <a href="{{ route('role.index') }}"> <i class="fa fa-users"></i><span>用户组</span></a></li>
+        @endcan
+        @can('view_permission_list')
+        <li @if(Request::routeIs('permission.index'))class="active" @endif> <a href="{{ route('permission.index') }}"> <i class="fa fa-address-book"></i><span>权限</span></a></li>
+        @endcan
         <li> <a href="login.html"> <i class="icon-interface-windows"></i><span>Login page</span></a></li>
         <li> <a href="#"> <i class="icon-mail"></i><span>Demo</span><div class="badge badge-warning">6 New</div></a></li>
       </ul>

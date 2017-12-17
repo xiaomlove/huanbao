@@ -157,3 +157,15 @@ input[type=submit] {
 #section-user-main-profile .avatar-box img {
 	max-width: 200px
 }
+
+/*内容编辑器*/
+.editor-block {
+	padding: 10px;
+}
+.editor-block:hover {
+	background-color: #ddd;
+}
+
+.form-huisuo-jishi .contacts .contact-part {
+	padding: 0
+}

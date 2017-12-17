@@ -47,15 +47,24 @@ class Handler extends ExceptionHandler
     {
         if 
         (
-            !config('app.debug') 
-            && ($request->expectsJson()) 
-            && !($e instanceof ValidationException) //验证要是拦截了，就不能本地化等了，提示也不正确
+            !config('app.debug')
+            && $request->expectsJson()
         )
         {
             $modelName = get_class($e);
-            $modelName = substr($modelName, strrpos($modelName, '\\') + 1);
+            $modelName = substr($modelName, strrpos($modelName, '\\'));
             $msg = sprintf("%s %s", $modelName, $e->getMessage());
-            return response()->json(normalize($msg, $request->all()), 500);
+            if ($e instanceof \Illuminate\Validation\ValidationException)
+            {
+                return response()->json(normalize($msg, [
+                    'errors' => $e->errors(),
+                    'params' => $request->all(),
+                ]), $e->status);
+            }
+            else
+            {
+                return response()->json(normalize($msg, $request->all()), 500);
+            }
         }
         return parent::render($request, $e);
     }

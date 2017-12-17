@@ -36,3 +36,8 @@ function apiUser()
     }
     return $user;
 }
+
+function originalJsonEncode($data)
+{
+    return json_encode($data, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_FORCE_OBJECT);
+}

@@ -22,7 +22,8 @@ class UserRepository
     {
         $out = [];
         $user = $this->user->with([
-            'avatars' => function($query) {$query->orderBy('id', 'desc');}
+            'avatars' => function($query) {$query->orderBy('id', 'desc');},
+            'roles',
         ])->find($id);
         if (empty($user))
         {
@@ -68,6 +69,7 @@ class UserRepository
         {
             $user->update($data);
             $user->avatars()->syncWithoutDetaching($attachments);
+            $user->syncRoles($data['roles']);
     
             \DB::commit();
         }

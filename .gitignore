@@ -9,6 +9,7 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 .env
+config/image.php
 /.settings
 .buildpath
 .project

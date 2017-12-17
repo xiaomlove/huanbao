@@ -7,6 +7,7 @@ use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Repositories\UserRepository;
+use App\Models\Role;
 
 class UserController extends Controller
 {
@@ -82,7 +83,11 @@ class UserController extends Controller
 //         $r = $result['data']['base']->avatars->first();
 //         dd($r);
 //         dd($result);
-        return view('admin.user.show', ['user' => $result['data']['base']]);
+        $roles = Role::all();
+        return view('admin.user.show', [
+            'user' => $result['data']['base'],
+            'roles' => $roles,
+        ]);
     }
 
     /**

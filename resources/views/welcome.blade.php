@@ -80,11 +80,12 @@
                 <div class="title m-b-md">
                     Huanbao
                 </div>
-
+				@can('view_role_list')
                 <div class="links">
                     <a href="{{ url('/admin') }}">后台</a>
                     <a href="{{ url('/api') }}">API</a>
                 </div>
+                @endcan
             </div>
         </div>
     </body>

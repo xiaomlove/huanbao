@@ -7,10 +7,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\Topic;
 use App\Models\AttachmentRelationship;
 use App\Models\Attachment;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use HasRoles;
+    
+    const ROLE_SUPER_ADMIN_NAME = 'super_admin';
     
     /**
      * The attributes that are mass assignable.

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Models\AttachmentRelationship;
 use App\Models\Comment;
 use App\User;
+use App\Models\HuisuoJishi;
+use App\Models\ContactRelationship;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -85,6 +87,9 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             AttachmentRelationship::TARGET_TYPE_COMMENT => Comment::class,
             AttachmentRelationship::TARGET_TYPE_USER_AVATAR => User::class,
+            
+            ContactRelationship::OWNER_TYPE_HUISUO => HuisuoJishi::class,
+            ContactRelationship::OWNER_TYPE_JISHI => HuisuoJishi::class,
         ]);
     }
 }
