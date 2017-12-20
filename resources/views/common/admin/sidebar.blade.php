@@ -16,10 +16,10 @@
         <li @if(Request::routeIs('comment.index'))class="active" @endif> <a href="{{ route('comment.index') }}"> <i class="fa fa-comment"></i><span>回复</span></a></li>
         <li @if(Request::routeIs('attachment.index'))class="active" @endif> <a href="{{ route('attachment.index') }}"> <i class="fa fa-file"></i><span>附件</span></a></li>
         @can('view_huisuo_list')
-        <li @if(Request::routeIs('huisuo.index'))class="active" @endif> <a href="{{ route('huisuo.index') }}"> <i class="fa fa-h-square"></i><span>会所</span></a></li>
+        <li @if(Request::routeIs('huisuo.index'))class="active" @endif> <a href="{{ route('huisuo.index') }}"> <i class="fa fa-h-square"></i><span>HS</span></a></li>
         @endcan
         @can('view_jishi_list')
-        <li @if(Request::routeIs('jishi.index'))class="active" @endif> <a href="{{ route('jishi.index') }}"> <i class="fa fa-female"></i><span>技师</span></a></li>
+        <li @if(Request::routeIs('jishi.index'))class="active" @endif> <a href="{{ route('jishi.index') }}"> <i class="fa fa-female"></i><span>JS</span></a></li>
         @endcan
         @can('view_role_list')
         <li @if(Request::routeIs('role.index'))class="active" @endif> <a href="{{ route('role.index') }}"> <i class="fa fa-users"></i><span>用户组</span></a></li>
