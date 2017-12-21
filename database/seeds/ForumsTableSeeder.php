@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\Forum;
+use App\Models\ForumTaxonomyRelationship;
+use App\Models\ForumTaxonomy;
 
 class ForumsTableSeeder extends Seeder
 {
@@ -12,14 +15,47 @@ class ForumsTableSeeder extends Seeder
     public function run()
     {
         $data = [
-            ['id' => 1, 'name' => '罗湖', 'slug' => 'luohu', 'pid' => 0, 'description' => '专业！'],
-            ['id' => 2, 'name' => '福田', 'slug' => 'futian', 'pid' => 0, 'description' => '高端！'],
-            ['id' => 3, 'name' => '沙尾', 'slug' => 'shawei', 'pid' => 2, 'description' => '车场！'],
-            ['id' => 4, 'name' => '南山', 'slug' => 'nanshan', 'pid' => 0, 'description' => '学习！'],
-            ['id' => 5, 'name' => '宝安', 'slug' => 'baoan', 'pid' => 0, 'description' => '深藏不露'],
-            ['id' => 6, 'name' => '西乡', 'slug' => 'xixiang', 'pid' => 5, 'description' => '不行'],
-            ['id' => 7, 'name' => '坪洲', 'slug' => 'pingzhou', 'pid' => 6, 'description' => '比较水'],
+            [
+                'taxonomy' => '地区',
+                'forums' => [
+                    ['name' => '罗湖', 'slug' => 'luohu', 'description' => '专业！'],
+                    ['name' => '福田', 'slug' => 'futian', 'description' => '高端！'],
+                    ['name' => '沙尾', 'slug' => 'shawei', 'description' => '车场！'],
+                ],
+            ],
+            [
+                'taxonomy' => 'HS',
+                'forums' => [
+                    ['name' => '明珠', 'slug' => 'mingzhu', 'description' => '第一次'],
+                ],
+            ],
+            [
+                'taxonomy' => 'JS',
+                'forums' => [
+                    ['name' => '小可', 'slug' => 'xiaoke', 'description' => '泰山'],
+                    ['name' => '骚琳', 'slug' => 'saolin', 'description' => '北斗'],
+                ],
+            ],
+            [
+                'taxonomy' => 'JS',
+                'forums' => [
+                    ['name' => '闲聊', 'slug' => 'xianliao', 'description' => '吹水'],
+                ],
+            ],
+            [
+                'taxonomy' => 'JS',
+                'forums' => [
+                    ['name' => '2017年终总结', 'slug' => '2017zongjie', 'description' => '2017年终总结'],
+                ],
+            ],
         ];
-        $forums = App\Models\Forum::insert($data);
+
+        foreach ($data as $value)
+        {
+            $taxonomy = ForumTaxonomy::create(['name' => $value['taxonomy']]);
+            $forums = $taxonomy->forums()->createMany($value['forums']);
+            $taxonomy->forums()->attach($forums);
+        }
+
     }
 }

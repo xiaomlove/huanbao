@@ -8,6 +8,22 @@ input[type=submit] {
 .pointer {
 	cursor: pointer
 }
+
+/*图片表单项*/
+.image-upload-form .upload {
+	display: inline-block;
+	width: 60%;
+	margin-right: 10px;
+}
+.image-upload-form .preview img {
+	max-width: 32px;
+	max-height: 32px;
+}
+
+.content-header .btn {
+	margin-right: 10px;
+}
+
 /**/
 .section-table {
 	padding: 1rem;

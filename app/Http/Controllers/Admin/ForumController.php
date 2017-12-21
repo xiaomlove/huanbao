@@ -16,20 +16,9 @@ class ForumController extends Controller
      */
     public function index()
     {
-        $forums = (new Forum())->listTree();
-//         $all = [];
-//         foreach ($forums as $forum)
-//         {
-//             $all = array_merge($all, $this->retrieveAllChild($forum));
-//         }
-//         dd($all);
-//         foreach ($forums as $forum)
-//         {
-//             $this->traverseTree($forum);
-//         }
-//         exit;
+        $list = Forum::paginate(20);
         
-        return view('admin.forum.index_ul', compact('forums'));
+        return view('admin.forum.index', compact('list'));
     }
     
     private function traverseTree($tree)

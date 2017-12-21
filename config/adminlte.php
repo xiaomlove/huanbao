@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 2',
+    'title' => 'Huanbao',
 
     'title_prefix' => '',
 
@@ -30,9 +30,9 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
+    'logo' => '<b>Huanbao</b>',
 
-    'logo_mini' => '<b>A</b>LT',
+    'logo_mini' => '<b>H</b>',
 
     /*
     |--------------------------------------------------------------------------
@@ -112,7 +112,7 @@ return [
         [
             'text' => 'Blog',
             'url'  => 'admin/blog',
-            'can'  => 'manage-blog',
+            //'can'  => 'manage-blog',
         ],
         [
             'text'        => 'Pages',
@@ -121,17 +121,77 @@ return [
             'label'       => 4,
             'label_color' => 'success',
         ],
-        'ACCOUNT SETTINGS',
+        '论坛',
         [
-            'text' => 'Profile',
-            'url'  => 'admin/settings',
+            'text' => '帖子',
+            'url'  => 'admin/topic',
+            'icon' => 'pencil',
+        ],
+        [
+            'text' => '回复',
+            'url'  => 'admin/comment',
+            'icon' => 'comment',
+        ],
+        [
+            'text' => '版块',
+            'icon' => 'table',
+            'submenu' => [
+                [
+                    'text' => '列表',
+                    'url'  => 'admin/forum',
+                ],
+                [
+                    'text' => '分类项',
+                    'url'  => 'admin/forum',
+                ],
+                [
+                    'text' => '分类法',
+                    'url'  => 'admin/forum',
+                ],
+
+            ],
+        ],
+        '用户',
+        [
+            'text' => '列表',
+            'url'  => 'admin/user',
             'icon' => 'user',
         ],
         [
-            'text' => 'Change Password',
-            'url'  => 'admin/settings',
-            'icon' => 'lock',
+            'text' => '新增',
+            'url'  => 'admin/user/create',
+            'icon' => 'plus',
         ],
+        'JS & HS',
+        [
+            'text' => 'JS',
+            'url'  => 'admin/jishi',
+            'icon' => 'female',
+        ],
+        [
+            'text' => 'HS',
+            'url'  => 'admin/huisuo',
+            'icon' => 'h-square',
+        ],
+        '附件',
+        [
+            'text' => '图片',
+            'url'  => 'admin/attachment',
+            'icon' => 'file',
+        ],
+        '权限',
+        [
+            'text' => '角色',
+            'url'  => 'admin/role',
+            'icon' => 'address-book',
+        ],
+        [
+            'text' => '权限',
+            'url'  => 'admin/permission',
+            'icon' => 'list',
+        ],
+
+
         [
             'text'    => 'Multilevel',
             'icon'    => 'share',
@@ -217,7 +277,7 @@ return [
     */
 
     'plugins' => [
-        'datatables' => true,
+        'datatables' => false,
         'select2'    => true,
     ],
 ];

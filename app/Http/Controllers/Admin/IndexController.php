@@ -88,18 +88,5 @@ class IndexController extends Controller
     {
         //
     }
-    
-    public function test(Request $request)
-    {
-        //$r = (new Forum)->listTree(['max_depth' => 1]);
-//         $r = app('App\Repositories\TopicRepository')->listAll2();
-//         $r = app('App\Models\Comment')->where('id', 1145)->with('parentComment')->first();
-//        $r = resource_path('views/');
-        //$r = ini_get('session.upload_progress_enabled');
-        //$r = User::find(1);
-        //$r = \Gate::check('ddddddddddddddddd');
-        $r = \Route::getRoutes()->getRoutesByName();
-        //$r = app('cache');
-        dd($r);
-    }
+
 }
