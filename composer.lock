@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5f03e96f9c0d61267b8354325ad94e2c",
-    "content-hash": "b95a1ffe4f65be2af2f146ac81cea9b9",
+    "hash": "f84125e35ebe390158b3d02218c5705c",
+    "content-hash": "6088545c5abf44fa23e03d40f11f4735",
     "packages": [
         {
             "name": "barryvdh/laravel-debugbar",
@@ -775,6 +775,65 @@
                 }
             ],
             "time": "2015-04-20 18:58:01"
+        },
+        {
+            "name": "jeroennoten/laravel-adminlte",
+            "version": "v1.22.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jeroennoten/Laravel-AdminLTE.git",
+                "reference": "7211b894d2e1594d9919f1bde1948c7668410129"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jeroennoten/Laravel-AdminLTE/zipball/7211b894d2e1594d9919f1bde1948c7668410129",
+                "reference": "7211b894d2e1594d9919f1bde1948c7668410129",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "laravel/framework": "~5.1.12|~5.2.0|~5.3.0|~5.4.0|~5.5.0",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "JeroenNoten\\LaravelAdminLte\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JeroenNoten\\LaravelAdminLte\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeroen Noten",
+                    "email": "jeroennoten@me.com"
+                }
+            ],
+            "description": "Easy AdminLTE integration with Laravel",
+            "keywords": [
+                "AdminLTE",
+                "admin",
+                "administrator",
+                "laravel"
+            ],
+            "time": "2017-10-02 14:52:05"
         },
         {
             "name": "laravel/framework",

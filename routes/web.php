@@ -48,3 +48,6 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
     Route::get('cnarea/city', 'CommonController@city')->name('cnarea.city');
     Route::get('cnarea/district', 'CommonController@district')->name('cnarea.district');
 });
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
