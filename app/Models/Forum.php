@@ -27,7 +27,7 @@ class Forum extends Model
     {
         return $this->belongsToMany(
             ForumTaxonomy::class,
-            ForumTaxonomyRelationship::class,
+            app(ForumTaxonomyRelationship::class)->getTable(),
             'fid',
             'taxonomy_id'
         );

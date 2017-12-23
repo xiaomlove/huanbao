@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ForumTaxonomy extends Model
 {
+    protected $table = 'forum_taxonomies';
+
     protected $fillable = [
         'name',
     ];
@@ -14,9 +16,9 @@ class ForumTaxonomy extends Model
     {
         return $this->belongsToMany(
             Forum::class,
-            ForumTaxonomyRelationship::class,
-            'fid',
-            'taxonomy_id'
+            app(ForumTaxonomyRelationship::class)->getTable(),
+            'taxonomy_id',
+            'fid'
         );
     }
 }

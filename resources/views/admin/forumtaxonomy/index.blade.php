@@ -1,20 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', '版块列表')
+@section('title', '版块分类列表')
 
 @section('content_header')
     @include('admin.common.message')
     <form class="form-inline">
         <div class="form-group">
             <input type="text" class="form-control" id="" name="name" placeholder="名称" value="{{ request('name') }}">
-        </div>
-        <div class="form-group">
-            <select class="form-control" id="" name="taxonomy_id">
-                <option value="">--按分类--</option>
-            @foreach($taxonomies as $taxonomy)
-                <option value="{{ $taxonomy->id }}"{{ request('taxonomy_id') == $taxonomy->id ? " selected" : "" }}>{{ $taxonomy->name }}</option>
-            @endforeach
-            </select>
         </div>
         <div class="form-group">
             <input type="text" class="form-control" id="" name="party_origination" placeholder="发起方" value="{{ request('party_origination') }}">
@@ -35,8 +27,6 @@
         <tr>
             <th>ID</th>
             <th>名称</th>
-            <th>别名</th>
-            <th>描述</th>
             <th>最后更新</th>
             <th>操作</th>
         </tr>
@@ -46,8 +36,6 @@
             <tr>
                 <td>{{ $value->id }}</td>
                 <td>{{ $value->name }}</td>
-                <td>{{ $value->slug }}</td>
-                <td>{{ $value->description }}</td>
                 <td>{{ $value->updated_at->format('Y-m-d H:i') }}</td>
                 <td>
                     <a href="{{ route('admin.forum.edit', $value->id) }}">编辑</a>
@@ -63,16 +51,4 @@
         </tbody>
     </table>
     {!! $list->links() !!}
-@stop
-
-@section('js')
-    <script src="{{ asset('vendor/laydate/layDate-v5.0.85/laydate/laydate.js') }}"></script>
-    <script>
-        laydate.render({
-            elem: '#begin_time'
-        })
-        laydate.render({
-            elem: '#end_time'
-        })
-    </script>
 @stop

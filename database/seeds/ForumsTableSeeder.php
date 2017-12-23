@@ -27,6 +27,7 @@ class ForumsTableSeeder extends Seeder
                 'taxonomy' => 'HS',
                 'forums' => [
                     ['name' => '明珠', 'slug' => 'mingzhu', 'description' => '第一次'],
+                    ['name' => '新悦', 'slug' => 'xinyue', 'description' => '老牌'],
                 ],
             ],
             [
@@ -37,13 +38,14 @@ class ForumsTableSeeder extends Seeder
                 ],
             ],
             [
-                'taxonomy' => 'JS',
+                'taxonomy' => '内容',
                 'forums' => [
                     ['name' => '闲聊', 'slug' => 'xianliao', 'description' => '吹水'],
+                    ['name' => '技术讨论', 'slug' => 'jishutaolun', 'description' => '技术讨论'],
                 ],
             ],
             [
-                'taxonomy' => 'JS',
+                'taxonomy' => '专题',
                 'forums' => [
                     ['name' => '2017年终总结', 'slug' => '2017zongjie', 'description' => '2017年终总结'],
                 ],
@@ -54,7 +56,7 @@ class ForumsTableSeeder extends Seeder
         {
             $taxonomy = ForumTaxonomy::create(['name' => $value['taxonomy']]);
             $forums = $taxonomy->forums()->createMany($value['forums']);
-            $taxonomy->forums()->attach($forums);
+            //无须其他步骤，自动往中间表插入了数据
         }
 
     }

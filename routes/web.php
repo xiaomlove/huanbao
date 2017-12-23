@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
         Route::get('/', 'IndexController@index')->name('admin.index');
         Route::resource('user', 'UserController');
         Route::resource('forum', 'ForumController');
+        Route::resource('forumtaxonomy', 'ForumTaxonomyController');
         Route::resource('topic', 'TopicController');
         Route::resource('comment', 'CommentController');
         Route::resource('attachment', 'AttachmentController');

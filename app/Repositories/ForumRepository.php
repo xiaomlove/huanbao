@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Forum;
+use function foo\func;
+use Illuminate\Http\Request;
 
 class ForumRepository
 {
@@ -13,13 +15,17 @@ class ForumRepository
         $this->forum = $forum;
     }
     
-    public function listAll(array $params = [])
+    public function listAll(Request $request)
     {
-        $defaults = [
-            'max_depth' => null,
-        ];
-        $args = array_merge($defaults, $params);
-        $tree = $this->forum->listTree($args);
-        return normalize(0, 'OK', $tree);
+        return $this->forum
+            ->when($request->name, function ($query) use ($request) {
+                return $query->where('name', 'like', "%{$request->name}%");
+            })
+            ->when($request->taxonomy_id, function ($query) use ($request) {
+                return $query->whereHas('taxonomies', function ($query) use ($request) {
+                    return $query->where("taxonomy_id", $request->taxonomy_id);
+                });
+            })
+            ->paginate($request->get('per_page', 20));
     }
 }

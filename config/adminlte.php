@@ -141,12 +141,8 @@ return [
                     'url'  => 'admin/forum',
                 ],
                 [
-                    'text' => '分类项',
-                    'url'  => 'admin/forum',
-                ],
-                [
-                    'text' => '分类法',
-                    'url'  => 'admin/forum',
+                    'text' => '分类',
+                    'url'  => 'admin/forumtaxonomy',
                 ],
 
             ],

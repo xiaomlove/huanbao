@@ -5,20 +5,29 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Forum;
+use App\Models\ForumTaxonomy;
+use App\Repositories\ForumRepository;
 use App\Http\Requests\ForumRequest;
 
 class ForumController extends Controller
 {
+    protected $forum;
+
+    public function __construct(ForumRepository $forum)
+    {
+        $this->forum = $forum;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $list = Forum::paginate(20);
-        
-        return view('admin.forum.index', compact('list'));
+        $list = $this->forum->listAll($request);
+        $taxonomies = ForumTaxonomy::all();
+        return view('admin.forum.index', compact('list', 'taxonomies'));
     }
     
     private function traverseTree($tree)
