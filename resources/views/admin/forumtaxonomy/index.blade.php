@@ -18,7 +18,9 @@
             <input type="text" class="form-control" readonly id="end_time" name="end_time" placeholder="结束时间" value="{{ request('end_time') }}">
         </div>
         <button type="submit" class="btn btn-default">搜索</button>
+        <a class="btn btn-info pull-right" href="{{ route('admin.forumtaxonomy.create') }}">新建</a>
     </form>
+
 @stop
 
 @section('content')
@@ -38,9 +40,8 @@
                 <td>{{ $value->name }}</td>
                 <td>{{ $value->updated_at->format('Y-m-d H:i') }}</td>
                 <td>
-                    <a href="{{ route('admin.forum.edit', $value->id) }}">编辑</a>
-                    <a target="_blank" href="{{ route('admin.forum.index')}}?project_id={{ $value->id }}">题目</a>
-                    <form method="post" style="display: inline-block;" action="{{ route('admin.forum.destroy', $value->id) }}" onsubmit="return window.confirm('确定删除？')">
+                    <a href="{{ route('admin.forumtaxonomy.edit', $value->id) }}">编辑</a>
+                    <form method="post" style="display: inline-block;" action="{{ route('admin.forumtaxonomy.destroy', $value->id) }}" onsubmit="return window.confirm('确定删除？')">
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}
                         <button type="submit" class="btn btn-xs btn-danger">删除</button>

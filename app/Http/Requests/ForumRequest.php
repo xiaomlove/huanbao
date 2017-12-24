@@ -39,12 +39,8 @@ class ForumRequest extends FormRequest
                 Rule::unique('forums')->ignore(\Route::current()->parameter('forum')),
             ],
             'description' => 'nullable|max:200',
-            'display_order' => 'nullable|numeric',
         ]);
-        $v->sometimes('pid', 'nullable|numeric|exists:forums', function($input) {
-            return $input->pid > 0;
-        });
-        
+
         return $v;
     }
 }

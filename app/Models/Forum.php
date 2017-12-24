@@ -11,7 +11,6 @@ class Forum extends Model
         'name',
         'slug',
         'description',
-        'display_order',
     ];
     
     /**

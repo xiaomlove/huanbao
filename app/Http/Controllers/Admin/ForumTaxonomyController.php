@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\ForumTaxonomyRequest;
 use App\Http\Controllers\Controller;
 use App\Models\ForumTaxonomy;
 
@@ -35,7 +36,7 @@ class ForumTaxonomyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ForumTaxonomyRequest $request)
     {
         //
     }
@@ -59,7 +60,8 @@ class ForumTaxonomyController extends Controller
      */
     public function edit($id)
     {
-        //
+        $taxonomy = ForumTaxonomy::findOrFail($id);
+        return view('admin.forumtaxonomy.form', compact('taxonomy'));
     }
 
     /**
@@ -69,9 +71,11 @@ class ForumTaxonomyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ForumTaxonomyRequest $request, $id)
     {
-        //
+        $taxonomy = ForumTaxonomy::findOrFail($id);
+        $taxonomy->update($request->all());
+        return back()->with("success", "更新成功");
     }
 
     /**

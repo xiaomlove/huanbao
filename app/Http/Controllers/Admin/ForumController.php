@@ -73,9 +73,9 @@ class ForumController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Forum $forum)
     {
-        return view('admin.forum.create');
+        return view('admin.forum.form', compact('forum'));
     }
 
     /**
