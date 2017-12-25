@@ -34,7 +34,10 @@ class Topic extends Model
      */
     public function forum()
     {
-        return $this->belongsTo(Forum::class, 'fid', 'id');
+        return $this->belongsTo(Forum::class, 'fid', 'id')->withDefault([
+            'id' => 0,
+            'name' => '(不存在)',
+        ]);
     }
     
     /**

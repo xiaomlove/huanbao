@@ -20,7 +20,7 @@
     @endif
             {{ csrf_field() }}
             <div class="form-group{{$errors->has('name') ? ' has-error' : ''}}">
-                <label for="" class="col-sm-2 control-label">标题</label>
+                <label for="" class="col-sm-2 control-label">名称</label>
                 <div class="col-sm-10">
                     <input type="text" name="name" class="form-control" id="" placeholder=""
                            value="{{ old('name', $taxonomy->name) }}">

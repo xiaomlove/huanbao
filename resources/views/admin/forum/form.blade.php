@@ -51,6 +51,20 @@
                 </div>
             </div>
 
+            <div class="form-group{{$errors->has('taxonomy.*') ? ' has-error' : ''}}">
+                <label for="" class="col-sm-2 control-label">所属分类</label>
+                <div class="col-sm-10">
+                    @foreach($taxonomies as $taxonomy)
+                    <label class="checkbox-inline">
+                        <input type="checkbox" value="{{ $taxonomy->id }}" name="taxonomies[]"{{ $forum->taxonomies->contains('id', $taxonomy->id) ? " checked" : "" }}>{{$taxonomy->name}}
+                    </label>
+                    @endforeach
+                    @if($errors->has('taxonomy.*'))
+                        <small class="help-block">{{ $errors->first('taxonomy') }}</small>
+                    @endif
+                </div>
+            </div>
+
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10 text-center">
                     <button type="submit" class="btn btn-primary">提交</button>

@@ -43,4 +43,5 @@ class ForumRequest extends FormRequest
 
         return $v;
     }
+
 }

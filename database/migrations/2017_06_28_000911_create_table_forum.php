@@ -17,7 +17,7 @@ class CreateTableForum extends Migration
             $table->increments('id');
             $table->string('name')->comment('版块名称');
             $table->string('slug')->comment('别名');
-            $table->text('description')->comment('描述');
+            $table->text('description')->nullable()->comment('描述');
             $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             

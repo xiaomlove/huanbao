@@ -56,14 +56,10 @@ class TopicController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Topic $topic)
     {
-        $forums = (new Forum())->listTreeOneDimensional();
-        $forumOptions = (object)[
-            'name' => 'fid',
-            'selected' => null,
-        ];
-        return view('admin.topic.create', compact('forums', 'forumOptions'));
+        $forums = Forum::all();
+        return view('admin.topic.form', compact('forums', 'topic'));
     }
 
     /**

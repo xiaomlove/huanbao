@@ -75,7 +75,8 @@ class ForumController extends Controller
      */
     public function create(Forum $forum)
     {
-        return view('admin.forum.form', compact('forum'));
+        $taxonomies = ForumTaxonomy::all();
+        return view('admin.forum.form', compact('forum', 'taxonomies'));
     }
 
     /**
@@ -86,14 +87,9 @@ class ForumController extends Controller
      */
     public function store(ForumRequest $request)
     {
-        $forum = Forum::create([
-            'name' => $request->name,
-            'slug' => empty($request->slug) ? urlencode($request->name) : $request->slug,
-            'description' => strval($request->description),
-            'pid' => intval($request->pid),
-            'display_order' => intval($request->display_order),
-        ]);
-        return redirect()->route('forum.index');
+        $forum = Forum::create($request->all());
+        $forum->taxonomies()->sync($request->taxonomies);
+        return redirect()->route('admin.forum.index')->with('success', '版块创建成功');
     }
 
     /**
@@ -115,8 +111,9 @@ class ForumController extends Controller
      */
     public function edit($id)
     {
-        $forum = Forum::findOrFail($id);
-        return view('admin.forum.edit', compact('forum'));
+        $forum = Forum::with('taxonomies')->findOrFail($id);
+        $taxonomies = ForumTaxonomy::all();
+        return view('admin.forum.form', compact('forum', 'taxonomies'));
     }
 
     /**
@@ -129,14 +126,9 @@ class ForumController extends Controller
     public function update(ForumRequest $request, $id)
     {
         $forum = Forum::findOrFail($id);
-        $forum->update([
-            'name' => $request->name,
-            'slug' => empty($request->slug) ? urlencode($request->name) : $request->slug,
-            'description' => strval($request->description),
-            'pid' => intval($request->pid),
-            'display_order' => intval($request->display_order),
-        ]);
-        return redirect()->route('forum.index');
+        $forum->update($request->all());
+        $forum->taxonomies()->sync($request->taxonomies);
+        return back()->with('success', "更新成功");
     }
 
     /**
@@ -148,11 +140,8 @@ class ForumController extends Controller
     public function destroy($id)
     {
         $forum = Forum::findOrFail($id);
-        $deleteResult = $forum->delete();
-        return response()->json([
-            'ret' => $deleteResult ? 0 : 1,
-            'msg' => '',
-            'data' => $forum->toArray()
-        ]);
+        $forum->taxonomies()->detach();
+        $forum->delete();
+        return back()->with("success", "删除成功");
     }
 }
