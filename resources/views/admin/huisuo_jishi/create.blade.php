@@ -22,7 +22,7 @@
               <h2 class="h5 display">{{ $pageTitle }}</h2>
             </div>
             <div class="card-block">
-              <form id="form" class="form-horizontal form-huisuo-jishi" method="post" action="{{ route('huisuo.store') }}">
+              <form id="form" class="form-horizontal form-huisuo-jishi" method="post" action="{{ route('admin.huisuo.store') }}">
               	{{ csrf_field() }}
                 <div class="form-group row{{$errors->has('name') ? ' has-danger' : ''}}">
                   <label class="col-sm-2">名称</label>
@@ -44,6 +44,7 @@
                   	<input type="hidden" class="" id="" name="cover">
                   </div>
                 </div>
+                  <!--
                 <div class="form-group row{{$errors->has('fid') ? ' has-danger' : ''}}">
                   <label class="col-sm-2">地址</label>
                   <div class="col-sm-10 select" style="display: flex">
@@ -53,6 +54,7 @@
                     @endif
                   </div>
                 </div>
+                -->
                 <div class="form-group row{{$errors->has('address') ? ' has-danger' : ''}}">
                   <label class="col-sm-2">详细地址</label>
                   <div class="col-sm-10">
@@ -131,13 +133,15 @@
       </div>
     </div>
 </section>
+@stop
+@section('js')
 <script src="{{ asset('js/text_modal.js') }}"></script>
 <script src="{{ asset('js/image_modal.js') }}"></script>
 <script src="{{ asset('js/content_editor.js') }}"></script>
 <script>
 var contentEditor = new ContentEditor({
 	wrapId: "description",
-	uploadUrl: "{{ route('upload.image') }}",
+	uploadUrl: "{{ route('admin.upload.image') }}",
 });
 
 
@@ -165,7 +169,7 @@ $form.on("change", ".form-control-file", function(e) {
 	formData.append("image", file);
 	var $parent = $(this).parent();
 	$.post({
-		url: "{{ route('upload.image') }}",
+		url: "{{ route('admin.upload.image') }}",
 		type: "post",
 		dataType: "json",
 		contentType: false,

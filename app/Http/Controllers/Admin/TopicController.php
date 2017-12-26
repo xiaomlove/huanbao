@@ -71,19 +71,9 @@ class TopicController extends Controller
     public function store(TopicRequest $request)
     {
         $data = $request->all();
-//         dd($data);
-        $data['uid'] = \Auth::user()->id;
-        $result = $this->topic->create($data);
-//         dd($result);
-        if ($result['ret'] == 0)
-        {
-            $id = $result['data']['topic']->id;
-            return redirect()->route('topic.show', $id)->with("success", "新建话题成功");
-        }
-        else 
-        {
-            return back()->with("danger", $result['msg'])->withInput();
-        }
+        $result = $this->topic->create($request);
+
+        return $result;
     }
 
     /**
@@ -123,12 +113,9 @@ class TopicController extends Controller
     public function edit($id)
     {
         $topic = Topic::with('main_floor', 'main_floor.attachments', 'main_floor.detail')->findOrFail($id);
-        $forums = (new Forum())->listTreeOneDimensional();
-        $forumOptions = (object)[
-            'name' => 'fid',
-            'selected' => $topic->fid,
-        ];
-        return view('admin.topic.edit', compact('topic', 'forums', 'forumOptions'));
+//        dd($topic);
+        $forums = Forum::all();
+        return view('admin.topic.form', compact('topic', 'forums'));
     }
 
     /**
@@ -140,17 +127,9 @@ class TopicController extends Controller
      */
     public function update(TopicRequest $request, $id)
     {
-        $data = $request->all();
-        $data['uid'] = \Auth::user()->id;
-        $result = $this->topic->update($data, $id);
-        if ($result['ret'] == 0)
-        {
-            return redirect()->route('topic.edit', $id)->with("success", "更新话题成功");
-        }
-        else
-        {
-            return back()->with("danger", $result['msg'])->withInput();
-        }
+        $result = $this->topic->update($request, $id);
+
+        return $result;
     }
 
     /**

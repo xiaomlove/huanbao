@@ -8,6 +8,7 @@ use App\User;
 use App\Models\Forum;
 use App\Models\AttachmentRelationship;
 use App\Repositories\AttachmentRepository;
+use App\Http\Requests\TopicRequest;
 
 class TopicRepository
 {
@@ -46,53 +47,35 @@ class TopicRepository
      * @param array $data
      * @return number[]|string[]|array[]
      */
-    public function create(array $data)
+    public function create(TopicRequest $request)
     {
-        //先保存附件
-        \Log::info(sprintf('%s, data: %s', __METHOD__, var_export($data, true)));
-        $attachmentResult = $this->attachment->getFromRequestData($data);
-        if ($attachmentResult['ret'] != 0)
-        {
-            return $attachmentResult;
-        }
-        //@see https://stackoverflow.com/questions/27230672/laravel-sync-how-to-sync-an-array-and-also-pass-additional-pivot-fields
-        $attachments = [];
-        foreach ($attachmentResult['data'] as $attachment)
-        {
-            $attachments[$attachment->id] = ['target_type' => AttachmentRelationship::TARGET_TYPE_COMMENT];
-        }
-        unset($attachmentResult, $attachment);
-        \Log::info(sprintf('%s, attachmentsata: %s', __METHOD__, var_export($attachments, true)));
-//         dd($attachments);
-        
         \DB::beginTransaction();
         try
         {
             //创建话题
-            $topic = $this->topic->create($data);
+            $topicData = $request->only(['title', 'fid']);
+            $topicData['uid'] = \Auth::user()->id;
+            $topic = $this->topic->create($topicData);
             //创建主楼
             $comment = $topic->main_floor()->create([
                 'uid' => $topic->uid,
                 'floor_num' => 1,//创建帖子时候创建的评论，肯定是1楼
             ]);
             //创建主楼详情
-            $commentDetail = $comment->detail()->create(['content' => $data['content']]);
-            //保存附件
-            $comment->attachments()->sync($attachments);
-            
+            $commentDetail = $comment->detail()->create($request->only(['content']));
+
             \DB::commit();
+
+            return normalize(0, "OK", [
+                'topic' => $topic,
+            ]);
         }
         catch (\Exception $e)
         {
             \DB::rollBack();
-            return normalize(1, $e->getMessage(), $data);
+            return normalize($e->getMessage(), $request->all());
         }
-        return normalize(0, "OK", [
-            'topic' => $topic, 
-            'comment' => $comment, 
-            'comment_detail' => $commentDetail
-            
-        ]);
+
     }
     
     /**
@@ -101,43 +84,24 @@ class TopicRepository
      * @param unknown $id
      * @return number[]|string[]|array[]
      */
-    public function update(array $data, $id)
+    public function update(TopicRequest $request, $id)
     {
-        //先保存附件
-        $attachmentResult = $this->attachment->getFromRequestData($data);
-        if ($attachmentResult['ret'] != 0)
-        {
-            return $attachmentResult;
-        }
-        //@see https://stackoverflow.com/questions/27230672/laravel-sync-how-to-sync-an-array-and-also-pass-additional-pivot-fields
-        $attachments = [];
-        foreach ($attachmentResult['data'] as $attachment)
-        {
-            $attachments[$attachment->id] = ['target_type' => AttachmentRelationship::TARGET_TYPE_COMMENT];
-        }
-        unset($attachmentResult, $attachment);
-//         dd($attachments);
-        
         \DB::beginTransaction();
         try
         {
-            $topic = $this->topic->with('main_floor', 'main_floor.detail', 'main_floor.attachments')->findOrFail($id);
-            $topic->update($data);
-            $topic->main_floor->update($data);
-            $topic->main_floor->detail->update($data);
-            $topic->main_floor->attachments()->sync($attachments);
-            
+            $topic = $this->topic->with('main_floor', 'main_floor.detail')->findOrFail($id);
+            $topic->update($request->only(['title', 'fid']));
+            $topic->main_floor()->detail()->update($request->only(['content']));
+
             \DB::commit();
+
+            return normalize(0, "OK", $topic);
         }
         catch (\Exception $e)
         {
             \DB::rollBack();
-            return normalize(1, $e->getMessage(), $data);
+            return normalize($e->getMessage(), $request->all());
         }
-    
-        return normalize(0, "OK", [
-            'topic' => $topic, 
-        ]);
     }
     
     public function listAll($params = [])

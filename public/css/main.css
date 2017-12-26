@@ -28,3 +28,12 @@ input[type=submit] {
 .topic-table td small {
 	display: block;
 }
+
+/*图文编辑*/
+.editor-block:hover {
+	background-color: #ddd;
+}
+.editor-block {
+	padding: 4px;
+	margin: 0px;
+}

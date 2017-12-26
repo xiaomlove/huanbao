@@ -3,26 +3,26 @@
  * 自自定义函数
  */
 
-function normalize($ret = 0, $msg = '', array $data = [])
+function normalize(...$args)
 {
-    $args = func_get_args();
-	if (is_array($ret))
+    if (!isset($args[2]))
     {
-        reset($ret);
-        $ret = current($ret) ? current($ret) : 1;
-        $msg = next($ret);       
-        $data = next($ret);
-    }
-    elseif (func_num_args() < 3 && is_string($args[0]))
-    {
-        $ret = 1;
-        $msg = $args[0];
+        //参数少于3个时，默认为错误状态。
+        $ret = -1;
+        $msg = isset($args[0]) ? $args[0] : 'ERROR';
         $data = isset($args[1]) ? $args[1] : [];
     }
+    else
+    {
+        $ret = $args[0];
+        $msg = $args[1];
+        $data = $args[2];
+    }
+
     return [
         'ret' => (int)$ret,
         'msg' => (string)$msg,
-        'data' => (array)$data,
+        'data' => $data,
         'timeuse' => (float)number_format(microtime(true) - LARAVEL_START, 3),
     ];
 }

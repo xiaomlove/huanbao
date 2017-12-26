@@ -11,7 +11,7 @@
           <button type="submit" class="btn btn-primary">筛选</button>
         </form>
         <span class="float-right">
-            <a class="btn btn-success btn-action" href="{{ route($typeFlag.'.create') }}"><i class="fa fa-plus"></i>创建</a>
+            <a class="btn btn-success btn-action" href="{{ route('admin.' . $typeFlag.'.create') }}"><i class="fa fa-plus"></i>创建</a>
         </span>
     </div>
     <table id="table-attachment-index" class="table table-hover topic-table">
@@ -40,7 +40,7 @@
           <td>{!! $huisuoJishiPresenter->listContacts($value) !!}</td>
           <td>{{ $value->updated_at}}</td>
           <td>
-            <a href="{{ route('huisuo.edit', $value->id) }}">编辑</a>
+            <a href="{{ route('admin.huisuo.edit', $value->id) }}">编辑</a>
             <a href="javascript:;">删除</a>
           </td>
         </tr>

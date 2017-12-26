@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\TuWenContent;
 
 class TopicRequest extends FormRequest
 {
@@ -35,7 +36,7 @@ class TopicRequest extends FormRequest
         $v = \Validator::make(\Input::all(), [
             'title' => 'required|min:2|max:40',
             'fid' => 'required|exists:forums,id',
-            'content' => 'required|min:2|max:1000',
+            'content' => ['required', new TuWenContent()],
         ]);
         return $v;
     }
