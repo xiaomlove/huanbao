@@ -204,29 +204,17 @@ class CommentRepository
      * @param array $params
      * @return number[]|string[]|array[]
      */
-    public function listOfTopic($params = [])
+    public function listOfTopic($id)
     {
-        $defaults = [
-            'page' => 1,
-            'per_page' => 10,
-            'order' => 'id asc',
-            'tid' => 0,
-        ];
-        $args = array_merge($defaults, $params);
-        $where = [];
-        if (empty($args['tid']) || !ctype_digit(strval($args['tid'])))
-        {
-            return normalize("非法tid: {$args['tid']}", $args);
-        }
-        $where[] = ['tid', '=', (int)$args['tid']];
-        $where[] = ['pid', 0];
-    
-        $list = $this->comment
-        ->where($where)
-        ->with(['user', 'detail', 'attachments'])
-        ->orderByRaw(\DB::raw($args['order']))
-        ->paginate($args['per_page'], ['*'], 'page', $args['page']);
-        
+        $topic = $this->topic->findOrFail($id);
+        $comments = $this->comment
+            ->where("tid", $topic->id)->where('pid', 0)
+            ->with(['user', 'detail'])
+            ->orderBy('floor_num', 'asc')
+            ->paginate(request('per_page', 20));
+//        dd($comments);
+
+        return ['topic' => $topic, 'list' => $comments];
 //         dd($list);
         //取楼中楼数据
         $commentCommentIdArr = [];
@@ -244,7 +232,7 @@ class CommentRepository
         ->with(['user', 'detail'])
         ->get()
         ->groupBy('root_id');
-        
+
         foreach ($list->getIterator() as $item)
         {
             $rootId = $item->id;
@@ -254,7 +242,7 @@ class CommentRepository
                 $item->setRelation('first_comments', $firstComments);
             }
         }
-        
+
         return normalize(0, "OK", ['list' => $list]);
     }
     

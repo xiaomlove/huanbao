@@ -68,11 +68,12 @@
     <script src="{{ asset('js/image_modal.js') }}"></script>
     <script src="{{ asset('js/content_editor.js') }}"></script>
     <script>
+        var tid = '{{ $topic->id }}';
         $('#forum').select2();
         var contentEditor = new ContentEditor({
             wrapId: "content",
             uploadUrl: "{{ route('admin.upload.image') }}",
-            content: '{!! $topic->main_floor->detail->content !!}'
+            content: '{!! $topic->main_floor ? $topic->main_floor->detail->content : "" !!}'
         });
 
         var $form = $('#form');
@@ -87,6 +88,9 @@
             }).done(function(response) {
                 console.log(response);
                 alert(response.msg);
+                if (response.ret == 0 && !tid) {
+                    location.href = "{{ route('admin.topic.index') }}";
+                }
             }).fail(function(xhr, errstr, errThrown) {
                 var response = xhr.responseJSON;
                 var msg = "";

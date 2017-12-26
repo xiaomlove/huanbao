@@ -91,7 +91,7 @@ class TopicRepository
         {
             $topic = $this->topic->with('main_floor', 'main_floor.detail')->findOrFail($id);
             $topic->update($request->only(['title', 'fid']));
-            $topic->main_floor()->detail()->update($request->only(['content']));
+            $topic->main_floor->detail->update($request->only(['content']));
 
             \DB::commit();
 

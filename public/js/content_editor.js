@@ -29,7 +29,7 @@
         if (!settings.content) {
             var contentData = [{type: "text", data: {text: "默认内容", classList: [commonClassName, textClassName]}}];
         } else {
-            var contentData = JSON.parse(settings.content.replace('\\n', '\\\\n'));
+            var contentData = JSON.parse(settings.content.replace(/\n/g, '\\n'));
         }
 
         //插入数据

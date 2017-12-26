@@ -84,24 +84,9 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        $topic = Topic::findOrFail($id);
-        $params = [];
-        $params['tid'] = $id;
-        $params['per_page'] = request('per_page', 10);
-        $params['page'] = request('page', 1);
-        $params['order'] = request('order', 'id asc');
-        $result = $this->comment->listOfTopic($params);
+        $result = $this->comment->listOfTopic($id);
 //         dd($result);
-        if ($result['ret'] == 0)
-        {
-            $list = $result['data']['list'];
-            return view('admin.topic.show', compact('topic', 'list'));
-        }
-        else
-        {
-            return response($result['msg'], 500);
-        }
-        
+        return view('admin.topic.show', $result);
     }
 
     /**
