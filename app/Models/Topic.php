@@ -50,13 +50,23 @@ class Topic extends Model
     }
     
     /**
-     * 话题主楼
+     * 话题主楼回复
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function main_floor()
     {
-        return $this->hasOne(Comment::class, 'tid', 'id');
+        return $this->hasOne(Comment::class, 'tid', 'id')->where("floor_num", 1);
+    }
+
+    /**
+     * 话题全部回复
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, "tid", "id");
     }
     
 }

@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\Topic;
+use App\Models\CommentDetail;
+use App\Models\Comment;
+use App\User;
 
 class TopicsTableSeeder extends Seeder
 {
@@ -11,20 +15,17 @@ class TopicsTableSeeder extends Seeder
      */
     public function run()
     {
-        $topics = factory(App\Models\Topic::class, 100)->create()->each(function($topic) {
-           //创建评论
-           $comment = App\Models\Comment::create([
-               'uid' => $topic->uid,
-               'tid' => $topic->id,
-               'floor_num' => 1,
-           ]);
-           
-           //创建评论详情
-           $commentDetail = App\Models\CommentDetail::create([
-               'cid' => $comment->id,
-               'content' => factory(App\Models\CommentDetail::class)->make()->content,
-           ]);
-           
+        $users = User::all();
+        $topics = factory(Topic::class, 100)->create()->each(function($topic) use ($users) {
+           //创建主楼评论
+            $mainFloor = $topic->main_floor->create([
+                'uid' => $topic->uid,
+                'floor_num' => 1,
+            ]);
+            //主楼详情
+            $mainFloor->detail->save(factory(CommentDetail::class));
+
+
         });
     }
 }

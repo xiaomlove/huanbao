@@ -17,7 +17,6 @@ class Comment extends Model
         'pid', 
         'root_id', 
         'floor_num',
-        'first_comment_ids',
         'comment_count',
         'like_count',
         'dislike_count',
@@ -77,6 +76,16 @@ class Comment extends Model
     public function parentComment()
     {
         return $this->belongsTo(__CLASS__, 'pid', 'id');
+    }
+
+    /**
+     * 楼中楼前几楼
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function first_comments()
+    {
+        return $this->hasMany(CommentComment::class, "root_cid", "id");
     }
     
     /**
