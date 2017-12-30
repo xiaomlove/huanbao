@@ -26,7 +26,7 @@ Route::any('test', 'HomeController@test');
 
 
 //后台路由
-Route::group(['middleware' => ['auth', 'permission']], function() {
+Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'as' => 'admin.'], function() {
         Route::get('/', 'IndexController@index')->name('admin.index');
         Route::resource('user', 'UserController');
@@ -39,11 +39,12 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
         Route::resource('jishi', 'HuisuoJishiController');
         Route::resource('role', 'RoleController');
         Route::resource('permission', 'PermissionController');
-        Route::post('upload/image', 'UploadController@image')->name("upload.image");
+
     });
     
     Route::get('cnarea/province', 'CommonController@province')->name('cnarea.province');
     Route::get('cnarea/city', 'CommonController@city')->name('cnarea.city');
     Route::get('cnarea/district', 'CommonController@district')->name('cnarea.district');
+    Route::match(['get', 'post'], 'upload/image', 'UploadController@image')->name("upload.image");
 });
 

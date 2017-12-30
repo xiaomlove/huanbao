@@ -12,9 +12,26 @@ class CommentDetail extends Model
     protected $fillable = ['cid', 'content'];
     
     protected $touches = ['comment'];//联动更新comment()方法中模型
+
+    const CONTENT_TYPE_TEXT = 'text';
+    const CONTENT_TYPE_IMAGE = 'image';
     
     public function comment()
     {
         return $this->belongsTo(Comment::class, 'cid', 'id');
     }
+
+    public function attachments()
+    {
+        return $this->morphToMany(
+            Attachment::class,
+            "target",
+            AttachmentRelationship::TABLE_NAME,
+            "target_id",
+            "attachment_key",
+            "cid",
+            "key"
+        );
+    }
+
 }

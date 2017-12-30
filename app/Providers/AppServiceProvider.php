@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\CommentDetail;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Models\AttachmentRelationship;
@@ -9,6 +10,7 @@ use App\Models\Comment;
 use App\User;
 use App\Models\HuisuoJishi;
 use App\Models\ContactRelationship;
+use App\Observers\CommentDetailObserver;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -31,7 +33,9 @@ class AppServiceProvider extends ServiceProvider
         
         //自定义多态关联
         $this->customMorphMap();
-        
+
+        //监听ORM事件
+        $this->listenORMEvent();
     }
 
     /**
@@ -85,11 +89,16 @@ class AppServiceProvider extends ServiceProvider
     private function customMorphMap()
     {
         Relation::morphMap([
-            AttachmentRelationship::TARGET_TYPE_COMMENT => Comment::class,
+            AttachmentRelationship::TARGET_TYPE_COMMENT_DETAIL => CommentDetail::class,
             AttachmentRelationship::TARGET_TYPE_USER_AVATAR => User::class,
-            
+
             ContactRelationship::OWNER_TYPE_HUISUO => HuisuoJishi::class,
             ContactRelationship::OWNER_TYPE_JISHI => HuisuoJishi::class,
         ]);
+    }
+
+    private function listenORMEvent()
+    {
+        CommentDetail::observe(CommentDetailObserver::class);
     }
 }

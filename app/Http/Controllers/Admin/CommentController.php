@@ -71,9 +71,11 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $topic = Topic::findOrFail($request->tid);
+        $comment = new Comment();
+        return view('admin.comment.form', compact('topic', 'comment'));
     }
 
     /**

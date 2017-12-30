@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\CommentDetail;
 
 class HomeController extends Controller
 {
@@ -28,6 +29,7 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
-        dd(__METHOD__);
+        $disk = \Storage::disk('qiniu');
+        echo $disk->imagePreviewUrl('7.png', 'imageView2/0/w/100/h/200');
     }
 }

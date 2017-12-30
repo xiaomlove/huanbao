@@ -37,3 +37,25 @@ input[type=submit] {
 	padding: 4px;
 	margin: 0px;
 }
+.editor-block-image {
+    text-align: center;
+}
+
+/*帖子详情*/
+.topic-show .left-part {
+    width: 160px;
+    text-align: center;
+}
+.topic-show header .left-part {
+   vertical-align: middle;
+}
+.topic-show .left-part .name {
+    padding-bottom: 10px;
+    font-size: 20px;
+}
+.topic-show .left-part .stat-box {
+    background-color: transparent;
+}
+.topic-show .left-part .stat-box th {
+    text-align: center;
+}

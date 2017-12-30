@@ -97,7 +97,7 @@ class TopicController extends Controller
      */
     public function edit($id)
     {
-        $topic = Topic::with('main_floor', 'main_floor.attachments', 'main_floor.detail')->findOrFail($id);
+        $topic = Topic::with('main_floor', 'main_floor.detail')->findOrFail($id);
 //        dd($topic);
         $forums = Forum::all();
         return view('admin.topic.form', compact('topic', 'forums'));

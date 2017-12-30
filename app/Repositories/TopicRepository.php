@@ -54,7 +54,7 @@ class TopicRepository
         {
             //创建话题
             $topicData = $request->only(['title', 'fid']);
-            $topicData['uid'] = \Auth::user()->id;
+            $topicData['uid'] = \Auth::id();
             $topic = $this->topic->create($topicData);
             //创建主楼
             $comment = $topic->main_floor()->create([

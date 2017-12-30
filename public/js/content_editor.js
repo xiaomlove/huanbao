@@ -27,7 +27,7 @@
         var index, activeBlock, action;
 
         if (!settings.content) {
-            var contentData = [{type: "text", data: {text: "默认内容", classList: [commonClassName, textClassName]}}];
+            var contentData = [{type: "text", data: {text: "默认内容"}}];
         } else {
             var contentData = JSON.parse(settings.content.replace(/\n/g, '\\n'));
         }
@@ -71,14 +71,14 @@
         var imageModal = new ImageModal({
             uploadUrl: settings.uploadUrl,
             afterUpload: function (response) {
-                var data = {type: "image", data: {attachment_id: response.data.id, uri: response.data.uri}};
-                var dataToShow = {uri: response.data.uri, classList: [commonClassName, imageClassName, "text-center"]};
+                var data = {type: "image", data: {attachment_key: response.data.key, url: response.data.url}};
+                var dataToShow = {url: response.data.url, classList: [commonClassName, imageClassName, "text-center"]};
                 if (action == "add") {
                     appendData(index, data);
                     activeBlock.after(imageModal.createBlock(dataToShow));
                 } else if (action == "edit") {
                     updateData(index, data);
-                    activeBlock.find("img").attr("src", dataToShow.uri);
+                    activeBlock.find("img").attr("src", dataToShow.url);
                 }
             }
         });

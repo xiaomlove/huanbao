@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AttachmentRelationship extends Model
 {
-    const TARGET_TYPE_COMMENT = 'comment';
+    const TARGET_TYPE_COMMENT_DETAIL = 'comment_detail';
     
     const TARGET_TYPE_USER_AVATAR = 'user_avatar';
     
@@ -17,8 +17,7 @@ class AttachmentRelationship extends Model
     protected $fillable = [
         'target_type', 
         'target_id', 
-        'attachment_id',
-        'priority',
+        'attachment_key',
     ];
     
     

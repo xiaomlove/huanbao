@@ -63,16 +63,16 @@
 
         this.show = function (data) {
             $modal.modal("show");
-            $preview.attr("src", data && data.uri || "");
+            $preview.attr("src", data && data.url || "");
         }
         this.hide = function () {
             $modal.modal("hide");
         }
         this.createBlock = function (data) {
-            return $('<p class="' + (data && data.classList && data.classList.join(" ") || "") + '"><img src="' + (data && data.uri || "") + '" style="max-width: 100%;max-height: 600px" /></p>');
+            return $('<p class="editor-block editor-block-image"><img src="' + (data && data.url || "") + '" style="max-width: 100%;max-height: 600px" /></p>');
         }
         $modal.on("click", ".submit", function () {
-            if (options && options.uploadUrl) {
+            if (file && options && options.uploadUrl) {
                 //进行上传操作
                 var formData = new FormData();
                 formData.append(options.uploadName, file);
@@ -99,11 +99,13 @@
                     } else {
                         alert(response.msg);
                     }
-                }).error(function (xhr, errstr) {
+                }).fail(function (xhr, errstr) {
                     alert(errstr);
                 }).always(function () {
                     $submitBtn.removeAttr("disabled").text("确定");
                     isUploading = false;
+                    file = null;
+                    $selectImage.val("");
                 })
             } else {
                 self.hide();

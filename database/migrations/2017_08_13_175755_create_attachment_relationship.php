@@ -18,14 +18,13 @@ class CreateAttachmentRelationship extends Migration
             $table->increments('id');
             $table->string('target_type')->comment('关联目标类型');
             $table->integer('target_id')->comment('关联目标ID');
-            $table->integer('attachment_id')->comment('附件ID');
-            $table->integer('priority')->default(0)->comment('优先级，值越大优先级越高');
-            
+            $table->string('attachment_key')->comment('附件key');
+
             $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             
-            $table->unique(['target_id', 'target_type', 'attachment_id'], 'uk_target');
-            $table->index('attachment_id', 'idx_attachment');
+            $table->unique(['target_id', 'target_type', 'attachment_key'], 'uk_target');
+            $table->index('attachment_key', 'idx_attachment_key');
             
             $table->index('created_at', 'idx_created_at');
             $table->index('updated_at', 'idx_updated_at');

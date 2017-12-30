@@ -18,8 +18,7 @@ class CreateAttachments extends Migration
             $table->increments('id');
             $table->integer('uid')->comment('用户UID');
             $table->string('mime_type')->comment('媒体类型');
-            $table->string('dirname')->comment('保存目录名');
-            $table->string('basename')->comment('基本名称，包含后缀');
+            $table->string('key')->comment('文件key');
             $table->bigInteger('size')->comment('文件大小');
             
             $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
@@ -27,7 +26,7 @@ class CreateAttachments extends Migration
             
             $table->index('uid', 'idx_uid');
             $table->index('size', 'idx_size');
-            $table->index('basename', 'idx_basename');
+            $table->unique('key', 'uk_key');
             $table->index('created_at', 'idx_created_at');
             $table->index('updated_at', 'idx_updated_at');
         });

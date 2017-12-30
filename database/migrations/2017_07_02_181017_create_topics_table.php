@@ -23,8 +23,7 @@ class CreateTopicsTable extends Migration
             
             $table->integer('last_comment_time')->default(0)->comment('最后评论时间');
             $table->integer('last_comment_id')->default(0)->comment('最后评论ID');
-            $table->tinyInteger('is_sticky')->default(0)->comment('是否置顶');
-            
+
             $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
             

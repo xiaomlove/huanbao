@@ -48,7 +48,7 @@
                     <small>{{ $value->created_at->format('Y-m-d H:i') }}</small>
                 </td>
                 <td>
-                    {{ $value->view_count }}/{{ $value->comment_count }}
+                    {{ $value->comment_count }}/{{ $value->view_count }}
                 </td>
                 <td>{!! $topicPresenter->getLastReply($value) !!}</td>
                 <td>

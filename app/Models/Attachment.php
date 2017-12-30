@@ -11,35 +11,13 @@ class Attachment extends Model
     protected $fillable = [
         'uid',
         'mime_type',
-        'dirname',
-        'basename',
+        'key',
         'size',
     ];
     
     public function user()
     {
-        return $this->hasOne(User::class, 'id', 'uid');
+        return $this->belongsTo(User::class, 'uid', 'id');
     }
     
-    public function users()
-    {
-        return $this->morphedByMany(
-            User::class, 
-            'target',
-            AttachmentRelationship::TABLE_NAME,
-            'attachment_id',
-            'target_id'
-        );
-    }
-    
-    public function comments()
-    {
-        return $this->morphedByMany(
-            Comment::class,
-            'target',
-            AttachmentRelationship::TABLE_NAME,
-            'attachment_id',
-            'target_id'
-        );
-    }
 }

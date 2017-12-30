@@ -67,12 +67,13 @@
     <script src="{{ asset('js/text_modal.js') }}"></script>
     <script src="{{ asset('js/image_modal.js') }}"></script>
     <script src="{{ asset('js/content_editor.js') }}"></script>
+
     <script>
         var tid = '{{ $topic->id }}';
         $('#forum').select2();
         var contentEditor = new ContentEditor({
             wrapId: "content",
-            uploadUrl: "{{ route('admin.upload.image') }}",
+            uploadUrl: "{{ route('upload.image') }}",
             content: '{!! $topic->main_floor ? $topic->main_floor->detail->content : "" !!}'
         });
 

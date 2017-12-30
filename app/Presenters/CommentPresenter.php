@@ -4,6 +4,7 @@ namespace App\Presenters;
 
 use App\Models\Comment;
 use App\Models\Attachment;
+use App\Models\CommentDetail;
 
 class CommentPresenter
 {
@@ -11,11 +12,11 @@ class CommentPresenter
     {
         if ($comment->floor_num == 1)
         {
-            return route('topic.edit', $comment->tid);
+            return route('admin.topic.edit', $comment->tid);
         }
         else 
         {
-            return route('comment.edit', $comment->id);
+            return route('admin.comment.edit', $comment->id);
         }
     }
     
@@ -93,4 +94,33 @@ class CommentPresenter
     {
         return asset(sprintf("storage/%s/%s", $attachment->dirname, $attachment->basename));
     }
+
+    public function renderDetail(CommentDetail $commentDetail)
+    {
+        static $disk;
+        if (!$disk)
+        {
+            $disk = \Storage::disk('qiniu');
+        }
+        $contents = json_decode($commentDetail->content, true);
+        $htmls = [];
+        foreach ($contents as $content)
+        {
+            switch ($content['type'])
+            {
+                case CommentDetail::CONTENT_TYPE_TEXT:
+                    $htmls[] = sprintf('<p>%s</p>', str_replace(["\n"], ["<br/>"], $content['data']['text']));
+                    break;
+                case CommentDetail::CONTENT_TYPE_IMAGE:
+                    $htmls[] = sprintf(
+                        '<p><a href="%s" target="_blank"><img src="%s" class="image"></a></p>',
+                        $content['data']['url'],
+                        $disk->imagePreviewUrl($content['data']['attachment_key'], 'imageView2/0/h/400')
+                    );
+                    break;
+            }
+        }
+        return implode("", $htmls);
+    }
+
 }

@@ -47,8 +47,7 @@ class Handler extends ExceptionHandler
     {
         if 
         (
-            !config('app.debug')
-            && $request->expectsJson()
+            $request->expectsJson()
         )
         {
             $modelName = get_class($e);

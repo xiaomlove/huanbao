@@ -17,9 +17,9 @@ class CreateCommentDetailTable extends Migration
         Schema::create($tableName, function (Blueprint $table) {
             $table->increments('id');
             $table->integer('cid')->comment('评论ID');
-            $table->text('content')->comment('内容详情');
+            $table->mediumText('content')->comment('内容详情');
             
-            $table->index('cid', 'idx_cid');
+            $table->unique('cid', 'uk_cid');
         });
         \DB::statement("ALTER TABLE `$tableName` comment '评论详情表'");
     }

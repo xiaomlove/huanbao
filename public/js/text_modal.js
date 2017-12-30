@@ -38,7 +38,7 @@
             $modal.modal("hide");
         }
         this.createBlock = function (data) {
-            return $('<p class="' + (data && data.classList && data.classList.join(" ") || "") + '">' + (data && data.text.replace(/[\r\n]/g, "<br/>") || "默认内容") + '</p>');
+            return $('<p class="editor-block editor-block-text">' + (data && data.text.replace(/[\r\n]/g, "<br/>") || "默认内容") + '</p>');
         }
         $modal.on("click", ".submit", function () {
             self.hide();
