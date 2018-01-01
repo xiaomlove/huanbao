@@ -86,18 +86,14 @@ class CommentController extends Controller
      */
     public function store(CommentRequest $request)
     {
-        $data = $request->all();
-        $data['uid'] = \Auth::user()->id;
-        $data['pid'] = $request->get('pid', 0);
-        $result = $this->comment->create($data);
-        //         dd($result);
-        if ($result['ret'] == 0)
+        $result = $this->comment->create($request);
+        if ($request->expectsJson())
         {
-            return redirect()->route('topic.show', $data['tid'])->with("success", "发表回复成功");
+            return $result;
         }
         else
         {
-            return back()->with("danger", $result['msg'])->withInput();
+            return back()->with('success', $result['msg']);
         }
     }
 
@@ -120,10 +116,11 @@ class CommentController extends Controller
      */
     public function edit($id)
     {
-        $comment = Comment::with('topic', 'detail', 'attachments')->findOrFail($id);
+        $comment = Comment::with('detail')->findOrFail($id);
+        $topic = Topic::findOrFail($comment->tid);
 //         dd($comment);
         
-        return view('admin.comment.edit', compact('comment'));
+        return view('admin.comment.form', compact('comment', 'topic'));
     }
 
     /**
@@ -135,17 +132,14 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request, $id)
     {
-        $data = $request->all();
-        $data['uid'] = \Auth::user()->id;
-        $result = $this->comment->update($data, $id);
-//                 dd($result);
-        if ($result['ret'] == 0)
+        $result = $this->comment->update($request, $id);
+        if ($request->expectsJson())
         {
-            return redirect()->route('comment.edit', $id)->with("success", "编辑回复成功");
+            return $result;
         }
         else
         {
-            return back()->with("danger", $result['msg'])->withInput();
+            return back()->with('success', $result['msg']);
         }
     }
 

@@ -19,7 +19,7 @@
               action="{{ route('admin.comment.store') }}">
     @endif
             {{ csrf_field() }}
-
+            <input type="hidden" name="tid" value="{{ request('tid', $comment->tid) }}">
             <div class="form-group{{$errors->has('content') ? ' has-error' : ''}}">
                 <label for="" class="col-sm-2 control-label">回复内容</label>
                 <div class="col-sm-10">
@@ -44,39 +44,16 @@
     <script src="{{ asset('js/content_editor.js') }}"></script>
 
     <script>
-        var tid = '{{ $comment->id }}';
+        var tid = "{{ request('tid') }}";
         var contentEditor = new ContentEditor({
+            formId: "form",
             wrapId: "content",
             uploadUrl: "{{ route('upload.image') }}",
-            content: '{!! $comment->detail? $comment->detail->content : "" !!}'
+            content: '{!! $comment->detail? $comment->detail->content : "" !!}',
+            submitBtnSelector: ".submit",
+            createdRedirectUrl: tid && "{{ route('admin.topic.show', ['tid' => request('tid')]) }}",
+            updatedRedirectUrl: ""
         });
-
-        var $form = $('#form');
-        $form.on("click", ".submit", function () {
-            var data = $form.serialize();
-            data += "&content=" + JSON.stringify(contentEditor.getData());
-            $.ajax({
-                url: $form.attr("action"),
-                type: "post",
-                dataType: "json",
-                data: data,
-            }).done(function (response) {
-                console.log(response);
-                alert(response.msg);
-                if (response.ret == 0 && !tid) {
-                    location.href = "{{ route('admin.comment.index') }}";
-                }
-            }).fail(function (xhr, errstr, errThrown) {
-                var response = xhr.responseJSON;
-                var msg = "";
-                for (var i in response.data.errors) {
-                    msg += response.data.errors[i][0] + "\n";
-                }
-                alert(msg);
-            }).always(function () {
-
-            })
-        })
 
     </script>
 @stop

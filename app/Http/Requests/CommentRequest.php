@@ -7,8 +7,6 @@ use Illuminate\Validation\Rule;
 
 class CommentRequest extends FormRequest
 {
-    use FormatErrorsTrait;
-    
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -36,7 +34,6 @@ class CommentRequest extends FormRequest
         $data = \Input::all();
         $v = \Validator::make($data, [
             'tid' => 'required|exists:topics,id',
-            'content' => 'required|min:2|max:200',
         ]);
         $v->sometimes('pid', 'numeric|exists:comments,id', function($input) {
             return $input->pid > 0;

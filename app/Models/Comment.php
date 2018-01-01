@@ -83,9 +83,16 @@ class Comment extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function first_comments()
+    public function firstComments()
     {
-        return $this->hasMany(CommentComment::class, "root_cid", "id");
+        return $this->belongsToMany(
+            Comment::class,
+            CommentComment::TABLE_NAME,
+            "root_cid",
+            "cid",
+            "id",
+            "id"
+        );
     }
     
     /**

@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class CommentComment extends Model
 {
-    protected $table = 'comment_comments';
+    const TABLE_NAME = 'comment_comments';
+
+    protected $table = self::TABLE_NAME;
 
     public function comment()
     {

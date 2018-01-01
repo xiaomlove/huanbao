@@ -83,7 +83,7 @@
                             <input type="hidden" name="pid" value="0"/>
                             <div class="form-group row">
                                 <div class="col-sm-6">
-                                    @include('common.admin.error')
+                                    @include('admin.common.error')
                                 </div>
                             </div>
                             <div class="form-group row{{$errors->has('content') ? ' has-danger' : ''}}">

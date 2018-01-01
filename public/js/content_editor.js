@@ -9,8 +9,14 @@
 
     var ContentEditor = function (options) {
         var defaults = {
-            wrapId: "",
-            content: "",
+            wrapId: "", //内容包裹容器ID
+            content: "", //内容
+            uploadUrl: "",//文件上传url
+            formId: "",//表单ID
+            submitBtnSelector: "",//提交按钮选择器
+            createdRedirectUrl: "", //创建后提交url
+            updatedRedirectUrl: "",//更新后提交url
+            contentFieldName: "content",//内容字段名
         }
         var settings = $.extend(true, {}, defaults, options);
         if (!settings.wrapId) {
@@ -24,7 +30,7 @@
             textClassName = "editor-block-text",
             imageClassName = "editor-block-image";
 
-        var index, activeBlock, action;
+        var index, activeBlock, action, self = this;
 
         if (!settings.content) {
             var contentData = [{type: "text", data: {text: "默认内容"}}];
@@ -152,9 +158,48 @@
                 top: offset.top
             });
         })
+
+        //封装表单提交部分
+        if (settings.formId && settings.submitBtnSelector) {
+            var $form = $("#" + settings.formId);
+            $form.on("click", settings.submitBtnSelector, function (e) {
+                var data = $form.serialize();
+                data += "&" + settings.contentFieldName + "=" + JSON.stringify(contentData);
+                $.ajax({
+                    url: $form.attr("action"),
+                    type: "post",
+                    dataType: "json",
+                    data: data,
+                }).done(function (response) {
+                    console.log(response);
+                    alert(response.msg);
+                    if (response.ret == 0) {
+                        var $method = $("[name=_method]");
+                        if ($method.length && $.inArray($method.val().toLowerCase(), ['patch', 'put']) > -1 && settings.updatedRedirectUrl) {
+                            window.location.href = settings.updatedRedirectUrl;
+                        } else if (settings.createdRedirectUrl) {
+                            window.location.href = settings.createdRedirectUrl;
+                        }
+                    } else {
+                        alert(response.msg);
+                    }
+                }).fail(function (xhr, errstr, errThrown) {
+                    var response = xhr.responseJSON;
+                    var msg = "";
+                    for (var i in response.data.errors) {
+                        msg += response.data.errors[i][0] + "\n";
+                    }
+                    alert(msg);
+                }).always(function () {
+
+                })
+            })
+        }
+
         this.getData = function () {
             return contentData;
         }
+
     }
     window.ContentEditor = ContentEditor;
 })(window, jQuery);
