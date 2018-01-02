@@ -1,15 +1,20 @@
-@if(count($comments))
+@if(count($list))
+@inject('commentPresenter', 'App\Presenters\CommentPresenter')
 <div class="comment-comment">
-	@foreach($comments as $comment)
+	@foreach($list as $comment)
 	<div class="media">
-      <img class="d-flex mr-3" data-src="/dashboard/img/avatar-3.jpg" alt="32x32" src="/dashboard/img/avatar-3.jpg" data-holder-rendered="true" style="width: 32px; height: 32px;">
+      <div class="media-left">
+          <a href="#">
+              <img class="media-object" data-src="/dashboard/img/avatar-3.jpg" alt="32x32" src="/dashboard/img/avatar-3.jpg" data-holder-rendered="true" style="width: 32px; height: 32px;">
+          </a>
+      </div>
       <div class="media-body">
-        <div class="comment-content"><span class="name">{{ $comment->user->name }}</span>: {{ $comment->detail->content }}</div>
+        <div class="comment-content">{!! $commentPresenter->renderDetail($comment, true) !!}</div>
       	<div class="text-right">{{ $comment->created_at->format('Y-m-d H:s')}}<a href="javascript:;" class="reply-to-someone" data-pid={{ $comment->id }}>回复</a></div>
       </div>
     </div>
     @endforeach
-    {!! $comments->links() !!}
+    {!! $list->links() !!}
     <p><a href="javascript:;" class="reply-to-main-comment">我也说一句</a></p>
 </div>
 @endif

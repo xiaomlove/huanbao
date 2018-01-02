@@ -26,43 +26,19 @@ class CommentController extends Controller
      */
     public function index(Request $request)
     {
-        $isAjax = $request->ajax();
-        $params = [];
-        $params['tid'] = request('tid');
-        $params['root_id'] = request('root_id');
-        $params['per_page'] = request('per_page', 10);
-        $params['page'] = request('page', 1);
-        
-        if ($isAjax)
+        if ($request->expectsJson())
         {
-            $params['order'] = request('order', 'id asc');
-            $params['with'] = ['user', 'detail'];
+            $result = $this->comment->listAll($request, [
+                'orderBy' => 'id asc',
+                'with' => ['user', 'detail', 'parentComment', 'parentComment.user']
+            ]);
+            $view = view('admin.topic.comment_comment', ['list' => $result['data']]);
+            return normalize(0, 'OK', ['html' => $view->render()]);
         }
         else
         {
-            $params['order'] = request('order', 'id desc');
-            $params['with'] = ['user', 'detail', 'topic', 'topic.forum', 'rootComment'];
-        }
-        
-        $result = $this->comment->listAll($params);
-//         dd($result);
-        
-        if ($result['ret'] == 0)
-        {
-            $comments = $result['data']['list'];
-            if ($isAjax)
-            {
-                $view = view('admin.topic.comment_comment', compact('comments'));
-                return normalize(0, 'OK', ['html' => $view->render()]);
-            }
-            else 
-            {
-                return view('admin.comment.index', compact('comments'));
-            }
-        }
-        else
-        {
-            return normalize($result['msg'], \Input::all());
+            $result = $this->comment->listAll($request);
+            return view('admin.comment.index', compact('comments'));
         }
     }
 

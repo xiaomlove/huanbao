@@ -9,6 +9,7 @@ use App\Events\CommentCreated;
 use App\Repositories\AttachmentRepository;
 use App\Models\AttachmentRelationship;
 use App\Http\Requests\CommentRequest;
+use Illuminate\Http\Request;
 
 class CommentRepository
 {
@@ -114,7 +115,7 @@ class CommentRepository
         else
         {
             //楼中楼，更新根评论的信息
-            $count = $comment->rootComment()->count();
+            $count = $rootComment->comments()->count();
             $rootComment->update(['comment_count' => $count]);
             if ($count < 5)
             {
@@ -130,7 +131,7 @@ class CommentRepository
         //插入评论成功，触发“评论添加事件”
         event(new CommentCreated($comment));
         
-        return normalize(0, "OK", $comment);
+        return normalize(0, "回复成功", $comment);
     }
     
     /**
@@ -215,34 +216,21 @@ class CommentRepository
      * @param array $params
      * @return number[]|string[]|array[]
      */
-    public function listAll($params = [])
+    public function listAll(Request $request, array $otherParams = [])
     {
         $defaults = [
-            'page' => 1,
-            'per_page' => 10,
-            'order' => 'id asc',
-            'tid' => 0,
-            'root_id' => null,
-            'with' => [],
+            'orderBy' => 'id desc',
+            'with' => ['user', 'detail'],
         ];
-        $args = array_merge($defaults, $params);
-        $where = [];
-        if (!is_null($args['tid']))
-        {
-            $where[] = ['tid', '=', (int)$args['tid']];
-        }
-        if (!is_null($args['root_id']))
-        {
-            $where[] = ['root_id', '=', (int)$args['root_id']];
-        }
+        $params = array_merge($defaults, $otherParams);
+        $comments = $this->comment
+        ->when($request->tid, function ($query) use ($request) {return $query->where('tid', $request->tid);})
+        ->when($request->root_id, function ($query) use ($request) {return $query->where('root_id', $request->root_id);})
+        ->with($params['with'])
+        ->orderByRaw($params['orderBy'])
+        ->paginate($request->get('per_page', 20));
     
-        $list = $this->comment
-        ->where($where)
-        ->with($args['with'])
-        ->orderByRaw(\DB::raw($args['order']))
-        ->paginate($args['per_page'], ['*'], 'page', $args['page']);
-    
-        return normalize(0, "OK", ['list' => $list]);
+        return normalize(0, "OK", $comments);
     }
 
     private function getContentJson(CommentRequest $request)

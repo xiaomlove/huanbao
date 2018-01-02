@@ -59,3 +59,6 @@ input[type=submit] {
 .topic-show .left-part .stat-box th {
     text-align: center;
 }
+.topic-show .comment-comment .media {
+    text-align: left;
+}

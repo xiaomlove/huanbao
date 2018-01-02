@@ -95,21 +95,33 @@ class CommentPresenter
         return asset(sprintf("storage/%s/%s", $attachment->dirname, $attachment->basename));
     }
 
-    public function renderDetail(CommentDetail $commentDetail)
+    public function renderDetail(Comment $comment, $includeUser = false)
     {
         static $disk;
         if (!$disk)
         {
             $disk = \Storage::disk('qiniu');
         }
-        $contents = json_decode($commentDetail->content, true);
+        $contents = json_decode($comment->detail->content, true);
         $htmls = [];
         foreach ($contents as $content)
         {
             switch ($content['type'])
             {
                 case CommentDetail::CONTENT_TYPE_TEXT:
-                    $htmls[] = sprintf('<p>%s</p>', str_replace(["\n"], ["<br/>"], $content['data']['text']));
+                    if ($includeUser)
+                    {
+                        $name = $comment->user->name;
+                        if ($comment->root_id != $comment->pid)
+                        {
+                            $name .= " 回复 " . $comment->parentComment->user->name;
+                        }
+                        $htmls[] = sprintf('<p>%s：%s</p>', $name, str_replace(["\n"], ["<br/>"], $content['data']['text']));
+                    }
+                    else
+                    {
+                        $htmls[] = sprintf('<p>%s</p>', str_replace(["\n"], ["<br/>"], $content['data']['text']));
+                    }
                     break;
                 case CommentDetail::CONTENT_TYPE_IMAGE:
                     $htmls[] = sprintf(

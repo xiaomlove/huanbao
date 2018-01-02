@@ -40,7 +40,7 @@
                         </td>
                         <td class="right-part">
                             <div class="comment-content">
-                                {!! $commentPresenter->renderDetail($comment->detail) !!}
+                                {!! $commentPresenter->renderDetail($comment) !!}
                             </div>
                         </td>
                     </tr>
