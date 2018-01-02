@@ -53,7 +53,7 @@ class TopicsTableSeeder extends Seeder
                         $commentComment->detail()->create([
                             'content' => factory(CommentDetail::class, 1)->make()->first()->content,
                         ]);
-                        $comment->first_comments()->create([
+                        $comment->firstComments()->create([
                             'root_cid' => $comment->id,
                             'cid' => $commentComment->id,
                         ]);

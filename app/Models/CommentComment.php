@@ -10,9 +10,4 @@ class CommentComment extends Model
 
     protected $table = self::TABLE_NAME;
 
-    public function comment()
-    {
-        return $this->hasOne(Comment::class, "id", "cid");
-    }
-
 }

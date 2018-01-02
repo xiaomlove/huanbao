@@ -29,6 +29,7 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
+//        dd(config('filesystems.default'));
         $disk = \Storage::disk('qiniu');
         echo $disk->imagePreviewUrl('7.png', 'imageView2/0/w/100/h/200');
     }
