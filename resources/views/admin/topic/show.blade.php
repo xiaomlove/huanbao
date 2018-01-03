@@ -57,7 +57,28 @@
                                 <span><a href="{{ $commentPresenter->getEditLink($comment) }}">编辑</a></span>
                                 <span title="赞" class="pointer"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></span>
                             </div>
-                            <div class="comment-comment-wrap"></div>
+                            <div class="comment-comment-wrap">
+                                <div class="comment-comment">
+                                    @foreach($comment->firstComments as $commentComment)
+                                        <div class="media">
+                                            <div class="media-left">
+                                                <a href="#">
+                                                    <img class="media-object" data-src="/dashboard/img/avatar-3.jpg" alt="32x32" src="/dashboard/img/avatar-3.jpg" data-holder-rendered="true" style="width: 32px; height: 32px;">
+                                                </a>
+                                            </div>
+                                            <div class="media-body">
+                                                <div class="comment-content">{!! $commentPresenter->renderDetail($commentComment, true) !!}</div>
+                                                <div class="text-right">{{ $commentComment->created_at->format('Y-m-d H:s')}}<a href="javascript:;" class="reply-to-someone" data-pid={{ $commentComment->id }}>回复</a></div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                    @php
+                                        $paginator = new \Illuminate\Pagination\LengthAwarePaginator([], $comment->comment_count, 5, 1, ['path' => '/admin/comment', 'query' => ['tid' => $topic->id, 'root_id' => $comment->id]]);
+                                        echo $paginator->render();
+                                    @endphp
+                                    <p><a href="javascript:;" class="reply-to-main-comment">我也说一句</a></p>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     </tbody>
@@ -191,6 +212,23 @@
             } else {
                 $this.removeAttr("style").data("expand", 0);
             }
+        })
+
+        $topicDetail.on("click", ".comment-comment .pagination a", function (e) {
+            var $wrap = $(this).closest('.comment-comment-wrap');
+            $.ajax({
+                url: this.getAttribute("href"),
+                method: "get",
+                dataType: "json",
+            }).done(function (response) {
+                console.log(response);
+                $wrap.empty().append(response.data.html);
+            }).fail(function (xhr, errstr) {
+                alert(errstr);
+            }).always(function() {
+
+            });
+            return false;
         })
 
 

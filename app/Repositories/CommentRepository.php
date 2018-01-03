@@ -117,7 +117,7 @@ class CommentRepository
             //楼中楼，更新根评论的信息
             $count = $rootComment->comments()->count();
             $rootComment->update(['comment_count' => $count]);
-            if ($count < 5)
+            if ($count <= 5)
             {
                 $rootComment->firstComments()->save($comment);
             }
@@ -173,7 +173,11 @@ class CommentRepository
         $topic = $this->topic->findOrFail($id);
         $comments = $this->comment
             ->where("tid", $topic->id)->where('pid', 0)
-            ->with(['user', 'detail'])
+            ->with([
+                'user', 'detail', 'firstComments',
+                'firstComments.user', 'firstComments.detail',
+                'firstComments.parentComment', 'firstComments.parentComment.user',
+            ])
             ->orderBy('floor_num', 'asc')
             ->paginate(request('per_page', 20));
 //        dd($comments);
@@ -221,6 +225,7 @@ class CommentRepository
         $defaults = [
             'orderBy' => 'id desc',
             'with' => ['user', 'detail'],
+            'per_page' => 20,
         ];
         $params = array_merge($defaults, $otherParams);
         $comments = $this->comment
@@ -228,7 +233,7 @@ class CommentRepository
         ->when($request->root_id, function ($query) use ($request) {return $query->where('root_id', $request->root_id);})
         ->with($params['with'])
         ->orderByRaw($params['orderBy'])
-        ->paginate($request->get('per_page', 20));
+        ->paginate($request->get('per_page', $params['per_page']));
     
         return normalize(0, "OK", $comments);
     }

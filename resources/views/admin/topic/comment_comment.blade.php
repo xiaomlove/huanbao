@@ -14,7 +14,7 @@
       </div>
     </div>
     @endforeach
-    {!! $list->links() !!}
+    {!! $list->appends(['tid' => $comment->tid, 'root_id' => $comment->root_id])->links() !!}
     <p><a href="javascript:;" class="reply-to-main-comment">我也说一句</a></p>
 </div>
 @endif

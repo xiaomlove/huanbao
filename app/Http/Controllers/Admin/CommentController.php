@@ -30,7 +30,8 @@ class CommentController extends Controller
         {
             $result = $this->comment->listAll($request, [
                 'orderBy' => 'id asc',
-                'with' => ['user', 'detail', 'parentComment', 'parentComment.user']
+                'with' => ['user', 'detail', 'parentComment', 'parentComment.user'],
+                'per_page' => 5,
             ]);
             $view = view('admin.topic.comment_comment', ['list' => $result['data']]);
             return normalize(0, 'OK', ['html' => $view->render()]);
