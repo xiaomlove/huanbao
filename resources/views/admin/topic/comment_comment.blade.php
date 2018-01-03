@@ -14,7 +14,7 @@
       </div>
     </div>
     @endforeach
-    {!! $list->appends(['tid' => $comment->tid, 'root_id' => $comment->root_id])->links() !!}
+    {!! $list->appends(['tid' => $comment->tid, 'root_id' => $comment->root_id])->links('vendor.pagination.bootstrap-4-comment-comment') !!}
     <p><a href="javascript:;" class="reply-to-main-comment">我也说一句</a></p>
 </div>
 @endif

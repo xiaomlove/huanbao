@@ -62,3 +62,9 @@ input[type=submit] {
 .topic-show .comment-comment .media {
     text-align: left;
 }
+.topic-show .action-wrap span {
+     margin-left: 4px;
+}
+.topic-show .comment-comment .reply-to-someone {
+    margin-left: 4px;
+}

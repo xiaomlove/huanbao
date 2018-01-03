@@ -57,6 +57,7 @@
                                 <span><a href="{{ $commentPresenter->getEditLink($comment) }}">编辑</a></span>
                                 <span title="赞" class="pointer"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></span>
                             </div>
+                            @if($comment->floor_num > 1)
                             <div class="comment-comment-wrap">
                                 <div class="comment-comment">
                                     @foreach($comment->firstComments as $commentComment)
@@ -74,11 +75,12 @@
                                     @endforeach
                                     @php
                                         $paginator = new \Illuminate\Pagination\LengthAwarePaginator([], $comment->comment_count, 5, 1, ['path' => '/admin/comment', 'query' => ['tid' => $topic->id, 'root_id' => $comment->id]]);
-                                        echo $paginator->render();
+                                        echo $paginator->links('vendor.pagination.bootstrap-4-comment-comment');
                                     @endphp
                                     <p><a href="javascript:;" class="reply-to-main-comment">我也说一句</a></p>
                                 </div>
                             </div>
+                            @endif
                         </td>
                     </tr>
                     </tbody>
@@ -140,6 +142,7 @@
             $commentFormCancel.hide();
             $commentFormWrap.append($commentForm);
             $pid.val("0");
+            $commentFormTextarea.attr('placeholder', '');
         });
 
 

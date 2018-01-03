@@ -111,7 +111,7 @@ class CommentPresenter
                 case CommentDetail::CONTENT_TYPE_TEXT:
                     if ($includeUser)
                     {
-                        $name = $comment->user->name;
+                        $name = '<span class="name">' . $comment->user->name . '</span>';
                         if ($comment->root_id != $comment->pid)
                         {
                             $name .= " 回复 " . $comment->parentComment->user->name;
