@@ -235,7 +235,7 @@ class CommentRepository
         ->orderByRaw($params['orderBy'])
         ->paginate($request->get('per_page', $params['per_page']));
     
-        return normalize(0, "OK", $comments);
+        return $comments;
     }
 
     private function getContentJson(CommentRequest $request)

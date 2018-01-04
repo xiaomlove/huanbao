@@ -68,7 +68,7 @@
                                                 </a>
                                             </div>
                                             <div class="media-body">
-                                                <div class="comment-content">{!! $commentPresenter->renderDetail($commentComment, true) !!}</div>
+                                                <div class="comment-content">{!! $commentPresenter->renderDetail($commentComment, ['include_user' => true]) !!}</div>
                                                 <div class="text-right">{{ $commentComment->created_at->format('Y-m-d H:s')}}<a href="javascript:;" class="reply-to-someone" data-pid={{ $commentComment->id }}>回复</a></div>
                                             </div>
                                         </div>

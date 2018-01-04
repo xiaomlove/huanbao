@@ -28,18 +28,22 @@ class CommentController extends Controller
     {
         if ($request->expectsJson())
         {
-            $result = $this->comment->listAll($request, [
+            $list = $this->comment->listAll($request, [
                 'orderBy' => 'id asc',
                 'with' => ['user', 'detail', 'parentComment', 'parentComment.user'],
                 'per_page' => 5,
             ]);
-            $view = view('admin.topic.comment_comment', ['list' => $result['data']]);
+            $view = view('admin.topic.comment_comment', compact('list'));
             return normalize(0, 'OK', ['html' => $view->render()]);
         }
         else
         {
-            $result = $this->comment->listAll($request);
-            return view('admin.comment.index', compact('comments'));
+            $list = $this->comment->listAll($request, [
+                'orderBy' => 'id desc',
+                'with' => ['user', 'detail', 'topic', 'topic.forum', 'rootComment'],
+            ]);
+//            dd($list);
+            return view('admin.comment.index', compact('list'));
         }
     }
 

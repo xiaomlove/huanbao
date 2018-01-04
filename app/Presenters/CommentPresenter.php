@@ -95,44 +95,79 @@ class CommentPresenter
         return asset(sprintf("storage/%s/%s", $attachment->dirname, $attachment->basename));
     }
 
-    public function renderDetail(Comment $comment, $includeUser = false)
+    public function renderDetail(Comment $comment, array $params = [])
     {
         static $disk;
         if (!$disk)
         {
             $disk = \Storage::disk('qiniu');
         }
+        $defaults = [
+            'include_user' => false,
+            'only_text' => false,
+        ];
+        $params = array_merge($defaults, $params);
+
         $contents = json_decode($comment->detail->content, true);
+
         $htmls = [];
         foreach ($contents as $content)
         {
             switch ($content['type'])
             {
                 case CommentDetail::CONTENT_TYPE_TEXT:
-                    if ($includeUser)
+                    if ($params['only_text'])
                     {
-                        $name = '<span class="name">' . $comment->user->name . '</span>';
-                        if ($comment->root_id != $comment->pid)
-                        {
-                            $name .= " 回复 " . $comment->parentComment->user->name;
-                        }
-                        $htmls[] = sprintf('<p>%s：%s</p>', $name, str_replace(["\n"], ["<br/>"], $content['data']['text']));
+                        $htmls[] = $content['data']['text'];
                     }
                     else
                     {
-                        $htmls[] = sprintf('<p>%s</p>', str_replace(["\n"], ["<br/>"], $content['data']['text']));
+                        if ($params['include_user'])
+                        {
+                            $name = '<span class="name">' . $comment->user->name . '</span>';
+                            if ($comment->root_id != $comment->pid)
+                            {
+                                $name .= " 回复 " . $comment->parentComment->user->name;
+                            }
+                            $htmls[] = sprintf('<p>%s：%s</p>', $name, str_replace(["\n"], ["<br/>"], $content['data']['text']));
+                        }
+                        else
+                        {
+                            $htmls[] = sprintf('<p>%s</p>', str_replace(["\n"], ["<br/>"], $content['data']['text']));
+                        }
                     }
                     break;
                 case CommentDetail::CONTENT_TYPE_IMAGE:
-                    $htmls[] = sprintf(
-                        '<p><a href="%s" target="_blank"><img src="%s" class="image"></a></p>',
-                        $content['data']['url'],
-                        $content['data']['attachment_key'] ? $disk->imagePreviewUrl($content['data']['attachment_key'], 'imageView2/0/h/400') : $content['data']['url']
-                    );
+                    if ($params['only_text'])
+                    {
+                        $htmls[] = '[图片]';
+                    }
+                    else
+                    {
+                        $htmls[] = sprintf(
+                            '<p><a href="%s" target="_blank"><img src="%s" class="image"></a></p>',
+                            $content['data']['url'],
+                            $content['data']['attachment_key'] ? $disk->imagePreviewUrl($content['data']['attachment_key'], 'imageView2/0/h/400') : $content['data']['url']
+                        );
+                    }
                     break;
             }
         }
         return implode("", $htmls);
+    }
+
+    private function renderDetailOnlyText(Comment $comment)
+    {
+        $contents = json_decode($comment->detail->content, true);
+        $texts = [];
+        foreach ($contents as $content)
+        {
+            if ($content['type'] == CommentDetail::CONTENT_TYPE_TEXT)
+            {
+                $texts[] = $content['data']['text'];
+            }
+        }
+        return implode("", $texts);
     }
 
 }

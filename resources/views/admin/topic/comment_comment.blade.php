@@ -9,7 +9,7 @@
           </a>
       </div>
       <div class="media-body">
-        <div class="comment-content">{!! $commentPresenter->renderDetail($comment, true) !!}</div>
+        <div class="comment-content">{!! $commentPresenter->renderDetail($comment, ['include_user' => true]) !!}</div>
       	<div class="text-right">{{ $comment->created_at->format('Y-m-d H:s')}}<a href="javascript:;" class="reply-to-someone" data-pid={{ $comment->id }}>回复</a></div>
       </div>
     </div>
