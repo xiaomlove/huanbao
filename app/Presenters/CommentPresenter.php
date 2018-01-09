@@ -52,10 +52,18 @@ class CommentPresenter
         {
             $out[] = $suffix;
         }
-        $out[] = $this->getFloorNumHuman($getFloorNumComment);
+        $out[] = sprintf(
+            '<a href="%s">%s</a>',
+            route('admin.comment.index', array_merge(request()->except(['page', 'root_id']), ['root_id' => $getFloorNumComment->id])),
+            $this->getFloorNumHuman($getFloorNumComment)
+        );
         if ($comment->topic)
         {
-            $out[] = str_limit($comment->topic->title, 20, '...');
+            $out[] = sprintf(
+                '<a href="%s">%s</a>',
+                route('admin.comment.index', array_merge(request()->except(['page', 'tid']), ['tid' => $comment->topic->id])),
+                str_limit($comment->topic->title, 20, '...')
+            );
             if ($comment->topic->forum)
             {
                 $out[] = $comment->topic->forum->name;
@@ -154,20 +162,6 @@ class CommentPresenter
             }
         }
         return implode("", $htmls);
-    }
-
-    private function renderDetailOnlyText(Comment $comment)
-    {
-        $contents = json_decode($comment->detail->content, true);
-        $texts = [];
-        foreach ($contents as $content)
-        {
-            if ($content['type'] == CommentDetail::CONTENT_TYPE_TEXT)
-            {
-                $texts[] = $content['data']['text'];
-            }
-        }
-        return implode("", $texts);
     }
 
 }

@@ -19,5 +19,18 @@ class Attachment extends Model
     {
         return $this->belongsTo(User::class, 'uid', 'id');
     }
+
+    public function commentDetails()
+    {
+        return $this->morphedByMany(
+            CommentDetail::class,
+            "target",
+            AttachmentRelationship::TABLE_NAME,
+            "attachment_key",
+            "target_id",
+            "key",
+            "cid"
+        );
+    }
     
 }

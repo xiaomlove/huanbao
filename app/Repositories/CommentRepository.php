@@ -225,12 +225,14 @@ class CommentRepository
         $defaults = [
             'orderBy' => 'id desc',
             'with' => ['user', 'detail'],
-            'per_page' => 20,
+            'per_page' => 15,
         ];
         $params = array_merge($defaults, $otherParams);
         $comments = $this->comment
         ->when($request->tid, function ($query) use ($request) {return $query->where('tid', $request->tid);})
         ->when($request->root_id, function ($query) use ($request) {return $query->where('root_id', $request->root_id);})
+        ->when($request->begin_time, function ($query) use ($request) {return $query->where('created_at', '>=', $request->begin_time);})
+        ->when($request->end_time, function ($query) use ($request) {return $query->where('created_at', '<=', $request->end_time);})
         ->with($params['with'])
         ->orderByRaw($params['orderBy'])
         ->paginate($request->get('per_page', $params['per_page']));

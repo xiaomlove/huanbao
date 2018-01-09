@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', '帖子列表')
+@section('title', '回复列表')
 
 @inject('commentPresenter', 'App\Presenters\CommentPresenter')
 
@@ -8,10 +8,10 @@
     @include('admin.common.message')
     <form class="form-inline">
         <div class="form-group">
-            <input type="text" class="form-control" id="" name="name" placeholder="名称" value="{{ request('name') }}">
+            <input type="text" class="form-control" id="" name="tid" placeholder="帖子ID" value="{{ request('tid') }}">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" id="" name="party_origination" placeholder="发起方" value="{{ request('party_origination') }}">
+            <input type="text" class="form-control" id="" name="root_id" placeholder="根回复ID" value="{{ request('root_id') }}">
         </div>
         <div class="form-group">
             <input type="text" class="form-control" readonly id="begin_time" name="begin_time" placeholder="开始时间" value="{{ request('begin_time') }}">
@@ -43,7 +43,7 @@
             <tr>
                 <th scope="row">{{ $value->id }}</th>
                 <td>{{ str_limit($commentPresenter->renderDetail($value, ['only_text' => true]), 40, '...') }}</td>
-                <td>{{ $commentPresenter->getPosition($value) }}</td>
+                <td>{!! $commentPresenter->getPosition($value) !!}</td>
                 <td>
                     <small>{{ $value->user->name }}</small>
                     <small>{{ $value->created_at->format('Y-m-d H:i') }}</small>
@@ -52,7 +52,7 @@
                     {{ $value->like_count }}/{{ $value->comment_count }}
                 </td>
                 <td>
-                    <a href="{{ route('admin.comment.edit', $value->id) }}">编辑</a>
+                    <a href="{!! $commentPresenter->getEditLink($value) !!}">编辑</a>
                     <a href="{{ route('admin.topic.show', $value->tid) }}">详情</a>
                     <form method="post" style="display: inline-block;" action="{{ route('admin.comment.destroy', $value->id) }}" onsubmit="return window.confirm('确定删除？')">
                         {{ csrf_field() }}
@@ -64,7 +64,7 @@
         @endforeach
         </tbody>
     </table>
-    {!! $list->links() !!}
+    {!! $list->appends(request()->except('page'))->links() !!}
 @stop
 
 @section('js')
