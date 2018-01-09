@@ -16,7 +16,6 @@ class Topic extends Model
         'comment_count', 
         'last_comment_time', 
         'last_comment_id', 
-        'is_sticky',
     ];
     
     /**

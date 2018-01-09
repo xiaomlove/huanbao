@@ -11,6 +11,8 @@ use App\Models\AttachmentRelationship;
 
 class Comment extends Model
 {
+    const ADMIN_TOPIC_SHOW_PER_PAGE = 15;//话题下评论每页数量
+
     protected $fillable = [
         'uid', 
         'tid',

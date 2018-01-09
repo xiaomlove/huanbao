@@ -179,39 +179,10 @@ class CommentRepository
                 'firstComments.parentComment', 'firstComments.parentComment.user',
             ])
             ->orderBy('floor_num', 'asc')
-            ->paginate(request('per_page', 20));
+            ->paginate(request('per_page', Comment::ADMIN_TOPIC_SHOW_PER_PAGE));
 //        dd($comments);
 
         return ['topic' => $topic, 'list' => $comments];
-//         dd($list);
-        //取楼中楼数据
-        $commentCommentIdArr = [];
-        foreach ($list->getIterator() as $item)
-        {
-            $ids = $item->first_comment_ids;
-            if (!empty($ids))
-            {
-                $commentCommentIdArr = array_merge($commentCommentIdArr, explode(',', $ids));
-            }
-        }
-//         dd($list);
-        $commentComments = $this->comment
-        ->whereIn('id', $commentCommentIdArr)
-        ->with(['user', 'detail'])
-        ->get()
-        ->groupBy('root_id');
-
-        foreach ($list->getIterator() as $item)
-        {
-            $rootId = $item->id;
-            $firstComments = $commentComments->get($rootId);
-            if ($firstComments)
-            {
-                $item->setRelation('first_comments', $firstComments);
-            }
-        }
-
-        return normalize(0, "创建回复成功", ['list' => $list]);
     }
     
     /**

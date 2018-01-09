@@ -86,7 +86,19 @@ class CommentController extends Controller
      */
     public function show($id)
     {
-        //
+        $comment = Comment::findOrFail($id);
+        if ($comment->floor_num > 0)
+        {
+            //正常楼层
+            $floorNum = $comment->floor_num;
+        }
+        else
+        {
+            $rootComment = $comment->rootComment()->firstOrFail();
+            $floorNum = $rootComment->floor_num;
+        }
+        $page = ceil($floorNum / Comment::ADMIN_TOPIC_SHOW_PER_PAGE);
+        return redirect()->route('admin.topic.show', ['tid' => $comment->tid, 'page' => $page]);
     }
 
     /**
@@ -97,7 +109,7 @@ class CommentController extends Controller
      */
     public function edit($id)
     {
-        $comment = Comment::with('detail')->findOrFail($id);
+        $comment = $this->comment->with('detail')->findOrFail($id);
         $topic = Topic::findOrFail($comment->tid);
 //         dd($comment);
         
@@ -134,4 +146,5 @@ class CommentController extends Controller
     {
         //
     }
+
 }
