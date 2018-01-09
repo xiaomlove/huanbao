@@ -64,7 +64,7 @@ class TopicsTableSeeder extends Seeder
                     $comment->update(['comment_count' => $commentCommentCounts]);
                 }
             }
-            $topic->update(['comment_count' => $commentCounts]);
+            $topic->update(['comment_count' => $commentCounts - 1]);
         });
     }
 }
