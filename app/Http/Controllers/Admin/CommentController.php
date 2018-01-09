@@ -109,7 +109,7 @@ class CommentController extends Controller
      */
     public function edit($id)
     {
-        $comment = $this->comment->with('detail')->findOrFail($id);
+        $comment = Comment::with('detail')->findOrFail($id);
         $topic = Topic::findOrFail($comment->tid);
 //         dd($comment);
         
