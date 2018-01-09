@@ -5,6 +5,7 @@ use App\Models\Topic;
 use App\Models\CommentDetail;
 use App\Models\Comment;
 use App\User;
+use Faker\Generator as Faker;
 
 class TopicsTableSeeder extends Seeder
 {
@@ -13,10 +14,10 @@ class TopicsTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(Faker $faker)
     {
         $users = User::all();
-        $topics = factory(Topic::class, 2)->create()->each(function($topic) use ($users) {
+        $topics = factory(Topic::class, 2)->create()->each(function($topic) use ($users, $faker) {
            //创建主楼评论
             $mainFloor = $topic->main_floor()->create([
                 'uid' => $topic->uid,
@@ -50,18 +51,20 @@ class TopicsTableSeeder extends Seeder
                             'pid' => $comment->id,
                             'root_id' => $comment->id,
                         ]);
+
+                        $content = json_encode([
+                            ['type' => 'text', 'data' => ['text' => $faker->sentence()]],
+                        ], JSON_UNESCAPED_UNICODE);
+
                         $commentComment->detail()->create([
-                            'content' => factory(CommentDetail::class, 1)->make()->first()->content,
+                            'content' => $content,
                         ]);
-                        $comment->firstComments()->create([
-                            'root_cid' => $comment->id,
-                            'cid' => $commentComment->id,
-                        ]);
+                        $comment->firstComments()->attach($commentComment);
                     }
                     $comment->update(['comment_count' => $commentCommentCounts]);
                 }
             }
-            $topic->update(['comment_count' => $commentCounts]);
+            $topic->update(['comment_count' => $commentCounts - 1]);
         });
     }
 }
