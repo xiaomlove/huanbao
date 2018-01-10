@@ -88,15 +88,21 @@ class AttachmentPresenter
 
     public function listAttaches(Attachment $attachment)
     {
-        $commentPresenter = new CommentPresenter();
-        $htmls = [];
-        if ($attachment->commentDetails)
+        static $commentDetailPresenter;
+        if (!$commentDetailPresenter)
         {
-            dd($attachment->commentDetails);
+            $commentDetailPresenter = new CommentDetailPresenter();
+        }
+        $htmls = [];
+        if (!$attachment->commentDetails->isEmpty())
+        {
+            $commentDetail = $attachment->commentDetails->first();
+            $cid = $commentDetail->cid;
+            $content = $commentDetailPresenter->renderDetail($commentDetail, ['only_text' => true]);
             $htmls[] = sprintf(
                 '<a href="%s">%s</a>',
-                route('admin.topic.show', ['tid' => $attachment->commentDetails->first()->tid]),
-                $commentPresenter->renderDetail($attachment->commentDetails->first()->comment, ['only_text' => true])
+                route('admin.comment.show', ['id' => $cid]),
+                str_limit($content, 20)
             );
         }
         return implode('、', $htmls);
