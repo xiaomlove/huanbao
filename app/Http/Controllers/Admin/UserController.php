@@ -25,7 +25,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::when($request->id, function($query) use ($request) {
+        $list = User::when($request->id, function($query) use ($request) {
             return $query->where('id', intval($request->id));
         })->when($request->q, function($query) use ($request) {
             return $query->where(function($query) use ($request) {
@@ -34,7 +34,7 @@ class UserController extends Controller
             });
         })->paginate(10);
         
-        return view('admin.user.index', compact('users'));
+        return view('admin.user.index', compact('list'));
     }
 
     /**
@@ -44,7 +44,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('admin.user.create');
+        $user = new User();
+        return view('admin.user.form', compact('user'));
     }
 
     /**
