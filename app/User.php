@@ -41,7 +41,7 @@ class User extends Authenticatable
     
     /**
      * 用户头像。target_type = 'user_avatar'
-     * 
+     *
      * @see App\Providers\AppServiceProvider::customMorphMap()
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
@@ -49,10 +49,12 @@ class User extends Authenticatable
     {
         return $this->morphToMany(
             Attachment::class,
-            'target',
+            "target",
             AttachmentRelationship::TABLE_NAME,
-            'target_id',
-            'attachment_id'
+            "target_id",
+            "attachment_key",
+            "cid",
+            "key"
         );
     }
     

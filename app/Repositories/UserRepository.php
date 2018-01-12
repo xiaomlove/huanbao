@@ -22,7 +22,6 @@ class UserRepository
     {
         $out = [];
         $user = $this->user->with([
-            'avatars' => function($query) {$query->orderBy('id', 'desc');},
             'roles',
         ])->find($id);
         if (empty($user))
