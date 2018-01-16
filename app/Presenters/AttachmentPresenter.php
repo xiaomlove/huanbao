@@ -67,17 +67,12 @@ class AttachmentPresenter
 
     public function getThumbnail(Attachment $attachment, $width = 40, $height = 40)
     {
-        static $disk;
-        if (!$disk)
-        {
-            $disk = \Storage::disk('qiniu');
-        }
         if (strpos($attachment->mime_type, "image") !== false)
         {
             return sprintf(
                 '<a href="%s" target="_blank"><img src="%s" /></a>',
-                $disk->url($attachment->key),
-                $disk->imagePreviewUrl($attachment->key, "imageView2/0/w/{$width}/h/{$height}")
+                $attachment->url(),
+                $attachment->url(40, 40)
             );
         }
         else

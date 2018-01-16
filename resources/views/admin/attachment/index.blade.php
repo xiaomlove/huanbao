@@ -48,7 +48,7 @@
                 <td>{{ $value->mime_type }}</td>
                 <td>{{ $value->key }}</td>
                 <td>{{ $value->user->name }}</td>
-                <td>{{ $value->size }}</td>
+                <td>{{ $value->humanSize() }}</td>
                 <td>{!! $attachmentPresenter->listAttaches($value) !!}</td>
                 <td>
                     <form method="post" style="display: inline-block;" action="{{ route('admin.attachment.destroy', $value->id) }}" onsubmit="return window.confirm('确定删除？')">

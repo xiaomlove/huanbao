@@ -13,7 +13,10 @@ class Attachment extends Model
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        self::$disk = \Storage::disk('qiniu');
+        if (!self::$disk)
+        {
+            self::$disk = \Storage::disk('qiniu');
+        }
     }
 
     protected $fillable = [
@@ -58,6 +61,31 @@ class Attachment extends Model
             return self::$disk->imagePreviewUrl($this->key, $previewOptions);
         }
         return self::$disk->url($this->key);
+    }
+
+    public function humanSize()
+    {
+        $size = $this->size;
+        if ($size < 1024)
+        {
+            return $size . "B";
+        }
+        elseif ($size >= ($base = 1024) && $size < $base * 1024)
+        {
+            return round($size / $base) . " KB";
+        }
+        elseif ($size >= ($base = 1024 * 1024) && $size < $base * 1024)
+        {
+            return round($size / $base) . " MB";
+        }
+        elseif ($size >= ($base = 1024 * 1024 * 1024) && $size < $base * 1024)
+        {
+            return round($size / $base) . " GB";
+        }
+        else
+        {
+            return $size;
+        }
     }
     
 }

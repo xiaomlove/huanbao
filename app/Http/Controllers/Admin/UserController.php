@@ -77,7 +77,7 @@ class UserController extends Controller
     public function show($id)
     {
         $result = $this->user->listMainProfileData($id);
-        dd($result);
+//        dd($result);
         if ($result['ret'] != 0)
         {
             return response($result['msg'], 500);

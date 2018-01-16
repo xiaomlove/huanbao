@@ -16,7 +16,7 @@
       <header> 
         <h1 class="h3 display">用户主页</h1>
       </header>
-      <form class="form-horizontal form-user-main-profile row" method="post" action="{{ route('user.update', $user->id) }}" enctype="multipart/form-data">
+      <form class="form-horizontal form-user-main-profile row" method="post" action="{{ route('admin.user.update', $user->id) }}" enctype="multipart/form-data">
         {{ csrf_field() }}
         {{ method_field('PATCH') }}
         <div class="col-lg-4">
