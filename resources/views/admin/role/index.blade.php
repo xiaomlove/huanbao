@@ -10,7 +10,7 @@
           <button type="submit" class="btn btn-primary">筛选</button>
         </form>
         <span class="float-right">
-        	<a class="btn btn-success btn-action" href="{{ route('role.create') }}"><i class="fa fa-plus"></i>创建</a>
+        	<a class="btn btn-success btn-action" href="{{ route('admin.role.create') }}"><i class="fa fa-plus"></i>创建</a>
         </span>
     </div>
 	<table id="topic-table" class="table table-hover topic-table">
@@ -31,8 +31,8 @@
           <td>{{ $value->display_name }}</td>
           <td>{{ $value->updated_at->format('Y-m-d H:i:s') }}</td>
           <td>
-          	<a href="{{ route('role.edit', $value->id) }}">编辑</a>
-          	<a href="javascript:;" class="destroy" data-url="{{ route('role.destroy', $value->id) }}">删除</a>
+          	<a href="{{ route('admin.role.edit', $value->id) }}">编辑</a>
+          	<a href="javascript:;" class="destroy" data-url="{{ route('admin.role.destroy', $value->id) }}">删除</a>
           </td>
         </tr>
         @endforeach

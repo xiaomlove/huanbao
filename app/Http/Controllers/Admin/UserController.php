@@ -77,17 +77,10 @@ class UserController extends Controller
     public function show($id)
     {
         $result = $this->user->listMainProfileData($id);
-//        dd($result);
-        if ($result['ret'] != 0)
-        {
-            return response($result['msg'], 500);
-        }
-//         $r = $result['data']['base']->avatars->first();
-//         dd($r);
-//         dd($result);
+        dd($result);
         $roles = Role::all();
         return view('admin.user.show', [
-            'user' => $result['data']['base'],
+            'user' => $result['user'],
             'roles' => $roles,
         ]);
     }

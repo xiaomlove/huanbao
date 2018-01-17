@@ -8,29 +8,15 @@ use App\Models\AttachmentRelationship;
 
 class UserRepository
 {
-    protected $user;
-    
-    protected $attachment;
-    
-    public function __construct(User $user, AttachmentRepository $attachment)
-    {
-        $this->user = $user;
-        $this->attachment = $attachment;
-    }
     
     public function listMainProfileData($id)
     {
         $out = [];
-        $user = $this->user->with([
-            'roles',
-        ])->find($id);
-        if (empty($user))
-        {
-            return normalize("ID $id 的用户不存在");
-        }
-        $out['base'] = $user;
-        
-        return normalize(0, "OK", ['base' => $user]);
+        $user = User::with(['roles', 'avatarAttachment'])->find($id);
+
+        $out['user'] = $user;
+
+        return $out;
     }
     
     public function update(array $data, $id)

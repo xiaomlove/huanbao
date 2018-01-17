@@ -38,6 +38,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Topic::class, 'uid');
     }
+
+    /**
+     * 用户头像，其实是一个附件（图片）
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function avatarAttachment()
+    {
+        return $this->hasOne(Attachment::class, "key", "avatar");
+    }
     
     /**
      * 用户头像。target_type = 'user_avatar'
