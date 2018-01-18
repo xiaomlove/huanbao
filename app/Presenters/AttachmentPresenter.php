@@ -95,7 +95,7 @@ class AttachmentPresenter
             $cid = $commentDetail->cid;
             $content = $commentDetailPresenter->renderDetail($commentDetail, ['only_text' => true]);
             $htmls[] = sprintf(
-                '<a href="%s">%s(话题或评论)</a>',
+                '<a href="%s">%s(帖子或评论)</a>',
                 route('admin.comment.show', ['id' => $cid]),
                 str_limit($content, 20)
             );
