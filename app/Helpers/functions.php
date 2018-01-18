@@ -37,7 +37,12 @@ function apiUser()
     return $user;
 }
 
-function originalJsonEncode($data)
+function attachmentKey($url)
 {
-    return json_encode($data, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_FORCE_OBJECT);
+    if (!filter_var($url, FILTER_VALIDATE_URL))
+    {
+        throw new \InvalidArgumentException("url '$url' 不是有效的URL");
+    }
+    $parsed = parse_url($url);
+    return trim($parsed['path'], "/");
 }

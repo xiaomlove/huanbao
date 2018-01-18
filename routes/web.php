@@ -45,6 +45,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('cnarea/province', 'CommonController@province')->name('cnarea.province');
     Route::get('cnarea/city', 'CommonController@city')->name('cnarea.city');
     Route::get('cnarea/district', 'CommonController@district')->name('cnarea.district');
-    Route::match(['get', 'post'], 'upload/image', 'UploadController@image')->name("upload.image");
+    Route::any('upload/image', 'UploadController@image')->name("upload.image");
 });
 

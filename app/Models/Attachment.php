@@ -44,6 +44,19 @@ class Attachment extends Model
         );
     }
 
+    public function avatarUsers()
+    {
+        return $this->morphedByMany(
+            User::class,
+            "target",
+            AttachmentRelationship::TABLE_NAME,
+            "attachment_key",
+            "target_id",
+            "key",
+            "id"
+        );
+    }
+
     public function url($width = "", $height = "")
     {
         $mimeType = $this->mime_type;

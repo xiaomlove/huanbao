@@ -11,6 +11,7 @@ use App\User;
 use App\Models\HuisuoJishi;
 use App\Models\ContactRelationship;
 use App\Observers\CommentDetailObserver;
+use App\Observers\UserObserver;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -100,5 +101,6 @@ class AppServiceProvider extends ServiceProvider
     private function listenORMEvent()
     {
         CommentDetail::observe(CommentDetailObserver::class);
+        User::observe(UserObserver::class);
     }
 }

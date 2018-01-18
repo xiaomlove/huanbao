@@ -8,10 +8,10 @@
     @include('admin.common.message')
     <form class="form-inline">
         <div class="form-group">
-            <input type="text" class="form-control" id="" name="tid" placeholder="帖子ID" value="{{ request('tid') }}">
+            <input type="text" class="form-control" name="tid" placeholder="帖子ID" value="{{ request('tid') }}">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" id="" name="root_id" placeholder="根回复ID" value="{{ request('root_id') }}">
+            <input type="text" class="form-control" name="root_id" placeholder="根回复ID" value="{{ request('root_id') }}">
         </div>
         <div class="form-group">
             <input type="text" class="form-control" readonly id="begin_time" name="begin_time" placeholder="开始时间" value="{{ request('begin_time') }}">
@@ -40,7 +40,7 @@
             <td rowspan="4" class="text-center">
                 <a href="{{ $user->avatarAttachment->url() }}" target="_blank"><img src="{{ $user->avatarAttachment->url(80, 80) }}" /></a>
                 <p>
-                    <a class="btn btn-sm" data-toggle="modal" data-target="#myModal">修改</a>
+                    <a class="btn btn-sm" href="{{ route('admin.user.edit', $user->id) }}">修改</a>
                 </p>
             </td>
         </tr>

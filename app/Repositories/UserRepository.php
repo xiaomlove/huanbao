@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\User;
 use App\Repositories\AttachmentRepository;
 use App\Models\AttachmentRelationship;
+use App\Http\Requests\UserRequest;
 
 class UserRepository
 {
@@ -19,53 +20,31 @@ class UserRepository
         return $out;
     }
     
-    public function update(array $data, $id)
+    public function update(UserRequest $request, $id)
     {
-//         dd($data);
-        $user = $this->user->find($id);
-        if (empty($user))
+        $user = User::findOrFail($id);
+        $update = $request->only(['email', 'name', 'avatar']);
+        if ($request->password)
         {
-            return normalize("invalid id: $id");
+            $update['password'] = bcrypt($request->password);
         }
-        //先保存附件
-        $attachmentResult = $this->attachment->getFromRequestData($data);
-        if ($attachmentResult['ret'] != 0)
+        if (!empty($update['avatar']))
         {
-            return $attachmentResult;
+            $update['avatar'] = attachmentKey($update['avatar']);
         }
-        $attachments = [];
-        foreach ($attachmentResult['data'] as $attachment)
-        {
-            $attachments[$attachment->id] = ['target_type' => AttachmentRelationship::TARGET_TYPE_USER_AVATAR];
-        }
-        unset($attachmentResult, $attachment);
-        
-        if (empty($data['password']))
-        {
-            unset($data['password']);
-        }
-        else 
-        {
-            $data['password'] = bcrypt($data['password']);
-        }
-        
+
         \DB::beginTransaction();
         try
         {
-            $user->update($data);
-            $user->avatars()->syncWithoutDetaching($attachments);
-            $user->syncRoles($data['roles']);
-    
+            $user->update($update);
             \DB::commit();
+            return normalize(0, "OK", $user);
         }
         catch (\Exception $e)
         {
             \DB::rollBack();
-            return normalize(1, $e->getMessage(), $data);
+            return normalize(1, $e->getMessage(), $update);
         }
-    
-        return normalize(0, "OK", [
-            'user' => $user,
-        ]);
+
     }
 }

@@ -65,7 +65,7 @@ class UserController extends Controller
             'password' => bcrypt($request->password),
         ]);
         
-        return redirect()->route('user.index');
+        return redirect()->route('admin.user.index');
     }
 
     /**
@@ -93,7 +93,8 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-
+        $user = User::with('avatarAttachment')->findOrFail($id);
+        return view('admin.user.form', compact('user'));
     }
 
     /**
@@ -105,12 +106,10 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, $id)
     {
-        $data = $request->all();
-        $data['uid'] = \Auth::user()->id;
-        $result = $this->user->update($data, $id);
+        $result = $this->user->update($request, $id);
         if ($result['ret'] == 0)
         {
-            return redirect()->route('user.show', $id)->with("success", "更新用户信息成功");
+            return redirect()->route('admin.user.show', $id)->with("success", "更新用户信息成功");
         }
         else
         {

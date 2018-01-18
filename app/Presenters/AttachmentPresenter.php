@@ -95,9 +95,19 @@ class AttachmentPresenter
             $cid = $commentDetail->cid;
             $content = $commentDetailPresenter->renderDetail($commentDetail, ['only_text' => true]);
             $htmls[] = sprintf(
-                '<a href="%s">%s</a>',
+                '<a href="%s">%s(话题或评论)</a>',
                 route('admin.comment.show', ['id' => $cid]),
                 str_limit($content, 20)
+            );
+        }
+        if (!$attachment->avatarUsers->isEmpty())
+        {
+            $user = $attachment->avatarUsers->first();
+            $uid = $user->id;
+            $htmls[] = sprintf(
+                '<a href="%s">%s(用户头像)</a>',
+                route('admin.user.show', $uid),
+                $user->name
             );
         }
         return implode('、', $htmls);

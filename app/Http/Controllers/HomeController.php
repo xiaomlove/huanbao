@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\CommentDetail;
+use App\User;
 
 class HomeController extends Controller
 {
@@ -29,8 +30,7 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
-//        dd(config('filesystems.default'));
-        $disk = \Storage::disk('qiniu');
-        echo $disk->imagePreviewUrl('7.png', 'imageView2/0/w/100/h/200');
+        $r = User::with("avatars")->find(2);
+        dd($r);
     }
 }

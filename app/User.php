@@ -15,6 +15,8 @@ class User extends Authenticatable
     use HasRoles;
     
     const ROLE_SUPER_ADMIN_NAME = 'super_admin';
+
+    const DEFAULT_AVATAR = '17z1jmEz303dddjKTeVGVCGFEgAIZB2zwMx6hX67.jpeg';
     
     /**
      * The attributes that are mass assignable.
@@ -22,7 +24,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name',
+        'email',
+        'avatar',
+        'password',
     ];
 
     /**
@@ -48,13 +53,13 @@ class User extends Authenticatable
         return $this->hasOne(Attachment::class, "key", "avatar")->withDefault(function () {
             return new Attachment([
                 'mime_type' => 'image/jpeg',
-                'key' => '17z1jmEz303dddjKTeVGVCGFEgAIZB2zwMx6hX67.jpeg',
+                'key' => self::DEFAULT_AVATAR,
             ]);
         });
     }
     
     /**
-     * 用户头像。target_type = 'user_avatar'
+     * 用户全部的头像。target_type = 'user_avatar'
      *
      * @see App\Providers\AppServiceProvider::customMorphMap()
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
@@ -67,7 +72,7 @@ class User extends Authenticatable
             AttachmentRelationship::TABLE_NAME,
             "target_id",
             "attachment_key",
-            "cid",
+            "id",
             "key"
         );
     }

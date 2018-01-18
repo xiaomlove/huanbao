@@ -19,6 +19,10 @@ class CommentDetailObserver
 
     private function updateAttachmentRelationships(CommentDetail $commentDetail, $action = "")
     {
+        if (!$commentDetail->content)
+        {
+            return;
+        }
         $contents = json_decode($commentDetail->content, true);
         foreach ($contents as $content)
         {
