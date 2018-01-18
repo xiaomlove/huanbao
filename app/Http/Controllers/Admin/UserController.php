@@ -77,7 +77,7 @@ class UserController extends Controller
     public function show($id)
     {
         $result = $this->user->listMainProfileData($id);
-        dd($result);
+//        dd($result);
         $roles = Role::all();
         return view('admin.user.show', [
             'user' => $result['user'],
@@ -93,7 +93,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+
     }
 
     /**

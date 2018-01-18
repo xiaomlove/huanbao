@@ -42,12 +42,14 @@
                 <td>{{ $value->name }}</td>
                 <td>{{ $value->email }}</td>
                 <td>{{ $value->created_at }}</td>
-                <td><a href="{{ route('admin.user.show', $value->id) }}">详情</a></td>
+                <td>
+                    <a href="{{ route('admin.user.show', $value->id) }}">详情</a>
+                </td>
             </tr>
         @endforeach
         </tbody>
     </table>
-    {!! $list->links() !!}
+    {!! $list->appends(request()->except('page'))->links() !!}
 @stop
 
 @section('js')

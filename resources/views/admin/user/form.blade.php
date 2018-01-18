@@ -34,7 +34,7 @@
         <label for="" class="col-sm-2 control-label">密码</label>
         <div class="col-sm-10">
             <input type="text" name="password" class="form-control" id="" placeholder=""
-                   value="{{ old('password', $user->password) }}">
+                   value="{{ old('password') }}">
             @if($errors->has('password'))
                 <small class="help-block">{{ $errors->first('password') }}</small>
             @endif
@@ -58,48 +58,4 @@
         </div>
       </div>
     </form>
-@stop
-
-@section('js')
-  <script src="{{ asset('js/text_modal.js') }}"></script>
-  <script src="{{ asset('js/image_modal.js') }}"></script>
-  <script src="{{ asset('js/content_editor.js') }}"></script>
-
-  <script>
-      var tid = '{{ $user->id }}';
-      $('#forum').select2();
-      var contentEditor = new ContentEditor({
-          wrapId: "content",
-          uploadUrl: "{{ route('upload.image') }}",
-          content: '{!! $user->main_floor ? $user->main_floor->detail->content : "" !!}'
-      });
-
-      var $form = $('#form');
-      $form.on("click", ".submit", function() {
-          var data = $form.serialize();
-          data += "&content=" + JSON.stringify(contentEditor.getData());
-          $.ajax({
-              url: $form.attr("action"),
-              type: "post",
-              dataType: "json",
-              data: data,
-          }).done(function(response) {
-              console.log(response);
-              alert(response.msg);
-              if (response.ret == 0 && !tid) {
-                  location.href = "{{ route('admin.user.index') }}";
-              }
-          }).fail(function(xhr, errstr, errThrown) {
-              var response = xhr.responseJSON;
-              var msg = "";
-              for (var i in response.data.errors) {
-                  msg += response.data.errors[i][0] + "\n";
-              }
-              alert(msg);
-          }).always(function() {
-
-          })
-      })
-
-  </script>
 @stop

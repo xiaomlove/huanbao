@@ -45,7 +45,12 @@ class User extends Authenticatable
      */
     public function avatarAttachment()
     {
-        return $this->hasOne(Attachment::class, "key", "avatar");
+        return $this->hasOne(Attachment::class, "key", "avatar")->withDefault(function () {
+            return new Attachment([
+                'mime_type' => 'image/jpeg',
+                'key' => '17z1jmEz303dddjKTeVGVCGFEgAIZB2zwMx6hX67.jpeg',
+            ]);
+        });
     }
     
     /**
