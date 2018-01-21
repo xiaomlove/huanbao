@@ -2,21 +2,29 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Repositories\PermissionRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Permission;
+use App\Models\Permission;
 use App\Http\Requests\RoleRequest;
 
 class PermissionController extends Controller
 {
+    protected $permission;
+
+    public function __construct(PermissionRepository $permissionRepository)
+    {
+        $this->permission = $permissionRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $list = Permission::paginate(10);
+        $list = $this->permission->listAll($request);
         return view('admin.permission.index', compact('list'));
     }
 
@@ -27,7 +35,8 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        return view('admin.permission.create');
+        $permission = new Permission();
+        return view('admin.permission.form', compact('permission'));
     }
 
     /**
@@ -40,7 +49,7 @@ class PermissionController extends Controller
     {
         $data = $request->only(['name', 'display_name']);
         $permission = Permission::create($data);
-        return redirect()->route('permission.create')->with('success', '创建权限成功');
+        return redirect()->route('admin.permission.index')->with('success', '创建权限成功');
     }
 
     /**
@@ -62,8 +71,8 @@ class PermissionController extends Controller
      */
     public function edit($id)
     {
-        $info = Permission::findOrFail($id);
-        return view('admin.permission.edit', compact('info'));
+        $permission = Permission::findOrFail($id);
+        return view('admin.permission.form', compact('permission'));
     }
 
     /**
@@ -77,7 +86,7 @@ class PermissionController extends Controller
     {
         $info = Permission::findOrFail($id);
         $info->update($request->only(['name', 'display_name']));
-        return back()->with("success", "更新成功");
+        return redirect()->route('admin.permission.index')->with("success", "更新成功");
     }
 
     /**

@@ -46,7 +46,10 @@
         </tr>
         <tr>
             <td>昵称：</td>
-            <td>{{ $user->name }}</td>
+            <td>
+                {{ $user->name }}
+                ({!! $userPresenter->listUserRoles($user) !!})
+            </td>
 
             <td>积分：</td>
             <td>{{ $user->point_counts }}</td>
@@ -54,7 +57,7 @@
             <td>关注数：</td>
             <td>{{ $user->following_counts }}</td>
 
-            <td>xxx</td>
+            <td><a href="{{ route('admin.user.permissions', $user->id) }}">个人权限</a></td>
 
         </tr>
         <tr>

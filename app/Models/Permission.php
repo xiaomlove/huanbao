@@ -39,6 +39,8 @@ class Permission extends SpatiePermission
         'city' => '市',
         'district' => '区',
         'home' => '首页',
+        'other' => '其他',
+        'forumtaxonomy' => '论坛版块分类',
     ];
 
     public function listDisplayNames()

@@ -6,10 +6,18 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\Permission;
+use App\Repositories\PermissionRepository;
 use App\Http\Requests\RoleRequest;
 
 class RoleController extends Controller
 {
+    protected $permission;
+
+    public function __construct(PermissionRepository $permissionRepository)
+    {
+        $this->permission = $permissionRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,9 +36,10 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::all();
-        $info = new Role();
-        return view('admin.role.create', compact('permissions', 'info'));
+        $role = new Role();
+        $permissions = $this->permission->listGrouped();
+        $displayNames = (new Permission())->listDisplayNames();
+        return view('admin.role.form', compact('permissions', 'role', 'displayNames'));
     }
 
     /**
@@ -44,7 +53,7 @@ class RoleController extends Controller
         $data = $request->only(['name', 'display_name']);
         $role = Role::create($data);
         $role->syncPermissions($request->get('permissions'));
-        return redirect()->route('role.create')->with('success', '创建用户组成功');
+        return redirect()->route('admin.role.index')->with('success', '创建用户组成功');
     }
 
     /**
@@ -67,9 +76,10 @@ class RoleController extends Controller
     public function edit($id)
     {
         $role = Role::with('permissions')->findOrFail($id);
-        $permissions = Permission::all();
-        dd($permissions);
-        return view('admin.role.form', compact('role', 'permissions'));
+        $permissions = $this->permission->listGrouped();
+        $displayNames = (new Permission())->listDisplayNames();
+//        dd($role);
+        return view('admin.role.form', compact('role', 'permissions', 'displayNames'));
     }
 
     /**

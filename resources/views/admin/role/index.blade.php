@@ -18,9 +18,7 @@
             <input type="text" class="form-control" readonly id="end_time" name="end_time" placeholder="结束时间" value="{{ request('end_time') }}">
         </div>
         <button type="submit" class="btn btn-default">搜索</button>
-    <!--
-        <a class="btn btn-info pull-right" href="{{ route('admin.topic.create') }}">新建</a>
-        -->
+        <a class="btn btn-info pull-right" href="{{ route('admin.role.create') }}">新建</a>
     </form>
 @stop
 

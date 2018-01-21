@@ -29,7 +29,7 @@
           @endif
         </div>
       </div>
-
+    @if($user->id)
     <div class="form-group{{$errors->has('name') ? ' has-error' : ''}}">
         <label for="" class="col-sm-2 control-label">昵称</label>
         <div class="col-sm-10">
@@ -52,6 +52,20 @@
         <div class="col-sm-2">
             <input type="file" class="upload">
             <a class="preview" href="{{ old('avatar', $user->avatarAttachment->url()) }}" target="_blank"><img src="{{ old('avatar', $user->avatarAttachment->url()) }}" /></a>
+        </div>
+    </div>
+    @endif
+    <div class="form-group{{$errors->has('roles') ? ' has-error' : ''}}">
+        <label for="" class="col-sm-2 control-label">角色</label>
+        <div class="col-sm-10">
+            @foreach($roles as $role)
+            <label class="checkbox-inline">
+                <input type="checkbox" value="{{ $role->name }}" name="roles[]"{{ $user->hasRole($role->name) ? " checked" : "" }}> {{ $role->display_name }}
+            </label>
+            @endforeach
+            @if($errors->has('roles'))
+                <small class="help-block">{{ $errors->first('roles') }}</small>
+            @endif
         </div>
     </div>
 

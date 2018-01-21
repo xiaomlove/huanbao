@@ -30,6 +30,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'as' => 'admin.'], function() {
         Route::get('/', 'IndexController@index')->name('admin.index');
         Route::resource('user', 'UserController');
+        Route::match(['get', 'patch'],'user/permissions/{user}', 'UserController@permissions')->name('user.permissions');
         Route::resource('forum', 'ForumController');
         Route::resource('forumtaxonomy', 'ForumTaxonomyController');
         Route::resource('topic', 'TopicController');

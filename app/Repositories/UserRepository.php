@@ -13,7 +13,8 @@ class UserRepository
     public function listMainProfileData($id)
     {
         $out = [];
-        $user = User::with(['roles', 'avatarAttachment'])->find($id);
+        $user = User::with(['roles', 'avatarAttachment'])->findOrFail($id);
+//        dd($user);
 
         $out['user'] = $user;
 
@@ -37,6 +38,7 @@ class UserRepository
         try
         {
             $user->update($update);
+            $user->syncRoles($request->get('roles', []));
             \DB::commit();
             return normalize(0, "OK", $user);
         }

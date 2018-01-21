@@ -19,19 +19,17 @@ class PermissionsTableSeeder extends Seeder
         $routes = \Route::getRoutes()->getRoutesByName();
         $permissionModel = new Permission();
         $displayNameMap = $permissionModel->listDisplayNames();
-        $search = array_keys($displayNameMap);
-        $search[] = '.';
-        $replace = array_values($displayNameMap);
-        $replace[] = '-';
 
         foreach (array_keys($routes) as $name)
         {
             $permission = Permission::where('name', $name)->first();
             if (!$permission)
             {
+                $nameParts = explode('.', $name);
+                $namePartsEnd = end($nameParts);
                 $permission = Permission::create([
                     'name' => $name,
-                    'display_name' => str_replace($search, $replace, $name),
+                    'display_name' => $displayNameMap[$namePartsEnd] ?? $name,
                 ]);
             }
 

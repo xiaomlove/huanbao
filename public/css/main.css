@@ -68,3 +68,11 @@ input[type=submit] {
 .topic-show .comment-comment .reply-to-someone {
     margin-left: 4px;
 }
+
+/*权限表格*/
+.permissions-form-group tbody th{
+	width: 10rem;
+}
+.permissions-form-group tbody td label{
+	margin-right: 4px;
+}

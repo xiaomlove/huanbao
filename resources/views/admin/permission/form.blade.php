@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', $role->id ? '编辑角色' : '新建角色')
+@section('title', $permission->id ? '编辑权限' : '新建权限')
 
 @section('content_header')
   <h2>
@@ -10,20 +10,20 @@
 
 @section('content')
   @include('admin.common.message')
-  @if($role->id)
+  @if($permission->id)
     <form id="form" class="subject-form image-upload-form form-horizontal" method="post"
-          action="{{ route('admin.role.update', $role->id) }}">
-      {{ method_field('PATCH') }}
+          action="{{ route('admin.permission.update', $permission->id) }}">
+  {{ method_field('PATCH') }}
   @else
     <form id="form" class="subject-form image-upload-form form-horizontal" method="post"
-          action="{{ route('admin.role.store') }}">
+          action="{{ route('admin.permission.store') }}">
       @endif
       {{ csrf_field() }}
       <div class="form-group{{$errors->has('name') ? ' has-error' : ''}}">
         <label for="" class="col-sm-2 control-label">名称</label>
         <div class="col-sm-10">
           <input type="text" name="name" class="form-control" id="" placeholder=""
-                 value="{{ old('name', $role->name) }}">
+                 value="{{ old('name', $permission->name) }}" readonly>
           @if($errors->has('name'))
             <small class="help-block">{{ $errors->first('name') }}</small>
           @endif
@@ -34,14 +34,12 @@
         <label for="" class="col-sm-2 control-label">显示名称</label>
         <div class="col-sm-10">
           <input type="text" name="display_name" class="form-control" id="" placeholder=""
-                 value="{{ old('display_name', $role->display_name) }}">
+                 value="{{ old('display_name', $permission->display_name) }}">
           @if($errors->has('display_name'))
             <small class="help-block">{{ $errors->first('display_name') }}</small>
           @endif
         </div>
       </div>
-
-      @include('admin.common.role_permissions')
 
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10 text-center">

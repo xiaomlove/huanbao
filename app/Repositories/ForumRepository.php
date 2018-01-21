@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Forum;
-use function foo\func;
 use Illuminate\Http\Request;
 
 class ForumRepository

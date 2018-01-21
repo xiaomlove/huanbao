@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\User;
 use App\Repositories\UserRepository;
 use App\Models\Role;
+use App\Repositories\PermissionRepository;
+use App\Models\Permission;
 
 class UserController extends Controller
 {
@@ -45,7 +47,8 @@ class UserController extends Controller
     public function create()
     {
         $user = new User();
-        return view('admin.user.form', compact('user'));
+        $roles = Role::all();
+        return view('admin.user.form', compact('user', 'roles'));
     }
 
     /**
@@ -64,6 +67,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
+        $user->syncRoles($request->get('roles', []));
         
         return redirect()->route('admin.user.index');
     }
@@ -94,7 +98,8 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::with('avatarAttachment')->findOrFail($id);
-        return view('admin.user.form', compact('user'));
+        $roles = Role::all();
+        return view('admin.user.form', compact('user', 'roles'));
     }
 
     /**
@@ -126,5 +131,29 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function permissions($id)
+    {
+        $user = User::with('permissions')->findOrFail($id);
+        $method = request()->method();
+        if ($method == "GET")
+        {
+            $permissions = app(PermissionRepository::class)->listGrouped();
+            $displayNames = (new Permission())->listDisplayNames();
+            return view('admin.user.permissions', [
+                'user' => $user,
+                'permissions' => $permissions,
+                'displayNames' => $displayNames,
+            ]);
+        }
+        elseif ($method == "PATCH")
+        {
+            $user->syncPermissions(request('permissions', []));
+            return redirect()->route('admin.user.show', $user->id)->with('success', '修改个人权限成功');
+        }
+
+        throw new \Exception("非法请求方法：$method");
+
     }
 }
