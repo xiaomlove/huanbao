@@ -126,11 +126,13 @@ return [
             'text' => '帖子',
             'url'  => 'admin/topic',
             'icon' => 'pencil',
+            'can' => 'admin.topic.index',
         ],
         [
             'text' => '回复',
             'url'  => 'admin/comment',
             'icon' => 'comment',
+            'can' => 'admin.comment.index',
         ],
         [
             'text' => '版块',
@@ -139,10 +141,12 @@ return [
                 [
                     'text' => '列表',
                     'url'  => 'admin/forum',
+                    'can' => 'admin.forum.index',
                 ],
                 [
                     'text' => '分类',
                     'url'  => 'admin/forumtaxonomy',
+                    'can' => 'admin.forumtaxonomy.index',
                 ],
 
             ],
@@ -152,39 +156,46 @@ return [
             'text' => '列表',
             'url'  => 'admin/user',
             'icon' => 'user',
+            'can' => 'admin.user.index',
         ],
         [
             'text' => '新增',
             'url'  => 'admin/user/create',
             'icon' => 'plus',
+            'can' => 'admin.user.create',
         ],
         'JS & HS',
         [
             'text' => 'JS',
             'url'  => 'admin/jishi',
             'icon' => 'female',
+            'can' => 'admin.jishi.index',
         ],
         [
             'text' => 'HS',
             'url'  => 'admin/huisuo',
             'icon' => 'h-square',
+            'can' => 'admin.huisuo.index',
         ],
         '附件',
         [
             'text' => '图片',
             'url'  => 'admin/attachment',
             'icon' => 'file',
+            'can' => 'admin.attachment.index',
         ],
         '权限',
         [
             'text' => '角色',
             'url'  => 'admin/role',
             'icon' => 'address-book',
+            'can' => 'admin.permission.index',
         ],
         [
             'text' => '权限',
             'url'  => 'admin/permission',
             'icon' => 'list',
+            'can' => 'admin.role.index',
         ],
 
 

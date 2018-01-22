@@ -170,6 +170,7 @@ return [
         Laravel\Tinker\TinkerServiceProvider::class,
         JeroenNoten\LaravelAdminLte\ServiceProvider::class,
         zgldh\QiniuStorage\QiniuFilesystemServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -242,9 +243,6 @@ return [
         'LengthAwarePaginator' => Illuminate\Pagination\LengthAwarePaginator::class,
         
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
-        
-        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
-        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Fractal' => Spatie\Fractal\FractalFacade::class,
         'Image' => Intervention\Image\Facades\Image::class,
     ],

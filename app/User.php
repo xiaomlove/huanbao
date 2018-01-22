@@ -8,9 +8,11 @@ use App\Models\Topic;
 use App\Models\AttachmentRelationship;
 use App\Models\Attachment;
 use Spatie\Permission\Traits\HasRoles;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
+    use HasApiTokens;
     use Notifiable;
     use HasRoles;
     

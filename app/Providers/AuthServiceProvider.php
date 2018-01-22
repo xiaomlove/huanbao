@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use Laravel\Passport\Passport;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\User;
+use Mockery\Generator\StringManipulation\Pass\Pass;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,11 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        Passport::routes();
+        Passport::tokensExpireIn(\Carbon::now()->addDays(10));
+        Passport::refreshTokensExpireIn(\Carbon::now()->addDays(15));
+
         //这个是适用于Laravel自带的@can指令之类，laravel-permission 这个包的hasPermissionTo()不会有用
         Gate::before(function($user, $ability) {
             $hasRole = $user->hasRole(User::ROLE_SUPER_ADMIN_NAME);

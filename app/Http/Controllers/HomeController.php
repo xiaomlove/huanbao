@@ -30,7 +30,8 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
-        $r = User::with("avatars")->find(2);
-        dd($r);
+        $user = User::find(1);
+        $token = $user->createToken('my test token')->accessToken;
+        dd($token);
     }
 }

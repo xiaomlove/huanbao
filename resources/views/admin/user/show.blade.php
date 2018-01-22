@@ -80,7 +80,7 @@
             <td>{{ $user->comment_counts }}</td>
 
             <td>注册天数：</td>
-            <td>--</td>
+            <td>{{ \Carbon::now()->diff($user->created_at)->days }}</td>
 
             <td>xxx</td>
         </tr>
