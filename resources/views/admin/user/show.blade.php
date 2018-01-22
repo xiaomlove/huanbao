@@ -57,7 +57,7 @@
             <td>关注数：</td>
             <td>{{ $user->following_counts }}</td>
 
-            <td><a href="{{ route('admin.user.permissions', $user->id) }}">个人权限</a></td>
+            <td><a href="{{ route('admin.user.permission', $user->id) }}">个人权限</a></td>
 
         </tr>
         <tr>

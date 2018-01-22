@@ -11,7 +11,7 @@
 @section('content')
   @include('admin.common.message')
     <form id="form" class="subject-form image-upload-form form-horizontal" method="post"
-          action="{{ route('admin.user.permissions', $user->id) }}">
+          action="{{ route('admin.user.permission', $user->id) }}">
     {{ method_field('PATCH') }}
 
   {{ csrf_field() }}

@@ -26,11 +26,11 @@ Route::any('test', 'HomeController@test');
 
 
 //后台路由
-Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['auth', 'permission']], function() {
     Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'as' => 'admin.'], function() {
         Route::get('/', 'IndexController@index')->name('admin.index');
         Route::resource('user', 'UserController');
-        Route::match(['get', 'patch'],'user/permissions/{user}', 'UserController@permissions')->name('user.permissions');
+        Route::match(['get', 'patch'],'user/permission/{user}', 'UserController@permission')->name('user.permission');
         Route::resource('forum', 'ForumController');
         Route::resource('forumtaxonomy', 'ForumTaxonomyController');
         Route::resource('topic', 'TopicController');

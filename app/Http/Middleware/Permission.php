@@ -22,7 +22,7 @@ class Permission
             return $this->abort('没有登录认证', $exceptJson);
         }
         $user = \Auth::user();
-        
+
         $routeName = \Route::currentRouteName();
         if (empty($routeName))
         {
@@ -45,11 +45,11 @@ class Permission
     {
         if ($exceptJson)
         {
-            return response()->json(normalize(1, $msg), 403);
+            return response()->json(normalize($msg), 403);
         }
         else
         {
-            return response($msg, 403);
+            return back()->with('danger', $msg);
         }
     }
 }

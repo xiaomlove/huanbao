@@ -133,7 +133,7 @@ class UserController extends Controller
         //
     }
 
-    public function permissions($id)
+    public function permission($id)
     {
         $user = User::with('permissions')->findOrFail($id);
         $method = request()->method();
