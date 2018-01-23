@@ -22,14 +22,8 @@ class ForumController extends Controller
      */
     public function index()
     {
-        $result = $this->forum->listAll(['max_depth' => 0]);
-        if ($result['ret'] != 0)
-        {
-            return $result;
-        }
-        $apiData = fractal()->collection($result['data'], new ForumTransformer())->toArray();
-        $apiData['key'] = "全部";
-        return normalize(0, 'OK', [$apiData]);
+        $list = Forum::with("taxonomies")->get()->groupBy("taxonomies.*.id");
+
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\CommentDetail;
 use App\User;
+use App\Models\Forum;
 
 class HomeController extends Controller
 {
@@ -30,7 +31,7 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
-        $user = \Auth::user();
-        dd($user);
+
+
     }
 }
