@@ -14,8 +14,11 @@
 //API 路由
 
 Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
+
     Route::post('login', 'AuthenticateController@login')->name('login');
-    Route::group(['middleware' => ['jwt.auth']], function() {
+
+    Route::group(['middleware' => ['auth:api', 'permission']], function() {
+        Route::any("test", "TestController@test")->name('test');
         Route::resource('user', 'UserController');
         Route::resource('forum', 'ForumController');
         Route::resource('topic', 'TopicController');

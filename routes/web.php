@@ -28,7 +28,7 @@ Route::any('test', 'HomeController@test');
 //后台路由
 Route::group(['middleware' => ['auth', 'permission']], function() {
     Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'as' => 'admin.'], function() {
-        Route::get('/', 'IndexController@index')->name('admin.index');
+        Route::get('/', 'IndexController@index')->name('home');
         Route::resource('user', 'UserController');
         Route::match(['get', 'patch'],'user/permission/{user}', 'UserController@permission')->name('user.permission');
         Route::resource('forum', 'ForumController');
