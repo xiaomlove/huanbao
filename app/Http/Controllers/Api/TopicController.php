@@ -28,13 +28,14 @@ class TopicController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $params = [];
-        $params['fid'] = request('fid');
-        $params['uid'] = request('uid');
-        $params['per_page'] = request('per_page', 10);
-        $params['page'] = request('page', 1);
+        $list = Topic::with(['user', 'mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments'])
+            ->when($request->fid, function ($query) use ($request) {return $query->where("fid", $request->fid);})
+            ->paginate($request->get('per_page', 10));
+
+        dd($list);
+
         $params['with'] = ['user', 'main_floor', 'main_floor.user', 'main_floor.detail', 'main_floor.attachments'];
         $result = $this->topic->listAll($params);
 //         return $result;

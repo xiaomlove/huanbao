@@ -17,7 +17,8 @@ Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
 
     Route::post('login', 'AuthenticateController@login')->name('login');
 
-    Route::group(['middleware' => ['auth:api', 'permission']], function() {
+//    Route::group(['middleware' => ['auth:api', 'permission']], function() {
+    Route::group(['middleware' => []], function() {
         Route::any("test", "TestController@test")->name('test');
         Route::resource('user', 'UserController');
         Route::resource('forum', 'ForumController');

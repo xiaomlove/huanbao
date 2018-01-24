@@ -43,7 +43,7 @@ class Topic extends Model
      * 话题最后回复
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function last_comment()
+    public function lastComment()
     {
         return $this->hasOne(Comment::class, 'id', 'last_comment_id');
     }
@@ -53,7 +53,7 @@ class Topic extends Model
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function main_floor()
+    public function mainFloor()
     {
         return $this->hasOne(Comment::class, 'tid', 'id');
     }

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\ForumTaxonomy;
+use App\Models\Forum;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\ForumRepository;
 use App\Transformers\ForumTransformer;
+use App\Transformers\ForumTaxonomyTransformer;
 
 class ForumController extends Controller
 {
@@ -22,8 +25,14 @@ class ForumController extends Controller
      */
     public function index()
     {
-        $list = Forum::with("taxonomies")->get()->groupBy("taxonomies.*.id");
+        $list = ForumTaxonomy::with('forums')->get();
+        $apiData = fractal()
+            ->collection($list)
+            ->transformWith(new ForumTaxonomyTransformer())
+            ->parseIncludes('forums')
+            ->toArray();
 
+        return normalize(0, "OK", ['list' => $apiData['data']]);
     }
 
     /**

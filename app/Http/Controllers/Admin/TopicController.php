@@ -37,7 +37,7 @@ class TopicController extends Controller
         $params['include_total'] = true;
         $params['per_page'] = 10;
         $params['page'] = request('page', 1);
-        $params['with'] = ['user', 'forum', 'main_floor', 'main_floor.detail', 'last_comment', 'last_comment.user'];
+        $params['with'] = ['user', 'forum', 'mainFloor', 'mainFloor.detail', 'lastComment', 'lastComment.user'];
         $result = $this->topic->listAll($params);
 //         dd($result);
         if ($result['ret'] == 0)
