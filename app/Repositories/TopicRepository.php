@@ -57,7 +57,7 @@ class TopicRepository
             $topicData['uid'] = \Auth::id();
             $topic = $this->topic->create($topicData);
             //创建主楼
-            $comment = $topic->main_floor()->create([
+            $comment = $topic->mainFloor()->create([
                 'uid' => $topic->uid,
                 'floor_num' => 1,//创建帖子时候创建的评论，肯定是1楼
             ]);
@@ -89,9 +89,9 @@ class TopicRepository
         \DB::beginTransaction();
         try
         {
-            $topic = $this->topic->with('main_floor', 'main_floor.detail')->findOrFail($id);
+            $topic = $this->topic->with('mainFloor', 'mainFloor.detail')->findOrFail($id);
             $topic->update($request->only(['title', 'fid']));
-            $topic->main_floor->detail->update($request->only(['content']));
+            $topic->mainFloor->detail->update($request->only(['content']));
 
             \DB::commit();
 

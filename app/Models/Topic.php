@@ -55,7 +55,7 @@ class Topic extends Model
      */
     public function mainFloor()
     {
-        return $this->hasOne(Comment::class, 'tid', 'id');
+        return $this->hasOne(Comment::class, 'tid', 'id')->where("floor_num", 1);
     }
 
     /**
