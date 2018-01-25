@@ -36,20 +36,13 @@ class TopicController extends Controller
 
         dd($list);
 
-        $params['with'] = ['user', 'main_floor', 'main_floor.user', 'main_floor.detail', 'main_floor.attachments'];
-        $result = $this->topic->listAll($params);
-//         return $result;
-        if ($result['ret'] != 0)
-        {
-            return $result;
-        }
-        $list = $result['data']['list'];
         $apiData = fractal()
-        ->collection($list->getCollection())
+        ->collection($list)
         ->transformWith(new TopicTransformer())
-        ->parseIncludes(['main_floor', 'main_floor.attachments'])
+        ->parseIncludes(['mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments'])
         ->paginateWith(new IlluminatePaginatorAdapter($list))
         ->toArray();
+
         return normalize(0, 'OK', [
             'list' => $apiData['data'], 
             'pagination' => $apiData['meta']['pagination']

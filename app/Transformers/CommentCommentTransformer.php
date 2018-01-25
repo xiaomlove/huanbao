@@ -35,7 +35,7 @@ class CommentCommentTransformer extends TransformerAbstract
     public function includeAttachments(Comment $comment)
     {
         $attachments = $comment->attachments;
-        if ($attachments)
+        if ($attachments->isNotEmpty())
         {
             return $this->collection($attachments, new AttachmentTransformer());
         }

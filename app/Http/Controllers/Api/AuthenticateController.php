@@ -16,7 +16,19 @@ class AuthenticateController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->only(['email', 'password']);
+        $request->request->add([
+            'grant_type' => 'password',
+            'client_id' => $request->get('client_id', config('oauth.client_id')),
+            'client_secret' => $request->get('client_secret', config('oauth.client_secret')),
+            'username' => $request->username,
+            'password' => $request->password,
+            'scope' => '',
+        ]);
 
+        $proxy = \Request::create('oauth/token', 'POST');
+
+        $response = \Route::dispatch($proxy);
+
+        return $response;
     }
 }

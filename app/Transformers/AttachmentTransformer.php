@@ -7,7 +7,9 @@ use App\Models\Attachment;
 
 class AttachmentTransformer extends TransformerAbstract
 {
-    protected $uriSuffix = '';
+    protected $width;
+
+    protected $height;
     
     protected $defaultIncludes = [];
     
@@ -18,11 +20,13 @@ class AttachmentTransformer extends TransformerAbstract
         $currentRouteName = \Route::currentRouteName();
         if ($currentRouteName == 'api.topic.index')
         {
-            $this->uriSuffix = '!r350x750';
+            $this->width = 350;
+            $this->height = 750;
         }
         else 
         {
-            $this->uriSuffix = '!r350x750';
+            $this->width = 350;
+            $this->height = 750;
         }
     }
     
@@ -31,7 +35,7 @@ class AttachmentTransformer extends TransformerAbstract
         return [
             'id' => $attachment->id,
             'key' => $attachment->id,
-            'uri' => asset(sprintf("storage/%s/%s%s", $attachment->dirname, $attachment->basename, $this->uriSuffix)),
+            'uri' => $attachment->url($this->width, $this->height),
         ];
     }
     

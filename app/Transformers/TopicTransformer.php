@@ -10,7 +10,7 @@ class TopicTransformer extends TransformerAbstract
 {
     protected $defaultIncludes = ['user'];
     
-    protected $availableIncludes = ['forum', 'last_comment', 'main_floor'];
+    protected $availableIncludes = ['forum', 'lastComment', 'mainFloor'];
     
     public function transform(Topic $topic)
     {
@@ -19,7 +19,7 @@ class TopicTransformer extends TransformerAbstract
             'id' => $topic->id,
             'key' => $topic->id,
             'title' => $topic->title,
-            'last_comment_time' => $topic->last_comment_time,
+            'last_comment_time' => $lastCommentTime->format('Y-m-d H:i'),
             'last_comment_time_human' => $lastCommentTime->diffForHumans(),
             'comment_count' => $topic->comment_count,
             'view_count' => $topic->view_count,
@@ -38,15 +38,15 @@ class TopicTransformer extends TransformerAbstract
     
     public function includeLastComment(Topic $topic)
     {
-        $lastComment = $topic->last_comment;
-        if ($lastComment)
+        $lastComment = $topic->lastComment;
+        if ($lastComment->isNotEmpty())
         {
             return $this->item($lastComment, new CommentTransformer());
         }
     }
     public function includeMainFloor(Topic $topic)
     {
-        return $this->item($topic->main_floor, new CommentCommentTransformer());
+        return $this->item($topic->mainFloor, new CommentCommentTransformer());
     }
 }
 
