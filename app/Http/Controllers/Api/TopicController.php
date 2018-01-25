@@ -34,7 +34,7 @@ class TopicController extends Controller
             ->when($request->fid, function ($query) use ($request) {return $query->where("fid", $request->fid);})
             ->paginate($request->get('per_page', 10));
 
-        dd($list);
+//        dd($list);
 
         $apiData = fractal()
         ->collection($list)
@@ -42,6 +42,8 @@ class TopicController extends Controller
         ->parseIncludes(['mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments'])
         ->paginateWith(new IlluminatePaginatorAdapter($list))
         ->toArray();
+
+        dd($apiData);
 
         return normalize(0, 'OK', [
             'list' => $apiData['data'], 

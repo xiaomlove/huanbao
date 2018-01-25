@@ -45,6 +45,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        dd($request->expectsJson());
         if 
         (
             $request->expectsJson()
@@ -53,7 +54,7 @@ class Handler extends ExceptionHandler
             $modelName = get_class($e);
             $modelName = substr($modelName, strrpos($modelName, '\\'));
             $msg = sprintf("%s %s", $modelName, $e->getMessage());
-            if ($e instanceof \Illuminate\Validation\ValidationException)
+            if ($e instanceof ValidationException)
             {
                 return response()->json(normalize($msg, [
                     'errors' => $e->errors(),

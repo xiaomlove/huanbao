@@ -3,6 +3,12 @@
  * 自自定义函数
  */
 
+/**
+ * 格式化返回
+ *
+ * @param array ...$args
+ * @return array
+ */
 function normalize(...$args)
 {
     if (!isset($args[2]))
@@ -27,16 +33,12 @@ function normalize(...$args)
     ];
 }
 
-function apiUser()
-{
-    static $user;
-    if (is_null($user))
-    {
-        $user = \JWTAuth::parseToken()->authenticate();
-    }
-    return $user;
-}
-
+/**
+ * 返回链接中附件的key
+ *
+ * @param $url
+ * @return string
+ */
 function attachmentKey($url)
 {
     if (!filter_var($url, FILTER_VALIDATE_URL))
@@ -45,4 +47,22 @@ function attachmentKey($url)
     }
     $parsed = parse_url($url);
     return trim($parsed['path'], "/");
+}
+
+/**
+ * 返回当前URL中不带path及queryString部分
+ *
+ * @return string
+ */
+function urlBeforePath()
+{
+    $request = request();
+    $url = $request->url();
+    $path = $request->path();
+    if ($path == "" || $path == "/")
+    {
+        return trim($url, "/");
+    }
+    $result = substr($url, 0, strlen($url) - strlen($path));
+    return trim($result, '/');
 }
