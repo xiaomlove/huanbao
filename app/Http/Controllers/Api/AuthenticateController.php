@@ -45,10 +45,11 @@ class AuthenticateController extends Controller
             'scope' => '',
         ];
         $url = url('/') . "/oauth/token";
-        return $this->requestOAuthServer("post", $url, ['form_params' => $data]);
+        //结果码-1001，刷新token失败，这里前端需要进行登录操作了。
+        return $this->requestOAuthServer("post", $url, ['form_params' => $data], -1001);
     }
 
-    private function requestOAuthServer($method, $url, array $options = [])
+    private function requestOAuthServer($method, $url, array $options = [], $failureCode = -1)
     {
         try
         {
@@ -60,8 +61,7 @@ class AuthenticateController extends Controller
         catch (\Exception $e)
         {
             $result = json_decode((string)$e->getResponse()->getBody(), true);
-            //结果码-1001，刷新token失败，这里前端需要进行登录操作了。
-            return normalize(get_class($e) . ': ' . $result['message'], request()->all());
+            return normalize($failureCode, get_class($e) . ': ' . $result['message'], request()->all());
         }
     }
 }
