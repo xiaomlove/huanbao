@@ -43,7 +43,7 @@ class TopicController extends Controller
         ->paginateWith(new IlluminatePaginatorAdapter($list))
         ->toArray();
 
-        dd($apiData);
+//        dd($apiData);
 
         return normalize(0, 'OK', [
             'list' => $apiData['data'], 
@@ -85,27 +85,18 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        $topic = Topic::with('user')->findOrFail($id);
-        $params = [];
-        $params['tid'] = $id;
-        $params['per_page'] = request('per_page', 10);
-        $params['page'] = request('page', 1);
-        $params['order'] = request('order', 'id asc');
-        $result = $this->comment->listOfTopic($params);
-        if ($result['ret'] != 0)
-        {
-            return $result;
-        }
-        $commentList = $result['data']['list'];
+        $result = $this->comment->listOfTopic($id);
+        dd($result);
+        $commentList = $result['list'];
         $comments = fractal()
         ->collection($commentList->getCollection())
         ->transformWith(new CommentTransformer())
-        ->parseIncludes(['detail', 'attachments', 'first_comments'])
+        ->parseIncludes(['detail', 'attachments', 'firstComments'])
         ->paginateWith(new IlluminatePaginatorAdapter($commentList))
         ->toArray();
         
         $topicInfo = fractal()
-        ->item($topic)
+        ->item($result['topic'])
         ->transformWith(new TopicTransformer())
         ->toArray();
         

@@ -19,7 +19,19 @@ class User extends Authenticatable
     const ROLE_SUPER_ADMIN_NAME = 'super_admin';
 
     const DEFAULT_AVATAR = '17z1jmEz303dddjKTeVGVCGFEgAIZB2zwMx6hX67.jpeg';
-    
+
+    private static $disk;
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        if (!self::$disk)
+        {
+            self::$disk = \Storage::disk('qiniu');
+        }
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -46,6 +58,29 @@ class User extends Authenticatable
         return $this->hasMany(Topic::class, 'uid');
     }
 
+    public function avatarUrl($width = "", $height = "")
+    {
+        if (!$this->avatar)
+        {
+            return "";
+        }
+        if (!$width && !$height)
+        {
+            return (string)self::$disk->url($this->avatar);
+        }
+        $previewOptions = "imageView2/0";
+        if ($width)
+        {
+            $previewOptions .= "/w/$width";
+        }
+        if ($height)
+        {
+            $previewOptions .= "/h/$height";
+        }
+        return (string)self::$disk->imagePreviewUrl($this->avatar, $previewOptions);
+
+    }
+
     /**
      * 用户头像，其实是一个附件（图片）
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -66,7 +101,7 @@ class User extends Authenticatable
      * @see App\Providers\AppServiceProvider::customMorphMap()
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function avatars()
+    public function allAvatarAttachment()
     {
         return $this->morphToMany(
             Attachment::class,

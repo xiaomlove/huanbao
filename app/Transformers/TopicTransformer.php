@@ -21,6 +21,8 @@ class TopicTransformer extends TransformerAbstract
             'title' => $topic->title,
             'last_comment_time' => $lastCommentTime->format('Y-m-d H:i'),
             'last_comment_time_human' => $lastCommentTime->diffForHumans(),
+            'created_at' => $topic->created_at->format('Y-m-d H:i'),
+            'created_at_human' => $topic->created_at->diffForHumans(),
             'comment_count' => $topic->comment_count,
             'view_count' => $topic->view_count,
         ];

@@ -45,7 +45,7 @@ class UserRepository
         catch (\Exception $e)
         {
             \DB::rollBack();
-            return normalize(1, $e->getMessage(), $update);
+            return normalize($e->getMessage(), $update);
         }
 
     }

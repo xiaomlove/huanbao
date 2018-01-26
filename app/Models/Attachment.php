@@ -71,9 +71,9 @@ class Attachment extends Model
             {
                 $previewOptions .= "/h/$height";
             }
-            return self::$disk->imagePreviewUrl($this->key, $previewOptions);
+            return (string)self::$disk->imagePreviewUrl($this->key, $previewOptions);
         }
-        return self::$disk->url($this->key);
+        return (string)self::$disk->url($this->key);
     }
 
     public function humanSize()

@@ -23,11 +23,11 @@ class UserObserver
             return;
         }
         $key = $user->avatar;
-        $isExists = $user->avatars()->wherePivot("attachment_key", $key)->count();
+        $isExists = $user->allAvatarAttachment()->wherePivot("attachment_key", $key)->count();
         \Log::info(sprintf("%s, action: %s, key: %s, isExists: %s", __METHOD__, $action, $key, $isExists));
         if (!$isExists)
         {
-            $user->avatars()->attach($key);
+            $user->allAvatarAttachment()->attach($key);
         }
     }
 }

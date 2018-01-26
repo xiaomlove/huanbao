@@ -7,9 +7,9 @@ use App\Models\Comment;
 
 class CommentCommentTransformer extends TransformerAbstract
 {
-    protected $defaultIncludes = ['user', 'detail'];
+    protected $defaultIncludes = ['detail'];
     
-    protected $availableIncludes = ['attachments'];
+    protected $availableIncludes = ['user'];
     
     public function transform(Comment $comment)
     {
@@ -30,15 +30,6 @@ class CommentCommentTransformer extends TransformerAbstract
     public function includeDetail(Comment $comment)
     {
         return $this->item($comment->detail, new CommentDetailTransformer());
-    }
-    
-    public function includeAttachments(Comment $comment)
-    {
-        $attachments = $comment->attachments;
-        if ($attachments->isNotEmpty())
-        {
-            return $this->collection($attachments, new AttachmentTransformer());
-        }
     }
 }
 

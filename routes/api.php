@@ -21,7 +21,7 @@ Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
     $middleware = ['auth:api', 'permission'];
     if (config('app.env') == 'local')
     {
-//        $middleware = [];
+        $middleware = [];
     }
 
     Route::group(['middleware' => $middleware], function() {
