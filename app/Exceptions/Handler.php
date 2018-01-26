@@ -59,6 +59,11 @@ class Handler extends ExceptionHandler
                     'params' => $request->all(),
                 ]), $e->status);
             }
+            elseif ($e instanceof AuthenticationException)
+            {
+                //未认证，结果码为-1000，前端收到此码需要刷新token
+                return response()->json(normalize(-1000, $msg, $request->all()), 401);
+            }
             else
             {
                 return response()->json(normalize($msg, $request->all()), 500);
