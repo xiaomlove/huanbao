@@ -45,14 +45,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        dd($request->expectsJson());
-        if 
+        if
         (
             $request->expectsJson()
         )
         {
             $modelName = get_class($e);
-            $modelName = substr($modelName, strrpos($modelName, '\\'));
             $msg = sprintf("%s %s", $modelName, $e->getMessage());
             if ($e instanceof ValidationException)
             {

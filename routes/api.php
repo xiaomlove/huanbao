@@ -17,12 +17,13 @@ Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
 
     Route::post('login', 'AuthenticateController@login')->name('login');
 
-    $middlewares = [];
-    if (config('app.env') != 'local')
+    $middleware = ['auth:api', 'permission'];
+    if (config('app.env') == 'local')
     {
-        $middlewares = ['auth:api', 'permission'];
+//        $middleware = [];
     }
-    Route::group(['middleware' => $middlewares], function() {
+
+    Route::group(['middleware' => $middleware], function() {
         Route::any("test", "TestController@test")->name('test');
         Route::resource('user', 'UserController');
         Route::resource('forum', 'ForumController');
@@ -31,4 +32,3 @@ Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
         Route::post('upload/image', 'UploadController@image')->name('upload.image');
     });
 });
-

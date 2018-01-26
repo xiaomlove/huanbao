@@ -183,10 +183,7 @@ return [
         
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
-        
-        Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Spatie\Fractal\FractalServiceProvider::class,
-        
         Intervention\Image\ImageServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
     ],
