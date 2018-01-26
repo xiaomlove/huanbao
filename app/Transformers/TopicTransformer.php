@@ -8,9 +8,7 @@ use App\Models\Forum;
 
 class TopicTransformer extends TransformerAbstract
 {
-    protected $defaultIncludes = ['user'];
-    
-    protected $availableIncludes = ['forum', 'lastComment', 'mainFloor'];
+    protected $availableIncludes = ['user', 'forum', 'lastComment', 'mainFloor'];
     
     public function transform(Topic $topic)
     {

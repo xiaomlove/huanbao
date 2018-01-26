@@ -30,7 +30,8 @@ class TopicController extends Controller
      */
     public function index(Request $request)
     {
-        $list = Topic::with(['user', 'mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments'])
+        $with = ['user', 'mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments'];
+        $list = Topic::with($with)
             ->when($request->fid, function ($query) use ($request) {return $query->where("fid", $request->fid);})
             ->paginate($request->get('per_page', 10));
 
@@ -39,7 +40,7 @@ class TopicController extends Controller
         $apiData = fractal()
         ->collection($list)
         ->transformWith(new TopicTransformer())
-        ->parseIncludes(['mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments'])
+        ->parseIncludes($with)
         ->paginateWith(new IlluminatePaginatorAdapter($list))
         ->toArray();
 
@@ -85,25 +86,38 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        $result = $this->comment->listOfTopic($id);
-        dd($result);
-        $commentList = $result['list'];
-        $comments = fractal()
-        ->collection($commentList->getCollection())
+        $topic = Topic::with('user')->findOrFail($id);
+        $topicApiData = fractal()
+            ->item($topic)
+            ->transformWith(new TopicTransformer())
+            ->toArray();
+
+        $with = [
+            'user',
+            'detail', 'detail.attachments',
+            'firstComments', 'firstComments.user', 'firstComments.detail',
+            'firstComments.parentComment', 'firstComments.parentComment.user',
+        ];
+        $comments = $topic->comments()
+            ->where('pid', 0)
+            ->with($with)
+            ->paginate(request()->get('per_page', 10));
+
+//        dd($comments);
+
+        $commentsApiData = fractal()
+        ->collection($comments)
         ->transformWith(new CommentTransformer())
-        ->parseIncludes(['detail', 'attachments', 'firstComments'])
-        ->paginateWith(new IlluminatePaginatorAdapter($commentList))
+        ->parseIncludes($with)
+        ->paginateWith(new IlluminatePaginatorAdapter($comments))
         ->toArray();
-        
-        $topicInfo = fractal()
-        ->item($result['topic'])
-        ->transformWith(new TopicTransformer())
-        ->toArray();
-        
+
+//        dd($commentsApiData);
+
         return normalize(0, 'OK', [
-            'list' => $comments['data'], 
-            'pagination' => $comments['meta']['pagination'],
-            'topic' => $topicInfo
+            'list' => $commentsApiData['data'],
+            'pagination' => $commentsApiData['meta']['pagination'],
+            'topic' => $topicApiData['data'],
         ]);
     }
 

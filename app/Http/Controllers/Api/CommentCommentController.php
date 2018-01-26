@@ -4,21 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CommentRequest;
-use App\Repositories\CommentRepository;
-use App\Models\Topic;
 use App\Models\Comment;
-use App\Transformers\CommentTransformer;
 use App\Transformers\CommentCommentTransformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
-class CommentController extends Controller
+class CommentCommentController extends Controller
 {
-    
-    public function __construct(CommentRepository $comment)
-    {
-        $this->comment = $comment;
-    }
     /**
      * Display a listing of the resource.
      *
@@ -26,8 +17,26 @@ class CommentController extends Controller
      */
     public function index(Request $request)
     {
+        $with = ['user', 'detail', 'parentComment', 'parentComment.user'];
+        $comments = Comment::where("root_id", $request->root_id)
+            ->with($with)
+            ->paginate($request->get('per_page', 10));
 
+//        dd($comments);
 
+        $commentsApiData = fractal()
+            ->collection($comments)
+            ->transformWith(new CommentCommentTransformer())
+            ->parseIncludes($with)
+            ->paginateWith(new IlluminatePaginatorAdapter($comments))
+            ->toArray();
+
+//        dd($commentsApiData);
+
+        return normalize(0, 'OK', [
+            'list' => $commentsApiData['data'],
+            'pagination' => $commentsApiData['meta']['pagination'],
+        ]);
     }
 
     /**
@@ -46,13 +55,9 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CommentRequest $request)
+    public function store(Request $request)
     {
-        $data = $request->all();
-        $data['uid'] = $this->apiUser()->id;
-        $data['pid'] = $request->get('pid', 0);
-        $result = $this->comment->create($data);
-        return $result;
+        //
     }
 
     /**
@@ -63,17 +68,7 @@ class CommentController extends Controller
      */
     public function show($id)
     {
-        $with = ['user', 'detail', 'detail.attachments'];
-        $comment = Comment::with($with)->findOrFail($id);
-        $commentApiData = fractal()
-            ->item($comment)
-            ->transformWith(new CommentTransformer())
-            ->parseIncludes($with)
-            ->toArray();
-
-//        dd($commentApiData);
-
-        return normalize(0, 'OK', $commentApiData['data']);
+        //
     }
 
     /**

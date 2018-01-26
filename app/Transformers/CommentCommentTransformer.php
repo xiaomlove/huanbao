@@ -7,9 +7,9 @@ use App\Models\Comment;
 
 class CommentCommentTransformer extends TransformerAbstract
 {
-    protected $defaultIncludes = ['detail'];
+    protected $defaultIncludes = [];
     
-    protected $availableIncludes = ['user'];
+    protected $availableIncludes = ['user', 'parentComment', 'detail'];
     
     public function transform(Comment $comment)
     {
@@ -30,6 +30,15 @@ class CommentCommentTransformer extends TransformerAbstract
     public function includeDetail(Comment $comment)
     {
         return $this->item($comment->detail, new CommentDetailTransformer());
+    }
+
+    public function includeParentComment(Comment $comment)
+    {
+        $parent = $comment->parentComment;
+        if ($parent && $parent->floor_num == -1)
+        {
+            return $this->item($parent, $this);
+        }
     }
 }
 

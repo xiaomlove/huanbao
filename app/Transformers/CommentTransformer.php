@@ -8,9 +8,7 @@ use App\Presenters\CommentPresenter;
 
 class CommentTransformer extends TransformerAbstract
 {
-    protected $defaultIncludes = ['user'];
-    
-    protected $availableIncludes = ['detail', 'first_comments', 'attachments'];
+    protected $availableIncludes = ['detail', 'firstComments', 'user', 'comments'];
     
     public function transform(Comment $comment)
     {
@@ -37,19 +35,19 @@ class CommentTransformer extends TransformerAbstract
     
     public function includeFirstComments(Comment $comment)
     {
-        $firstComments = $comment->first_comments;
-        if ($firstComments)
+        $firstComments = $comment->firstComments;
+        if ($firstComments->isNotEmpty())
         {
             return $this->collection($firstComments, new CommentCommentTransformer());
         }
     }
-    
-    public function includeAttachments(Comment $comment)
+
+    public function includeComments(Comment $comment)
     {
-        $attachments = $comment->attachments;
-        if ($attachments)
+        $comments = $comment->comments;
+        if ($comments->isNotEmpty())
         {
-            return $this->collection($attachments, new AttachmentTransformer());
+            return $this->collection($comments, new CommentCommentTransformer());
         }
     }
 }
