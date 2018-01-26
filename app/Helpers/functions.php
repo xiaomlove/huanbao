@@ -49,20 +49,3 @@ function attachmentKey($url)
     return trim($parsed['path'], "/");
 }
 
-/**
- * 返回当前URL中不带path及queryString部分
- *
- * @return string
- */
-function urlBeforePath()
-{
-    $request = request();
-    $url = $request->url();
-    $path = $request->path();
-    if ($path == "" || $path == "/")
-    {
-        return trim($url, "/");
-    }
-    $result = substr($url, 0, strlen($url) - strlen($path));
-    return trim($result, '/');
-}

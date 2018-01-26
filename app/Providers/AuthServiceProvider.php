@@ -29,8 +29,8 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Passport::routes();
-        Passport::tokensExpireIn(\Carbon::now()->addDays(10));
-        Passport::refreshTokensExpireIn(\Carbon::now()->addDays(15));
+        Passport::tokensExpireIn(\Carbon::now()->addSeconds(config('oauth.token_ttl', 86400)));
+        Passport::refreshTokensExpireIn(\Carbon::now()->addDays(30));
 
         //这个是适用于Laravel自带的@can指令之类，laravel-permission 这个包的hasPermissionTo()不会有用
         Gate::before(function($user, $ability) {

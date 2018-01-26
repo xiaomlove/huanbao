@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\CommentDetail;
 use App\User;
 use App\Models\Forum;
+use GuzzleHttp\Client;
 
 class HomeController extends Controller
 {
@@ -31,7 +32,9 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
+        $client = new Client();
+        $response = $client->get(url('/admin'));
 
-
+        echo (string)$response->getBody();
     }
 }

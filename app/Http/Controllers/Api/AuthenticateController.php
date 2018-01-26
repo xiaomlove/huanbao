@@ -25,11 +25,11 @@ class AuthenticateController extends Controller
             'password' => $request->password,
             'scope' => '',
         ];
-        $url = urlBeforePath() . "/oauth/token";
+        $url = url('/') . "/oauth/token";
         return $this->requestOAuthServer("post", $url, ['form_params' => $data]);
     }
 
-    private function requestOAuthServer($method, $url, array $options)
+    private function requestOAuthServer($method, $url, array $options = [])
     {
         try
         {
@@ -41,7 +41,7 @@ class AuthenticateController extends Controller
         catch (\Exception $e)
         {
             $result = json_decode((string)$e->getResponse()->getBody(), true);
-            return normalize($result['message'], request()->all());
+            return normalize(get_class($e) . ': ' . $result['message'], request()->all());
         }
     }
 }
