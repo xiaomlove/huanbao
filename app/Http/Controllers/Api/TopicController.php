@@ -71,9 +71,7 @@ class TopicController extends Controller
      */
     public function store(TopicRequest $request)
     {
-        $data = $request->all();
-        $data['uid'] = $this->apiUser()->id;
-        $result = $this->topic->create($data);
+        $result = $this->topic->create($request);
         //         dd($result);
         return $result;
     }

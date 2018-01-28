@@ -10,9 +10,12 @@ use App\Repositories\AttachmentRepository;
 use App\Models\AttachmentRelationship;
 use App\Http\Requests\CommentRequest;
 use Illuminate\Http\Request;
+use App\Traits\ContentJson;
 
 class CommentRepository
 {
+    use ContentJson;
+
     protected $topic;
 
     protected $comment;
@@ -87,7 +90,7 @@ class CommentRepository
             //创建详情
 
             $commentDetail = $comment->detail()->create([
-                'content' => $this->getContentJson($request),
+                'content' => $this->getContentJsonString($request),
             ]);
 
             \DB::commit();
@@ -148,7 +151,7 @@ class CommentRepository
         {
             $comment = $this->comment->findOrFail($id);
             $comment->detail()->update([
-                'content' => $this->getContentJson($request),
+                'content' => $this->getContentJsonString($request),
             ]);
 
             \DB::commit();
@@ -211,22 +214,4 @@ class CommentRepository
         return $comments;
     }
 
-    private function getContentJson(CommentRequest $request)
-    {
-        $content = $request->get('content');
-        $contentArr = json_decode($content, true);
-        if ($contentArr && is_array($contentArr))
-        {
-            return $content;
-        }
-        else
-        {
-            return json_encode([
-                [
-                    'type' => 'text',
-                    'data' => ['text' => $content],
-                ],
-            ], JSON_UNESCAPED_UNICODE);
-        }
-    }
 }

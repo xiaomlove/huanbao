@@ -9,9 +9,12 @@ use App\Models\Forum;
 use App\Models\AttachmentRelationship;
 use App\Repositories\AttachmentRepository;
 use App\Http\Requests\TopicRequest;
+use App\Traits\ContentJson;
 
 class TopicRepository
 {
+    use ContentJson;
+
     protected $topic;
     
     protected $comment;
@@ -62,7 +65,9 @@ class TopicRepository
                 'floor_num' => 1,//创建帖子时候创建的评论，肯定是1楼
             ]);
             //创建主楼详情
-            $commentDetail = $comment->detail()->create($request->only(['content']));
+            $commentDetail = $comment->detail()->create([
+                'content' => $this->getContentJsonString($request),
+            ]);
 
             \DB::commit();
 
@@ -91,7 +96,9 @@ class TopicRepository
         {
             $topic = $this->topic->with('mainFloor', 'mainFloor.detail')->findOrFail($id);
             $topic->update($request->only(['title', 'fid']));
-            $topic->mainFloor->detail->update($request->only(['content']));
+            $topic->mainFloor->detail->update([
+                'content' => $this->getContentJsonString($request),
+            ]);
 
             \DB::commit();
 

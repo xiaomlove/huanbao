@@ -16,13 +16,11 @@
 Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
 
     Route::post('login', 'AuthenticateController@login')->name('login');
-    Route::post('logout', 'AuthenticateController@logout')->name('logout');
-    Route::post('token/refresh', 'AuthenticateController@refreshToken')->name('token.refresh');
 
     $middleware = ['auth:api', 'permission'];
     if (config('app.env') == 'local')
     {
-        $middleware = [];
+//        $middleware = [];
     }
 
     Route::group(['middleware' => $middleware], function() {
@@ -32,6 +30,7 @@ Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
         Route::resource('topic', 'TopicController');
         Route::resource('comment', 'CommentController');
         Route::resource('commentcomment', 'CommentCommentController');
-        Route::post('upload/image', 'UploadController@image')->name('upload.image');
+        Route::post('token/refresh', 'AuthenticateController@refreshToken')->name('token.refresh');
+        Route::post('logout', 'AuthenticateController@logout')->name('logout');
     });
 });

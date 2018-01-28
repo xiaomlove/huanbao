@@ -57,7 +57,7 @@ class AuthenticateController extends Controller
      */
     public function logout(Request $request)
     {
-        dd(\Auth::user());
+//        dd(\Auth::user());
         $result = \Auth::user()->tokens()->delete();
         if ($result)
         {
