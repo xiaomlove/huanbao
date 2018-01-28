@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Rules\TuWenContent;
 
 class CommentRequest extends FormRequest
 {
@@ -34,6 +35,7 @@ class CommentRequest extends FormRequest
         $data = \Input::all();
         $v = \Validator::make($data, [
             'tid' => 'required|exists:topics,id',
+            'content' => 'required|string',
         ]);
         $v->sometimes('pid', 'numeric|exists:comments,id', function($input) {
             return $input->pid > 0;

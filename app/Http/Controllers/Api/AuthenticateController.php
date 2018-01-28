@@ -49,6 +49,26 @@ class AuthenticateController extends Controller
         return $this->requestOAuthServer("post", $url, ['form_params' => $data], -1001);
     }
 
+    /**
+     * 退出，删除access_token
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function logout(Request $request)
+    {
+        dd(\Auth::user());
+        $result = \Auth::user()->tokens()->delete();
+        if ($result)
+        {
+            return normalize(0, "OK", []);
+        }
+        else
+        {
+            return normalize("删除token失败");
+        }
+    }
+
     private function requestOAuthServer($method, $url, array $options = [], $failureCode = -1)
     {
         try

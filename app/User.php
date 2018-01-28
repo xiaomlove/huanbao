@@ -62,11 +62,15 @@ class User extends Authenticatable
     {
         if (!$this->avatar)
         {
-            return "";
+            $avatar = self::DEFAULT_AVATAR;
+        }
+        else
+        {
+            $avatar = $this->avatar;
         }
         if (!$width && !$height)
         {
-            return (string)self::$disk->url($this->avatar);
+            return (string)self::$disk->url($avatar);
         }
         $previewOptions = "imageView2/0";
         if ($width)
@@ -77,7 +81,7 @@ class User extends Authenticatable
         {
             $previewOptions .= "/h/$height";
         }
-        return (string)self::$disk->imagePreviewUrl($this->avatar, $previewOptions);
+        return (string)self::$disk->imagePreviewUrl($avatar, $previewOptions);
 
     }
 

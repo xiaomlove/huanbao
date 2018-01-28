@@ -16,6 +16,7 @@
 Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
 
     Route::post('login', 'AuthenticateController@login')->name('login');
+    Route::post('logout', 'AuthenticateController@logout')->name('logout');
     Route::post('token/refresh', 'AuthenticateController@refreshToken')->name('token.refresh');
 
     $middleware = ['auth:api', 'permission'];

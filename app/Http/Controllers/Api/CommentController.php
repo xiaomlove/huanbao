@@ -14,6 +14,7 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 class CommentController extends Controller
 {
+    protected $comment;
     
     public function __construct(CommentRepository $comment)
     {
@@ -48,10 +49,8 @@ class CommentController extends Controller
      */
     public function store(CommentRequest $request)
     {
-        $data = $request->all();
-        $data['uid'] = $this->apiUser()->id;
-        $data['pid'] = $request->get('pid', 0);
-        $result = $this->comment->create($data);
+        $result = $this->comment->create($request);
+
         return $result;
     }
 

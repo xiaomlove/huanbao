@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Transformers\UserTransformer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -15,8 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::findOrFail(900);
-        return $users;
+
     }
 
     /**
@@ -48,7 +48,15 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $userApiData = fractal()
+            ->item($user)
+            ->transformWith(new UserTransformer())
+            ->toArray();
+
+//        dd($userApiData);
+
+        return normalize(0, 'OK', $userApiData['data']);
     }
 
     /**

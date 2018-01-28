@@ -213,7 +213,7 @@ class CommentRepository
 
     private function getContentJson(CommentRequest $request)
     {
-        $content = $request->get('content', '');
+        $content = $request->get('content');
         $contentArr = json_decode($content, true);
         if ($contentArr && is_array($contentArr))
         {
