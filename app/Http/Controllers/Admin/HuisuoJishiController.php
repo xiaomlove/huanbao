@@ -11,31 +11,23 @@ use App\Http\Requests\HuisuoJishiRequest;
 
 class HuisuoJishiController extends Controller
 {
-    protected $typeFlag;
-    
-    protected $pageTitle;
-    
     protected $huisuoJishi;
+
+    protected $guessType;
     
     public function __construct(HuisuoJishiRepository $huisuoJishi)
     {
+        $this->huisuoJishi = $huisuoJishi;
+
         $currentRouteName = \Route::currentRouteName();
         if (strpos($currentRouteName, 'huisuo') !== false)
         {
-            $this->typeFlag = HuisuoJishi::TYPE_FLAG_HUISUO;
-            $this->pageTitle = '会所';
+            $this->guessType = HuisuoJishi::TYPE_HUISUO;
         }
         elseif (strpos($currentRouteName, 'jishi') !== false)
         {
-            $this->typeFlag = HuisuoJishi::TYPE_FLAG_JISHI;
-            $this->pageTitle = '技师';
+            $this->guessType = HuisuoJishi::TYPE_JISHI;
         }
-        else
-        {
-            return response('非法访问', 500);
-        }
-        
-        $this->huisuoJishi = $huisuoJishi;
     }
     /**
      * Display a listing of the resource.
@@ -44,24 +36,12 @@ class HuisuoJishiController extends Controller
      */
     public function index()
     {
-        $params = [];
-        $params['per_page'] = 10;
-        $params['page'] = request('page', 1);
-        $params['type_flag'] = $this->typeFlag;
-        $params['with'] = ['coverImage', 'contacts', 'contacts.image'];
-        $result = $this->huisuoJishi->listAll($params);
-//         dd($result);
-        if ($result['ret'] == 0)
-        {
-            $list = $result['data']['list'];
-            $pageTitle = $this->pageTitle;
-            $typeFlag = $this->typeFlag;
-            return view('admin.huisuo_jishi.index', compact('list', 'pageTitle', 'typeFlag'));
-        }
-        else
-        {
-            return response($result['msg'], 500);
-        }
+        $huisuoJishi = new HuisuoJishi(['type' => $this->guessType]);
+
+        $list = HuisuoJishi::where("type", $this->guessType)
+            ->paginate(request('per_page', 20));
+
+        return view('admin.huisuo_jishi.index', compact('list', 'huisuoJishi'));
     }
 
     /**
@@ -71,10 +51,10 @@ class HuisuoJishiController extends Controller
      */
     public function create()
     {
-        $pageTitle = "新建" . $this->pageTitle;
-        $contactTypes = Contact::listTypes();
-        $info = new HuisuoJishi();
-        return view('admin.huisuo_jishi.create', compact('info', 'pageTitle', 'contactTypes'));
+        $huisuoJishi = new HuisuoJishi(['type' => $this->guessType]);
+
+
+        return view('admin.huisuo_jishi.form', compact('huisuoJishi'));
     }
 
     /**

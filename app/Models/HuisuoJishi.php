@@ -3,47 +3,44 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Attachment;
 
 class HuisuoJishi extends Model
 {
-    const TYPE_FLAG_HUISUO = 'huisuo';
-    const TYPE_FLAG_JISHI = 'jishi';
-    
-    protected $table = 'huisuo_jishis';
-    
+    const TYPE_HUISUO = 'huisuo';
+
+    const TYPE_JISHI = 'jishi';
+
+    protected $table = 'huisuo_jishi_bases';
+
+    private static $typeNames = [
+        self::TYPE_JISHI => ['name' => 'JS'],
+        self::TYPE_HUISUO => ['name' => 'HS'],
+    ];
+
     protected $fillable = [
+        'type',
+        'tid',
         'name',
-        'creator',
-        'type_flag',
-        'cover',
+        'short_name',
         'province',
         'city',
         'district',
         'address',
-        'description',
-        'age',
-        'price',
+        'background_image',
     ];
-    
-    public function coverImage()
+
+    public function isHuisuo()
     {
-        return $this->hasOne(Attachment::class, 'id', 'cover');
+        return $this->type == self::TYPE_HUISUO;
     }
-    
-    /**
-     * 拥有的联系方式。其实是多对多
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
-    public function contacts()
+
+    public function isJishi()
     {
-        return $this->morphToMany(
-            Contact::class, 
-            'owner', 
-            ContactRelationship::TABLE_NAME,
-            'owner_id',
-            'contact_id'
-        );
+        return $this->type == self::TYPE_JISHI;
+    }
+
+    public function getTypeNameAttribute()
+    {
+        return self::$typeNames[$this->type]['name'];
     }
 }

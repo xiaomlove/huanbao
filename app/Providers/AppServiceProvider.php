@@ -80,8 +80,6 @@ class AppServiceProvider extends ServiceProvider
             AttachmentRelationship::TARGET_TYPE_COMMENT_DETAIL => CommentDetail::class,
             AttachmentRelationship::TARGET_TYPE_USER_AVATAR => User::class,
 
-            ContactRelationship::OWNER_TYPE_HUISUO => HuisuoJishi::class,
-            ContactRelationship::OWNER_TYPE_JISHI => HuisuoJishi::class,
         ]);
     }
 
