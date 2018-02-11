@@ -19,7 +19,7 @@ class CreateHuisuoJishiTable extends Migration
             $table->integer('tid')->comment('关联帖子');
             $table->string('type')->comment('类型');
             $table->string('name')->comment('名称');
-            $table->string('short_name')->comment('简称');
+            $table->string('short_name')->comment('简称/工号');
             $table->string('province')->nullable()->comment('省');
             $table->string('city')->nullable()->comment('市');
             $table->string('district')->nullable()->comment('区');

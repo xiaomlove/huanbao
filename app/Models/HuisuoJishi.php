@@ -39,8 +39,48 @@ class HuisuoJishi extends Model
         return $this->type == self::TYPE_JISHI;
     }
 
+    public static function listTypes($string = false)
+    {
+        if ($string)
+        {
+            return implode(',', array_keys(self::$typeNames));
+        }
+        return self::$typeNames;
+    }
+
+    public static function getGuessType()
+    {
+        $currentRouteName = \Route::currentRouteName();
+        if (strpos($currentRouteName, 'huisuo') !== false)
+        {
+            $type = self::TYPE_HUISUO;
+        }
+        elseif (strpos($currentRouteName, 'jishi') !== false)
+        {
+            $type = self::TYPE_JISHI;
+        }
+        else
+        {
+            return null;
+        }
+        return self::$typeNames[$type] + ['type' => $type];
+    }
+
     public function getTypeNameAttribute()
     {
         return self::$typeNames[$this->type]['name'];
+    }
+
+    public function getShortNameLabelAttribute()
+    {
+        if ($this->isJishi())
+        {
+            return '工号';
+        }
+        elseif ($this->isHuisuo())
+        {
+            return '简称';
+        }
+        return '';
     }
 }

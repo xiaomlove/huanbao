@@ -5,12 +5,22 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Models\HuisuoJishi;
+use App\Models\Topic;
 use App\Models\Attachment;
 use App\Rules\TuWenContent;
 use App\Models\Contact;
 
 class HuisuoJishiRequest extends FormRequest
 {
+    protected $model;
+
+    public function __construct(array $query = array(), array $request = array(), array $attributes = array(), array $cookies = array(), array $files = array(), array $server = array(), $content = null)
+    {
+        parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
+
+        $this->model = new HuisuoJishi(['type' => HuisuoJishi::getGuessType()['type']]);
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -28,55 +38,32 @@ class HuisuoJishiRequest extends FormRequest
      */
     public function rules()
     {
+        $typeStr = $this->model->listTypes(true);
+        $topicTable = with(new Topic())->getTable();
         return [
-            //
-        ];
-    }
-    
-    public function validator()
-    {
-        $params = \Input::all();
-        $contactTypes = Contact::listTypes();
-        $v = \Validator::make($params, [
-            'name' => 'required|min:1|max:40',
-            'cover' => 'required|exists:attachments,id',
+            'name' => 'required|min:2|max:10',
+            'tid' => "exists:$topicTable,id",
+            'short_name' => ['required', 'regex:/\w+/i', 'min:2', 'max:10'],
             'province' => 'required',
             'city' => 'required',
             'district' => 'required',
-            'address' => 'required',
-            'age' => 'required|numeric|min:16',
-            'price' => 'required|numeric',
-            'contacts' => 'array',
-            'description' => ['required',  new TuWenContent()],
-        ]);
-        $v->setAttributeNames([
-            'cover' => '封面',
-            'price' => '价格',
-        ]);
-        $v->after(function($validator) use ($params, $contactTypes) {
-            $contacts = $params['contacts'];
-            foreach ($contacts['type'] as $k => $type)
-            {
-                $index = $k + 1;
-                if (isset($contactTypes[$type]))
-                {
-                    if (empty($contacts['account'][$k]))
-                    {
-                        $validator->errors()->add("contacts.account.$k", "联系方式{$index} 缺少 {$contactTypes[$type]}");
-                    }
-                    if (!empty($contacts['image'][$k]))
-                    {
-                        $id = $contacts['image'][$k];
-                        $info = Attachment::find($id);
-                        if (empty($info))
-                        {
-                            $validator->errors()->add("contacts.image.$k", "联系方式{$index} 不存在 {$id} 的图片");
-                        }
-                    }
-                }
-            }
-        });
-        return $v;
+            'background_image' => 'required|url',
+            'province' => 'required',
+            'city' => 'required',
+            'district' => 'required',
+        ];
     }
-    
+
+    public function attributes()
+    {
+        return [
+            'short_name' => $this->model->short_name_label,
+            'background_image' => '背景图片',
+            'tid' => '帖子ID',
+            'province' => '省',
+            'district' => '区',
+
+         ];
+    }
+
 }

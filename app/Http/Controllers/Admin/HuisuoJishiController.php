@@ -19,15 +19,8 @@ class HuisuoJishiController extends Controller
     {
         $this->huisuoJishi = $huisuoJishi;
 
-        $currentRouteName = \Route::currentRouteName();
-        if (strpos($currentRouteName, 'huisuo') !== false)
-        {
-            $this->guessType = HuisuoJishi::TYPE_HUISUO;
-        }
-        elseif (strpos($currentRouteName, 'jishi') !== false)
-        {
-            $this->guessType = HuisuoJishi::TYPE_JISHI;
-        }
+        $guessType = HuisuoJishi::getGuessType();
+        $this->guessType = $guessType['type'];
     }
     /**
      * Display a listing of the resource.
@@ -53,7 +46,6 @@ class HuisuoJishiController extends Controller
     {
         $huisuoJishi = new HuisuoJishi(['type' => $this->guessType]);
 
-
         return view('admin.huisuo_jishi.form', compact('huisuoJishi'));
     }
 
@@ -65,20 +57,16 @@ class HuisuoJishiController extends Controller
      */
     public function store(HuisuoJishiRequest $request)
     {
-        $data = $request->all();
-        $data['type_flag'] = $this->typeFlag;
-        if (\Auth::check())
+        $request->request->add(['type' => $this->guessType]);
+//        dd($request->all());
+        $result = $this->huisuoJishi->create($request);
+        if ($request->expectsJson())
         {
-            $data['creator'] = \Auth::user()->name;
-        }
-        $result = $this->huisuoJishi->create($data);
-        if ($result['ret'] == 0)
-        {
-            return normalize(0, '创建成功', $result['data']['data']->toArray());
+            return $result;
         }
         else
         {
-            return $result;
+            return redirect()->route("admin.{$this->guessType}.index")->with('success', $result['msg']);
         }
     }
 
@@ -101,13 +89,8 @@ class HuisuoJishiController extends Controller
      */
     public function edit($id)
     {
-        $info = HuisuoJishi::with(['coverImage', 'contacts', 'contacts.image'])
-        ->where("type_flag", $this->typeFlag)
-        ->findOrFail($id);
-        $contactTypes = Contact::listTypes();
-        $pageTitle = "编辑" . $this->pageTitle;
-//         dd($info);
-        return view('admin.huisuo_jishi.edit', compact('info', 'pageTitle', 'contactTypes'));
+        $huisuoJishi = HuisuoJishi::where("type", $this->guessType)->findOrFail($id);
+        return view('admin.huisuo_jishi.form', compact('huisuoJishi'));
     }
 
     /**
@@ -117,13 +100,17 @@ class HuisuoJishiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(HuisuoJishiRequest $request, $id)
     {
-        $data = $request->all();
-        $data['type_flag'] = $this->typeFlag;
-//         dd($data);
-        $result = $this->huisuoJishi->update($data, $id);
-        return $result;
+        $result = $this->huisuoJishi->update($request, $id);
+        if ($request->expectsJson())
+        {
+            return $result;
+        }
+        else
+        {
+            return redirect()->route("admin.{$this->guessType}.index")->with('success', $result['msg']);
+        }
     }
 
     /**

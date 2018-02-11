@@ -1,31 +1,12 @@
 <?php
 namespace App\Repositories;
 
-use App\Models\Topic;
-use App\Models\Comment;
-use App\Models\CommentDetail;
 use App\User;
-use App\Events\CommentCreated;
-use App\Repositories\AttachmentRepository;
-use App\Models\AttachmentRelationship;
+use Illuminate\Http\Request;
 use App\Models\HuisuoJishi;
-use App\Models\Contact;
 
 class HuisuoJishiRepository
 {
-    protected $huisuoJishi;
-    
-    protected $contact;
-    
-    public function __construct
-    (
-        HuisuoJishi $huisuoJishi,
-        Contact $contact
-    )
-    {
-        $this->huisuoJishi = $huisuoJishi;
-        $this->contact = $contact;
-    }
     
     /**
      * 创建会所或技师
@@ -33,47 +14,21 @@ class HuisuoJishiRepository
      * @param array $data
      * @return number[]|string[]|array[]
      */
-    public function create(array $data)
+    public function create(Request $request)
     {
-        //整理联系人
-        $contactTypes = $this->contact->listTypes();
-        $contactData = [];
-        foreach ($data['contacts']['type'] as $k => $type)
-        {
-            if (!isset($contactTypes[$type]))
-            {
-                continue;
-            }
-            $contactData[] = [
-                'type' => $type,
-                'account' => $data['contacts']['account'][$k],
-                'image_id' => $data['contacts']['image'][$k],
-            ];
-        }
         \DB::beginTransaction();
         try
         {
             //创建会所或技师
-            $huisuoJishi = $this->huisuoJishi->create($data);
-            //创建联系人
-            if (!empty($contactData))
-            {
-                $contactCreated = [];
-                foreach ($contactData as $_contact)
-                {
-                    $contact = $this->contact->create($_contact);
-                    $contactCreated[$contact->id] = ['owner_type' => $data['type_flag']];
-                }
-                //创建关联
-                $huisuoJishi->contacts()->sync($contactCreated);
-            }
+            $huisuoJishi = HuisuoJishi::create($request->all());
+
             \DB::commit();
-            return normalize(0, "OK", ['data' => $huisuoJishi]);
+            return normalize(0, "新建成功", $huisuoJishi);
         }
         catch (\Exception  $e)
         {
             \DB::rollBack();
-            return ["创建失败：" . $e->getMessage(), $data];
+            return ["新建失败：" . $e->getMessage(), $request->all()];
         }
         
     }
@@ -85,78 +40,22 @@ class HuisuoJishiRepository
      * @param unknown $id
      * @return number[]|string[]|array[]
      */
-    public function update(array $data, $id)
+    public function update(Request $request, $id)
     {
         //主体
-        $huisuoJishi = $this->huisuoJishi->find($id);
-        if (empty($huisuoJishi))
-        {
-            return ["id为 {$id} 的目标不存在", $data];
-        }
-        //整理联系人
-        $contactTypes = $this->contact->listTypes();
-        $contactToBeUpdate = [];
-        $contactToBeCreate = [];
-        foreach ($data['contacts']['type'] as $k => $type)
-        {
-            if (!isset($contactTypes[$type]))
-            {
-                continue;
-            }
-            if (isset($data['contacts']['id'][$k]))
-            {
-                $contactToBeUpdate[$data['contacts']['id'][$k]] = [
-                    'type' => $type,
-                    'account' => $data['contacts']['account'][$k],
-                    'image_id' => (int)$data['contacts']['image'][$k],
-                ];
-            }
-            else 
-            {
-                $contactToBeCreate[] = [
-                    'type' => $type,
-                    'account' => $data['contacts']['account'][$k],
-                    'image_id' => (int)$data['contacts']['image'][$k],
-                ];
-            }
-        }
-//         dd($contactToBeCreate, $contactToBeUpdate);
+        $huisuoJishi = HuisuoJishi::findOrFail($id);
         \DB::beginTransaction();
         try
         {
-            $huisuoJishi->update($data);
-            $contactToBeSync = [];
-            //创建联系人
-            if (!empty($contactToBeCreate))
-            {
-                foreach ($contactToBeCreate as $_contact)
-                {
-                    $contact = $this->contact->create($_contact);
-                    $contactToBeSync[$contact->id] = ['owner_type' => $data['type_flag']];
-                }
-            }
-            //更新联系人
-            if (!empty($contactToBeUpdate))
-            {
-                foreach ($contactToBeUpdate as $_id => $_contact)
-                {
-                    $contact = $this->contact->updateOrCreate(
-                        ['id' => $_id],
-                        $_contact
-                    );
-                    $contactToBeSync[$contact->id] = ['owner_type' => $data['type_flag']];
-                }
-            }
-            //更新关联关联
-            $huisuoJishi->contacts()->sync($contactToBeSync);
+            $huisuoJishi->update($request->all());
             
             \DB::commit();
-            return normalize(0, "OK", ['data' => $huisuoJishi]);
+            return normalize(0, "更新成功", $huisuoJishi);
         }
         catch (\Exception  $e)
         {
             \DB::rollBack();
-            return ["创建失败：" . $e->getMessage(), $data];
+            return ["创建失败：" . $e->getMessage(), $request->all()];
         }
     }
     

@@ -37,11 +37,11 @@
             <tr>
                 <td>{{ $value->id }}</td>
                 <td>{{ $value->name }}({{ $value->short_name }})</td>
-                <td>{!! $huosuoJishiPresenter->getAddress($value) !!}</td>
+                <td>{!! $huisuoJishiPresenter->getAddress($value) !!}</td>
                 <td>{{ $value->updated_at->format('Y-m-d H:i') }}</td>
                 <td>
-                    <a href="{{ route('admin.forum.edit', $value->id) }}">编辑</a>
-                    <form method="post" style="display: inline-block;" action="{{ route('admin.forum.destroy', $value->id) }}" onsubmit="return window.confirm('确定删除？')">
+                    <a href="{{ route('admin.' . $huisuoJishi->type . '.edit', $value->id) }}">编辑</a>
+                    <form method="post" style="display: inline-block;" action="{{ route('admin.' . $huisuoJishi->type . '.destroy', $value->id) }}" onsubmit="return window.confirm('确定删除？')">
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}
                         <button type="submit" class="btn btn-xs btn-danger">删除</button>
