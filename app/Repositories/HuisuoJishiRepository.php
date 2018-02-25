@@ -4,6 +4,9 @@ namespace App\Repositories;
 use App\User;
 use Illuminate\Http\Request;
 use App\Models\HuisuoJishi;
+use App\Models\HuisuoJishiRelationship;
+use App\Http\Requests\HuisuoJishiRelationshipRequest;
+use Carbon\Carbon;
 
 class HuisuoJishiRepository
 {
@@ -58,95 +61,38 @@ class HuisuoJishiRepository
             return ["创建失败：" . $e->getMessage(), $request->all()];
         }
     }
-    
-    /**
-     * 列出一个话题下的评论，话题详情页，包含楼中楼数据
-     * 
-     * @param array $params
-     * @return number[]|string[]|array[]
-     */
-    public function listOfTopic($params = [])
+
+    public function createRelationship(HuisuoJishiRelationshipRequest $request)
     {
-        $defaults = [
-            'page' => 1,
-            'per_page' => 10,
-            'order' => 'id asc',
-            'tid' => 0,
-        ];
-        $args = array_merge($defaults, $params);
-        $where = [];
-        if (empty($args['tid']) || !ctype_digit(strval($args['tid'])))
+        $jishi = HuisuoJishi::where('id', $request->jishi_id)->where('type', HuisuoJishi::TYPE_JISHI)->firstOrFail();
+        $data = $request->all();
+        $data['jishi_name'] = $jishi->name;
+        if (!empty($data['end_time']))
         {
-            return normalize("非法tid: {$args['tid']}", $args);
-        }
-        $where[] = ['tid', '=', (int)$args['tid']];
-        $where[] = ['pid', 0];
-    
-        $list = $this->comment
-        ->where($where)
-        ->with(['user', 'detail', 'attachments'])
-        ->orderByRaw(\DB::raw($args['order']))
-        ->paginate($args['per_page'], ['*'], 'page', $args['page']);
-        
-//         dd($list);
-        //取楼中楼数据
-        $commentCommentIdArr = [];
-        foreach ($list->getIterator() as $item)
-        {
-            $ids = $item->first_comment_ids;
-            if (!empty($ids))
+            if ($data['begin_time'] > $data['end_time'])
             {
-                $commentCommentIdArr = array_merge($commentCommentIdArr, explode(',', $ids));
+                return normalize('结束时间要大于开始时间');
             }
         }
-//         dd($list);
-        $commentComments = $this->comment
-        ->whereIn('id', $commentCommentIdArr)
-        ->with(['user', 'detail'])
-        ->get()
-        ->groupBy('root_id');
-        
-        foreach ($list->getIterator() as $item)
+        $now = Carbon::now()->toDateTimeString();
+        //一个JS不能有多个有效的HS，需要先结束其他的
+        $huisuo = $jishi->huisuos()
+            ->whereNull('end_time')
+            ->first();
+        if ($huisuo)
         {
-            $rootId = $item->id;
-            $firstComments = $commentComments->get($rootId);
-            if ($firstComments)
-            {
-                $item->setRelation('first_comments', $firstComments);
-            }
+            return normalize(sprintf(
+                "在HS: %s(ID: %s, 开始时间: %s)的记录: %s 并没有结束",
+                $huisuo->huisuo_name, $huisuo->huisuo_id, $huisuo->begin_time, $huisuo->id
+            ));
         }
-        
-        return normalize(0, "OK", ['list' => $list]);
-    }
-    
-    /**
-     * 取所有
-     * 
-     * @param array $params
-     * @return number[]|string[]|array[]
-     */
-    public function listAll($params = [])
-    {
-        $defaults = [
-            'page' => 1,
-            'per_page' => 10,
-            'order' => 'id asc',
-            'type_flag' => null,
-            'with' => [],
-        ];
-        $args = array_merge($defaults, $params);
-        $where = [];
-        if (!is_null($args['type_flag']))
-        {
-            $where[] = ['type_flag', '=', $args['type_flag']];
-        }
-    
-        $list = $this->huisuoJishi
-        ->where($where)
-        ->with($args['with'])
-        ->orderByRaw(\DB::raw($args['order']))
-        ->paginate($args['per_page'], ['*'], 'page', $args['page']);
-    
-        return normalize(0, "OK", ['list' => $list]);
+
+        //开始时间与结束时间都不要落入其他已有记录中，不与其他时间段冲突
+
+
+
+
+        $result = HuisuoJishiRelationship::create($data);
+        return normalize(0, "创建关联成功", $result);
     }
 }

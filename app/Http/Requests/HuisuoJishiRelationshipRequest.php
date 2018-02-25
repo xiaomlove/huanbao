@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use App\Models\HuisuoJishi;
+use Carbon\Carbon;
 
 class HuisuoJishiRelationshipRequest extends FormRequest
 {
@@ -29,7 +30,7 @@ class HuisuoJishiRelationshipRequest extends FormRequest
         return [
             'huisuo_id' => ["required", Rule::exists($huisuoJishiTable, 'id')->where("type", HuisuoJishi::TYPE_HUISUO)->where("id", request("huisuo_id", 0))],
             'jishi_id' => ["required", Rule::exists($huisuoJishiTable, 'id')->where("type", HuisuoJishi::TYPE_JISHI)->where("id", request("jishi_id", 0))],
-            'begin_time' => 'required|date',
+            'begin_time' => ['required', 'date', 'before_or_equal:' . Carbon::now()->toDateTimeString()],
         ];
     }
 

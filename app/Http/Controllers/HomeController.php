@@ -7,6 +7,7 @@ use App\Models\CommentDetail;
 use App\User;
 use App\Models\Forum;
 use GuzzleHttp\Client;
+use App\Models\HuisuoJishi;
 
 class HomeController extends Controller
 {
@@ -32,9 +33,9 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
-        $client = new Client();
-        $response = $client->get(url('/admin'));
-
-        echo (string)$response->getBody();
+        $jishi = HuisuoJishi::find(1);
+        $huisuos = $jishi->huisuos()
+            ->max('begin_time');
+        dd($huisuos);
     }
 }

@@ -99,4 +99,29 @@ class HuisuoJishi extends Model
         }
         return '';
     }
+
+    /**
+     * JS 的全部 HS
+     */
+    public function huisuos()
+    {
+        return $this->hasMany(
+            HuisuoJishiRelationship::class,
+            'jishi_id',
+            'id'
+        );
+    }
+
+    /**
+     * HS 的全部 JS
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function jishis()
+    {
+        return $this->hasMany(
+            HuisuoJishiRelationship::class,
+            "huisuo_id",
+            'id'
+        );
+    }
 }

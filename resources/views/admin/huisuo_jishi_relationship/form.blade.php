@@ -44,7 +44,7 @@
             <div class="form-group{{$errors->has('jishi_id') ? ' has-error' : ''}}">
                 <label for="" class="col-sm-2 control-label">JS ID</label>
                 <div class="col-sm-10">
-                    <input type="text" name="jishi_id" class="form-control" id="" placeholder=""
+                    <input type="text" @if($relationship->id) readonly @endif name="jishi_id" class="form-control" id="" placeholder=""
                            value="{{ old('jishi_id', $relationship->jishi_id) }}">
                     @if($errors->has('jishi_id'))
                         <small class="help-block">{{ $errors->first('jishi_id') }}</small>
@@ -104,10 +104,12 @@
             }
         });
         laydate.render({
-            elem: '#begin_time'
+            elem: '#begin_time',
+            type: 'datetime',
         })
         laydate.render({
-            elem: '#end_time'
+            elem: '#end_time',
+            type: 'datetime',
         })
     </script>
 @stop

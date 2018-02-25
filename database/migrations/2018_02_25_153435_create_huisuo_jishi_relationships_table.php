@@ -17,9 +17,9 @@ class CreateHuisuoJishiRelationshipsTable extends Migration
         Schema::create($this->table, function (Blueprint $table) {
             $table->increments('id');
             $table->integer('huisuo_id');
-            $table->string('huisuo_short_name');
+            $table->string('huisuo_name');
             $table->integer('jishi_id');
-            $table->string('jishi_short_name');
+            $table->string('jishi_name');
             $table->dateTime('begin_time')->comment('开始时间');
             $table->dateTime('end_time')->nullable()->comment('结束时间');
 

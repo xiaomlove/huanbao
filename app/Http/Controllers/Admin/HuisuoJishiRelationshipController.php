@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HuisuoJishiRelationshipRequest;
 use App\Models\HuisuoJishiRelationship;
+use App\Repositories\HuisuoJishiRepository;
 
 class HuisuoJishiRelationshipController extends Controller
 {
+    protected $huisuoJishi;
+
+    public function __construct(HuisuoJishiRepository $huisuoJishi)
+    {
+        $this->huisuoJishi = $huisuoJishi;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -46,11 +53,16 @@ class HuisuoJishiRelationshipController extends Controller
      */
     public function store(HuisuoJishiRelationshipRequest $request)
     {
-        $huisuoJishi = HuisuoJishi::where('id', $request->jishi_id)->where('type', HuisuoJishi::TYPE_JISHI)->firstOrFail();
-        $data = $request->all();
-        $data['jishi_name'] = $huisuoJishi->name;
-        $result = HuisuoJishiRelationship::create($data);
-        return redirect()->route('admin.huisuojishi.index')->with('success', '创建成功');
+        $result = $this->huisuoJishi->createRelationship($request);
+        if ($result['ret'] == 0)
+        {
+            return redirect()->route('admin.huisuojishi.index')->with('success', $result['msg']);
+        }
+        else
+        {
+            return back()->with("danger", $result['msg']);
+        }
+
     }
 
     /**
@@ -72,7 +84,9 @@ class HuisuoJishiRelationshipController extends Controller
      */
     public function edit($id)
     {
-        //
+        $relationship = HuisuoJishiRelationship::findOrFail($id);
+        $huisuoJishi = HuisuoJishi::where("id", $relationship->huisuo_id)->where('type', HuisuoJishi::TYPE_HUISUO)->firstOrFail();
+        return view('admin.huisuo_jishi_relationship.form', compact('relationship', 'huisuoJishi'));
     }
 
     /**
@@ -95,6 +109,8 @@ class HuisuoJishiRelationshipController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $huisuoJishi = HuisuoJishiRelationship::findOrFail($id);
+        $huisuoJishi->delete();
+        return redirect()->route('admin.huisuojishi.index')->with('info', '删除关联成功');
     }
 }
