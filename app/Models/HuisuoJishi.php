@@ -71,6 +71,22 @@ class HuisuoJishi extends Model
         return self::$typeNames[$this->type]['name'];
     }
 
+    public function getTypeNameOppositeAttribute()
+    {
+        if ($this->isHuisuo())
+        {
+            return self::$typeNames[self::TYPE_JISHI]['name'];
+        }
+        elseif ($this->isJishi())
+        {
+            return self::$typeNames[self::TYPE_HUISUO]['name'];
+        }
+        else
+        {
+            return '';
+        }
+    }
+
     public function getShortNameLabelAttribute()
     {
         if ($this->isJishi())

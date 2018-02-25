@@ -40,9 +40,11 @@ class HuisuoJishiRequest extends FormRequest
     {
         $typeStr = $this->model->listTypes(true);
         $topicTable = with(new Topic())->getTable();
+        $huisuoJishiTable = (new HuisuoJishi())->getTable();
+        $id = \Route::current()->parameter('huisuojishi', 0);
         return [
             'name' => 'required|min:2|max:10',
-            'tid' => "exists:$topicTable,id",
+            'tid' => ["exists:$topicTable,id", Rule::unique($huisuoJishiTable)->ignore($id)],
             'short_name' => ['required', 'regex:/\w+/i', 'min:2', 'max:10'],
             'province' => 'required',
             'city' => 'required',
@@ -64,6 +66,13 @@ class HuisuoJishiRequest extends FormRequest
             'district' => '区',
 
          ];
+    }
+
+    public function messages()
+    {
+        return [
+            'tid.unique' => '帖子ID已经被关联',
+        ];
     }
 
 }

@@ -49,7 +49,7 @@ function attachmentKey($url)
     return trim($parsed['path'], "/");
 }
 
-function imageFormGroup($label, $name, $value, $errors)
+function imageFormGroup($label, $name, $value, \Illuminate\Support\ViewErrorBag $errors)
 {
     $errorClassName = $errors->has($name) ? 'has-error' : '';
     $urlDomain = config('filesystems.disks.qiniu.domains.default');

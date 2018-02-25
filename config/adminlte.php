@@ -177,6 +177,12 @@ return [
             'icon' => 'h-square',
             'can' => 'admin.huisuo.index',
         ],
+        [
+            'text' => '关联',
+            'url'  => 'admin/huisuojishi',
+            'icon' => 'h-square',
+            'can' => 'admin.huisuojishi.index',
+        ],
         '附件',
         [
             'text' => '图片',
