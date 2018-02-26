@@ -28,8 +28,8 @@ class HuisuoJishiRelationshipRequest extends FormRequest
     {
         $huisuoJishiTable = (new HuisuoJishi())->getTable();
         return [
-            'huisuo_id' => ["required", Rule::exists($huisuoJishiTable, 'id')->where("type", HuisuoJishi::TYPE_HUISUO)->where("id", request("huisuo_id", 0))],
-            'jishi_id' => ["required", Rule::exists($huisuoJishiTable, 'id')->where("type", HuisuoJishi::TYPE_JISHI)->where("id", request("jishi_id", 0))],
+            'huisuo_id' => ["required", Rule::exists($huisuoJishiTable, 'id')->where("type", HuisuoJishi::TYPE_HUISUO)],
+            'jishi_id' => ["required", Rule::exists($huisuoJishiTable, 'id')->where("type", HuisuoJishi::TYPE_JISHI)],
             'begin_time' => ['required', 'date', 'before_or_equal:' . Carbon::now()->toDateTimeString()],
         ];
     }

@@ -39,6 +39,16 @@ class HuisuoJishi extends Model
         return $this->type == self::TYPE_JISHI;
     }
 
+    public function scopeJishi($query)
+    {
+        return $query->where('type', self::TYPE_JISHI);
+    }
+
+    public function scopeHuisuo($query)
+    {
+        return $query->where('type', self::TYPE_HUISUO);
+    }
+
     public static function listTypes($string = false)
     {
         if ($string)

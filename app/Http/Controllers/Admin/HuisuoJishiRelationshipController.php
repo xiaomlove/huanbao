@@ -60,7 +60,7 @@ class HuisuoJishiRelationshipController extends Controller
         }
         else
         {
-            return back()->with("danger", $result['msg']);
+            return back()->withInput()->with("danger", $result['msg']);
         }
 
     }
@@ -96,9 +96,17 @@ class HuisuoJishiRelationshipController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(HuisuoJishiRelationshipRequest $request, $id)
     {
-        //
+        $result = $this->huisuoJishi->updateRelationship($request, $id);
+        if ($result['ret'] == 0)
+        {
+            return redirect()->route('admin.huisuojishi.index')->with('success', $result['msg']);
+        }
+        else
+        {
+            return back()->withInput()->with("danger", $result['msg']);
+        }
     }
 
     /**
