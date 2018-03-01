@@ -41,6 +41,7 @@ Route::group(['middleware' => ['auth', 'permission']], function() {
         Route::resource('huisuojishi', 'HuisuoJishiRelationshipController');
         Route::resource('role', 'RoleController');
         Route::resource('permission', 'PermissionController');
+        Route::resource('report', 'ReportController');
 
     });
     

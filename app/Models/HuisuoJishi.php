@@ -18,6 +18,7 @@ class HuisuoJishi extends Model
     ];
 
     protected $fillable = [
+        'key',
         'type',
         'tid',
         'name',

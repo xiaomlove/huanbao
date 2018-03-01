@@ -41,6 +41,10 @@ class Permission extends SpatiePermission
         'home' => '首页',
         'other' => '其他',
         'forumtaxonomy' => '论坛版块分类',
+        'token' => '令牌',
+        'refresh' => '刷新',
+        'test' => '测试',
+        'request' => '请求',
     ];
 
     public function listDisplayNames()

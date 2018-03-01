@@ -54,8 +54,10 @@ class ForumsTableSeeder extends Seeder
 
         foreach ($data as $value)
         {
-            $taxonomy = ForumTaxonomy::create(['name' => $value['taxonomy']]);
-            $forums = $taxonomy->forums()->createMany($value['forums']);
+            $taxonomy = ForumTaxonomy::create([
+                'name' => $value['taxonomy'],
+                'key' => \Uuid::uuid4(),
+            ]);
             //无须其他步骤，自动往中间表插入了数据
             foreach ($value['forums'] as $forum)
             {

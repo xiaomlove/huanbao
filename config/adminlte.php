@@ -135,6 +135,12 @@ return [
             'can' => 'admin.comment.index',
         ],
         [
+            'text' => '报告',
+            'url'  => 'admin/report',
+            'icon' => 'comment',
+            'can' => 'admin.report.index',
+        ],
+        [
             'text' => '版块',
             'icon' => 'table',
             'submenu' => [

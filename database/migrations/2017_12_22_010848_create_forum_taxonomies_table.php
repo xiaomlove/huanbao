@@ -16,7 +16,7 @@ class CreateForumTaxonomiesTable extends Migration
     {
         Schema::create($this->table, function (Blueprint $table) {
             $table->increments('id');
-            $table->string('key')->comment('唯一码');
+            $table->char('key', 36)->comment('唯一码');
             $table->string('name')->comment('名称');
 
             $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));

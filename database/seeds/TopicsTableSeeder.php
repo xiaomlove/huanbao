@@ -19,7 +19,8 @@ class TopicsTableSeeder extends Seeder
         $users = User::all();
         $topics = factory(Topic::class, 2)->create()->each(function($topic) use ($users, $faker) {
            //创建主楼评论
-            $mainFloor = $topic->main_floor()->create([
+            $mainFloor = $topic->mainFloor()->create([
+                'key' => \Uuid::uuid4(),
                 'uid' => $topic->uid,
                 'floor_num' => 1,
             ]);
@@ -34,6 +35,7 @@ class TopicsTableSeeder extends Seeder
             {
                 //正常楼
                 $comment = $topic->comments()->create([
+                    'key' => \Uuid::uuid4(),
                     'uid' => $users->random()->id,
                     'floor_num' => $i,
                 ]);
@@ -47,6 +49,7 @@ class TopicsTableSeeder extends Seeder
                     for ($j = 0; $j < $commentCommentCounts; $j++)
                     {
                         $commentComment = $topic->comments()->create([
+                            'key' => \Uuid::uuid4(),
                             'uid' => $users->random()->id,
                             'pid' => $comment->id,
                             'root_id' => $comment->id,

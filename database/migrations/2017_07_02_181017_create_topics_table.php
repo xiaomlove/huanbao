@@ -15,7 +15,7 @@ class CreateTopicsTable extends Migration
     {
         Schema::create('topics', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('key')->comment('唯一码');
+            $table->char('key', 36)->comment('唯一码');
             $table->string('title')->comment('标题');
             $table->integer('uid')->comment('用户ID');
             $table->integer('fid')->default(0)->comment('版块ID');

@@ -15,7 +15,7 @@ class CreateTableForum extends Migration
     {
         Schema::create('forums', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('key')->comment('唯一码');
+            $table->char('key', 36)->comment('唯一码');
             $table->string('name')->comment('版块名称');
             $table->string('slug')->comment('别名');
             $table->text('description')->nullable()->comment('描述');

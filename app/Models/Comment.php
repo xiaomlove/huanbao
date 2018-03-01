@@ -14,6 +14,7 @@ class Comment extends Model
     const ADMIN_TOPIC_SHOW_PER_PAGE = 15;//话题下评论每页数量
 
     protected $fillable = [
+        'key',
         'uid', 
         'tid',
         'pid', 

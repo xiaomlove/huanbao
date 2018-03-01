@@ -10,6 +10,7 @@ class ForumTaxonomy extends Model
 
     protected $fillable = [
         'name',
+        'key',
     ];
 
     public function forums()

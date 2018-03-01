@@ -8,6 +8,7 @@ use App\Models\Topic;
 class Forum extends Model
 {
     protected $fillable = [
+        'key',
         'name',
         'slug',
         'description',

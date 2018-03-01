@@ -9,6 +9,7 @@ use App\Models\Comment;
 class Topic extends Model
 {
     protected $fillable = [
+        'key',
         'title', 
         'fid', 
         'uid', 
