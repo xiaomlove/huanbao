@@ -15,6 +15,7 @@ class CreateCommentsTable extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('key')->comment('唯一码');
             $table->integer('uid')->comment('用户ID');
             $table->integer('tid')->comment('帖子ID');
             $table->integer('pid')->default(0)->comment('父级评论ID');
@@ -28,7 +29,8 @@ class CreateCommentsTable extends Migration
             
             $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-            
+
+            $table->unique('key', 'uk_key');
             $table->index('uid', 'idx_uid');
             $table->index('tid', 'idx_tid');
             $table->index('pid', 'idx_pid');

@@ -15,6 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('key')->comment('唯一码');
             $table->string('name')->default('')->comment('用户名');
             $table->string('email')->comment('邮箱');
             $table->string('password')->comment('密码');
@@ -27,7 +28,8 @@ class CreateUsersTable extends Migration
             $table->integer('fans_counts')->default(0)->comment('粉丝数');
             $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-            
+
+            $table->unique('key', 'uk_key');
             $table->unique('name', 'uk_name');
             $table->unique('email', 'uk_email');
             $table->index('password', 'idx_password');

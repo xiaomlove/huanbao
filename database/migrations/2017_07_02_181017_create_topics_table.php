@@ -15,6 +15,7 @@ class CreateTopicsTable extends Migration
     {
         Schema::create('topics', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('key')->comment('唯一码');
             $table->string('title')->comment('标题');
             $table->integer('uid')->comment('用户ID');
             $table->integer('fid')->default(0)->comment('版块ID');
@@ -26,7 +27,8 @@ class CreateTopicsTable extends Migration
 
             $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
-            
+
+            $table->unique('key', 'uk_key');
             $table->index('title', 'idx_title');
             $table->index('uid', 'idx_uid');
             $table->index('view_count', 'idx_view_count');

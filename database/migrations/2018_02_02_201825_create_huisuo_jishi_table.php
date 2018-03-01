@@ -16,6 +16,7 @@ class CreateHuisuoJishiTable extends Migration
     {
         Schema::create($this->table, function (Blueprint $table) {
             $table->increments('id');
+            $table->string('key')->comment('唯一码');
             $table->integer('tid')->comment('关联帖子');
             $table->string('type')->comment('类型');
             $table->string('name')->comment('名称');
@@ -26,6 +27,7 @@ class CreateHuisuoJishiTable extends Migration
             $table->string('address')->nullable()->comment('地址');
             $table->string('background_image')->nullable()->comment('背景图');
 
+            $table->unique('key', 'uk_key');
             $table->index('tid', 'idx_tid');
             $table->index('name', 'idx_name');
             $table->index('short_name', 'idx_short_name');

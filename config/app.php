@@ -242,6 +242,7 @@ return [
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'Fractal' => Spatie\Fractal\FractalFacade::class,
         'Image' => Intervention\Image\Facades\Image::class,
+        'Uuid' => Ramsey\Uuid\Uuid::class,
     ],
 
 ];

@@ -33,9 +33,8 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
-        $jishi = HuisuoJishi::find(1);
-        $huisuos = $jishi->huisuos()
-            ->max('begin_time');
-        dd($huisuos);
+        $r1 = \Uuid::uuid1()->toString();
+
+        dd($r1);
     }
 }
