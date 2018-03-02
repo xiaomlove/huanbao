@@ -31,7 +31,7 @@ class UploadController extends Controller
             return response()->json(normalize("不支持多张"));
         }
         $ext = $image->getClientOriginalExtension();
-        if (empty($ext) || !in_array($ext, $this->imageAllowExtensions))
+        if (empty($ext) || !in_array(strtolower($ext), $this->imageAllowExtensions))
         {
             return response()->json(normalize("图片格式{$ext}不被支持"));
         }
