@@ -152,10 +152,12 @@ class CommentPresenter
                     }
                     else
                     {
+                        $key = $content['data']['attachment_key'];
+                        $originUrl = $disk->url($key);
+                        $previewUrl = $disk->imagePreviewUrl($key, 'imageView2/0/h/400');
                         $htmls[] = sprintf(
                             '<p><a href="%s" target="_blank"><img src="%s" class="image"></a></p>',
-                            $content['data']['url'],
-                            !empty($content['data']['attachment_key']) ? $disk->imagePreviewUrl($content['data']['attachment_key'], 'imageView2/0/h/400') : $content['data']['url']
+                            $originUrl, $previewUrl
                         );
                     }
                     break;
