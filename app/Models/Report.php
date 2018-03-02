@@ -20,4 +20,5 @@ class Report extends Model
         'huisuo_environment_facility_value', 'huisuo_environment_facility_description',
         'huisuo_service_attitude_value', 'huisuo_service_attitude_description',
     ];
+
 }

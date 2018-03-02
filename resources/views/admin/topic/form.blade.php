@@ -74,7 +74,7 @@
         var contentEditor = new ContentEditor({
             wrapId: "content",
             uploadUrl: "{{ route('upload.image') }}",
-            content: '{!! $topic->main_floor ? $topic->main_floor->detail->content : "" !!}'
+            content: '{!! $topic->main_floor ? $topic->mainFloor->detail->content : "" !!}'
         });
 
         var $form = $('#form');

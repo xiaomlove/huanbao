@@ -5,14 +5,16 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Report;
+use App\Http\Requests\ReportRequest;
+use App\Repositories\ReportRepository;
 
 class ReportController extends Controller
 {
     protected $report;
 
-    public function __construct()
+    public function __construct(ReportRepository $report)
     {
-
+        $this->report = $report;
     }
 
     /**
@@ -20,9 +22,14 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $list = Report::when($request->jishi_id, function ($query) use ($request) {$query->where("jishi_id", $request->jishi_id);})
+            ->when($request->jishi_name, function ($query) use ($request) {$query->where("jishi_name", 'like', "%{$request->jishi_name}%");})
+            ->when($request->huisuo_id, function ($query) use ($request) {$query->where("huisuo_id", $request->huisuo_id);})
+            ->when($request->huisuo_name, function ($query) use ($request) {$query->where("huisuo_name", 'like', "%{$request->huisuo_name}%");})
+            ->paginate($request->get('per_page', 20));
+        return view('admin.report.index', compact('list'));
     }
 
     /**
@@ -32,7 +39,8 @@ class ReportController extends Controller
      */
     public function create()
     {
-        //
+        $report = new Report();
+        return view('admin.report.form', compact('report'));
     }
 
     /**
@@ -41,7 +49,7 @@ class ReportController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ReportRequest $request)
     {
         //
     }
@@ -75,7 +83,7 @@ class ReportController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ReportRequest $request, $id)
     {
         //
     }

@@ -76,3 +76,11 @@ input[type=submit] {
 .permissions-form-group tbody td label{
 	margin-right: 4px;
 }
+
+/*报告*/
+.slider-selection {
+	background: #00a65a;
+}
+#jishi_bottom_value {
+    width: 400px
+}

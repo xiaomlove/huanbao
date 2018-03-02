@@ -33,8 +33,8 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
-        $r1 = \Uuid::uuid1()->toString();
-
-        dd($r1);
+        $user = User::find(1);
+        $r = array_pull($user, 'name');
+        dd($r);
     }
 }
