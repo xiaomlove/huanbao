@@ -73,7 +73,7 @@
         $('#forum').select2();
         var contentEditor = new ContentEditor({
             wrapId: "content",
-            uploadUrl: "{{ route('upload.image') }}",
+            uploadUrl: "{{ route('admin.upload.image') }}",
             content: '{!! $topic->main_floor ? $topic->mainFloor->detail->content : "" !!}'
         });
 

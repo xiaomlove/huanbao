@@ -131,7 +131,7 @@
         $('#forum').select2();
         var contentEditor = new ContentEditor({
             wrapId: "content",
-            uploadUrl: "{{ route('upload.image') }}",
+            uploadUrl: "{{ route('admin.upload.image') }}",
             content: '{!! $report->topic ? $report->topic->mainFloor->detail->content : "" !!}'
         });
 
@@ -161,7 +161,7 @@
         $('.upload').fileupload({
             dataType: 'json',
             paramName: 'image',
-            url: "{{ route('upload.image') }}",
+            url: "{{ route('admin.upload.image') }}",
             done: function (e, data) {
                 var $this = $(this);
                 var url = data.result.data.url;

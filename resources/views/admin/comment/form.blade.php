@@ -48,7 +48,7 @@
         var contentEditor = new ContentEditor({
             formId: "form",
             wrapId: "content",
-            uploadUrl: "{{ route('upload.image') }}",
+            uploadUrl: "{{ route('admin.upload.image') }}",
             content: '{!! $comment->detail? $comment->detail->content : "" !!}',
             submitBtnSelector: ".submit",
             createdRedirectUrl: tid && "{{ route('admin.topic.show', ['tid' => request('tid')]) }}",

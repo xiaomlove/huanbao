@@ -103,7 +103,7 @@
         $('.upload').fileupload({
             dataType: 'json',
             paramName: 'image',
-            url: "{{ route('upload.image') }}",
+            url: "{{ route('admin.upload.image') }}",
             done: function (e, data) {
                 var $this = $(this);
                 var url = data.result.data.url;
