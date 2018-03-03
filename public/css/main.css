@@ -81,6 +81,6 @@ input[type=submit] {
 .slider-selection {
 	background: #00a65a;
 }
-#jishi_bottom_value {
+.slider-long .slider-horizontal{
     width: 400px
 }

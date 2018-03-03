@@ -18,7 +18,7 @@ class CreateTopicsTable extends Migration
             $table->char('key', 36)->comment('唯一码');
             $table->string('title')->comment('标题');
             $table->integer('uid')->comment('用户ID');
-            $table->integer('fid')->default(0)->comment('版块ID');
+            $table->integer('fid')->default(-1)->comment('版块ID');
             $table->integer('view_count')->default(0)->comment('阅读数');
             $table->integer('comment_count')->default(0)->comment('评论(回复)数');
             

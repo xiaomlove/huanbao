@@ -49,32 +49,4 @@ function attachmentKey($url)
     return trim($parsed['path'], "/");
 }
 
-function imageFormGroup($label, $name, $value, \Illuminate\Support\ViewErrorBag $errors)
-{
-    $errorClassName = $errors->has($name) ? 'has-error' : '';
-    $urlDomain = config('filesystems.disks.qiniu.domains.default');
-    if ($errorClassName)
-    {
-        $errorHtml = '<small class="help-block">' . $errors->first($name) . '</small>';
-    }
-    else
-    {
-        $errorHtml = '';
-    }
-    $html =
-<<<EOF
-    <div class="form-group {$errorClassName}">
-        <label for="" class="col-sm-2 control-label">{$label}</label>
-        <div class="col-sm-8">
-            <input type="text" name="{$name}" class="form-control" placeholder="图片地址，确保域名为 {$urlDomain} 且能正常打开，或点击右边上传" value="{$value}">
-            {$errorHtml}
-        </div>
-        <div class="col-sm-2">
-            <input type="file" class="upload">
-            <a class="preview" href="{$value}" target="_blank"><img src="{$value}" /></a>
-        </div>
-    </div>
-EOF;
-    return $html;
-}
 

@@ -68,5 +68,14 @@ class Topic extends Model
     {
         return $this->hasMany(Comment::class, "tid", "id");
     }
+
+    /**
+     * 帖子拥有一个HS/JS
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function huisuoJishi()
+    {
+        return $this->hasOne(HuisuoJishi::class, "tid");
+    }
     
 }

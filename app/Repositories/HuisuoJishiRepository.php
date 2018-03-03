@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\HuisuoJishi;
 use App\Models\HuisuoJishiRelationship;
 use App\Http\Requests\HuisuoJishiRelationshipRequest;
-use Carbon\Carbon;
 
 class HuisuoJishiRepository
 {
@@ -22,8 +21,15 @@ class HuisuoJishiRepository
         \DB::beginTransaction();
         try
         {
-            //创建会所或技师
-            $huisuoJishi = HuisuoJishi::create($request->all());
+            //创建帖子
+            $request->request->add([
+
+            ]);
+            $topicResult = app(TopicRepository::class)->create($request);
+
+            $data = $request->all();
+            $data['key'] = \Uuid::uuid4();
+            $huisuoJishi = HuisuoJishi::create($data);
 
             \DB::commit();
             return normalize(0, "新建成功", $huisuoJishi);
@@ -31,7 +37,7 @@ class HuisuoJishiRepository
         catch (\Exception  $e)
         {
             \DB::rollBack();
-            return ["新建失败：" . $e->getMessage(), $request->all()];
+            return normalize("新建失败：" . $e->getMessage(), $request->all());
         }
         
     }
@@ -58,7 +64,7 @@ class HuisuoJishiRepository
         catch (\Exception  $e)
         {
             \DB::rollBack();
-            return ["创建失败：" . $e->getMessage(), $request->all()];
+            return normalize("创建失败：" . $e->getMessage(), $request->all());
         }
     }
 

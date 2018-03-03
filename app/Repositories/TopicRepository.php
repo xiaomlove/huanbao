@@ -8,7 +8,7 @@ use App\User;
 use App\Models\Forum;
 use App\Models\AttachmentRelationship;
 use App\Repositories\AttachmentRepository;
-use App\Http\Requests\TopicRequest;
+use Illuminate\Http\Request;
 use App\Traits\ContentJson;
 
 class TopicRepository
@@ -50,7 +50,7 @@ class TopicRepository
      * @param array $data
      * @return number[]|string[]|array[]
      */
-    public function create(TopicRequest $request)
+    public function create(Request $request)
     {
         \DB::beginTransaction();
         try
@@ -58,9 +58,11 @@ class TopicRepository
             //创建话题
             $topicData = $request->only(['title', 'fid']);
             $topicData['uid'] = \Auth::id();
+            $topicData['key'] = \Uuid::uuid4();
             $topic = $this->topic->create($topicData);
             //创建主楼
             $comment = $topic->mainFloor()->create([
+                'key' => \Uuid::uuid4(),
                 'uid' => $topic->uid,
                 'floor_num' => 1,//创建帖子时候创建的评论，肯定是1楼
             ]);
@@ -89,7 +91,7 @@ class TopicRepository
      * @param unknown $id
      * @return number[]|string[]|array[]
      */
-    public function update(TopicRequest $request, $id)
+    public function update(Request $request, $id)
     {
         \DB::beginTransaction();
         try

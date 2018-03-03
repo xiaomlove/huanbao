@@ -7,10 +7,14 @@ use App\Models\Topic;
 
 class Forum extends Model
 {
+    const JISHI = 1;
+
+    const HUISUO = 2;
+
     protected $fillable = [
+        'id',
         'key',
         'name',
-        'slug',
         'description',
     ];
     

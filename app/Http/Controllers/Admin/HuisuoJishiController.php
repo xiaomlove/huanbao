@@ -27,13 +27,22 @@ class HuisuoJishiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $huisuoJishi = new HuisuoJishi(['type' => $this->guessType]);
 
         $list = HuisuoJishi::where("type", $this->guessType)
+            ->when($request->name, function ($query) use ($request) {
+                $name = $request->name;
+                return $query->where(function ($query) use ($name) {
+                    return $query->where("name", "like", "%{$name}%")->orWhere("short_name", "like", "%{$name}%");
+                });
+            })
             ->paginate(request('per_page', 20));
-
+        if ($request->wantsJson())
+        {
+            return normalize(0, "OK", array_only($list, ["id", "name", "short_name"]));
+        }
         return view('admin.huisuo_jishi.index', compact('list', 'huisuoJishi'));
     }
 
@@ -60,13 +69,13 @@ class HuisuoJishiController extends Controller
         $request->request->add(['type' => $this->guessType]);
 //        dd($request->all());
         $result = $this->huisuoJishi->create($request);
-        if ($request->expectsJson())
+        if ($result['ret'] == 0)
         {
-            return $result;
+            return redirect()->route("admin.{$this->guessType}.index")->with('success', $result['msg']);
         }
         else
         {
-            return redirect()->route("admin.{$this->guessType}.index")->with('success', $result['msg']);
+            return back()->withInput()->with('danger', $result['msg']);
         }
     }
 

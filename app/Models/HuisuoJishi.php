@@ -135,4 +135,9 @@ class HuisuoJishi extends Model
             'id'
         );
     }
+
+    public function topic()
+    {
+        return $this->belongsTo(Topic::class, "tid");
+    }
 }

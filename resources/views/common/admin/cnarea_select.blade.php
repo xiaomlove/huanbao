@@ -11,7 +11,7 @@
 ;(function() {
 	var province = "{{ $info->province }}", city = "{{ $info->city }}", district = "{{ $info->district }}";
 	var provinceSelect = $("select[name=province]"), citySelect = $("select[name=city]"), districtSelect = $("select[name=district]");
-	var provinceUri = "{{ route('cnarea.province') }}", cityUri = "{{ route('cnarea.city') }}", districtUri = "{{ route('cnarea.district') }}"; 
+	var provinceUri = "{{ route('admin.cnarea.province') }}", cityUri = "{{ route('admin.cnarea.city') }}", districtUri = "{{ route('admin.cnarea.district') }}";
 
 	function setSelect(select, dataSourceUri, firstOptionText, selectedName) {
 		var def = $.Deferred();
