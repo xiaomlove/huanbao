@@ -14,6 +14,7 @@ class Forum extends Model
     protected $fillable = [
         'id',
         'key',
+        'icon',
         'name',
         'description',
     ];

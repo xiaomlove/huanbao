@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', '版块分类列表')
 
@@ -29,6 +29,7 @@
         <tr>
             <th>ID</th>
             <th>名称</th>
+            <th>图标</th>
             <th>最后更新</th>
             <th>操作</th>
         </tr>
@@ -38,6 +39,7 @@
             <tr>
                 <td>{{ $value->id }}</td>
                 <td>{{ $value->name }}</td>
+                <td>{{ $value->icon }}</td>
                 <td>{{ $value->updated_at->format('Y-m-d H:i') }}</td>
                 <td>
                     <a href="{{ route('admin.forumtaxonomy.edit', $value->id) }}">编辑</a>

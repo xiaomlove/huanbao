@@ -75,7 +75,7 @@ class ForumTaxonomyController extends Controller
     {
         $taxonomy = ForumTaxonomy::findOrFail($id);
         $taxonomy->update($request->all());
-        return back()->with("success", "更新成功");
+        return redirect()->route('admin.forumtaxonomy.index')->with("success", "更新成功");
     }
 
     /**

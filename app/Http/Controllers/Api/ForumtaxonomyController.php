@@ -2,22 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\ForumTaxonomy;
-use App\Models\Forum;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Repositories\ForumRepository;
-use App\Transformers\ForumTransformer;
+use App\Models\ForumTaxonomy;
 use App\Transformers\ForumTaxonomyTransformer;
 
-class ForumController extends Controller
+class ForumtaxonomyController extends Controller
 {
-    protected $forum;
-    
-    public function __construct(ForumRepository $forum)
-    {
-        $this->forum = $forum;
-    }
     /**
      * Display a listing of the resource.
      *
@@ -25,11 +16,10 @@ class ForumController extends Controller
      */
     public function index()
     {
-        $list = ForumTaxonomy::with('forums')->get();
+        $list = ForumTaxonomy::orderBy('display_order', 'desc')->get();
         $apiData = fractal()
             ->collection($list)
             ->transformWith(new ForumTaxonomyTransformer())
-            ->parseIncludes('forums')
             ->toArray();
 
         return normalize(0, "OK", ['list' => $apiData['data']]);
@@ -100,5 +90,4 @@ class ForumController extends Controller
     {
         //
     }
-
 }

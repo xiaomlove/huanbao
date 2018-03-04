@@ -7,7 +7,6 @@ use Illuminate\Validation\Rule;
 
 class ForumRequest extends FormRequest
 {
-    use FormatErrorsTrait;
     
     /**
      * Determine if the user is authorized to make this request.
@@ -33,11 +32,6 @@ class ForumRequest extends FormRequest
     {
         $v = \Validator::make(\Input::all(), [
             'name' => 'required|max:20',
-            'slug' => [
-                'required', 
-                'regex:/^[\w-]+$/', 
-                Rule::unique('forums')->ignore(\Route::current()->parameter('forum')),
-            ],
             'description' => 'nullable|max:200',
         ]);
 

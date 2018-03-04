@@ -11,6 +11,7 @@ class ForumTaxonomy extends Model
     protected $fillable = [
         'name',
         'key',
+        'icon',
     ];
 
     public function forums()

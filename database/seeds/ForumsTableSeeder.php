@@ -4,7 +4,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Forum;
 use App\Models\ForumTaxonomyRelationship;
 use App\Models\ForumTaxonomy;
-use APp\Models\HuisuoJishi;
+use App\Models\HuisuoJishi;
 
 class ForumsTableSeeder extends Seeder
 {
@@ -43,12 +43,6 @@ class ForumsTableSeeder extends Seeder
                 'forums' => [
                     ['name' => '闲聊', 'description' => '吹水'],
                     ['name' => '技术讨论', 'description' => '技术讨论'],
-                ],
-            ],
-            [
-                'taxonomy' => '专题',
-                'forums' => [
-                    ['name' => '2017年终总结', 'description' => '2017年终总结'],
                 ],
             ],
         ];

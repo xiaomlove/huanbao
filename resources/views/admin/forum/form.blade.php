@@ -30,13 +30,13 @@
                 </div>
             </div>
 
-            <div class="form-group{{$errors->has('slug') ? ' has-error' : ''}}">
-                <label for="" class="col-sm-2 control-label">别名</label>
+            <div class="form-group{{$errors->has('icon') ? ' has-error' : ''}}">
+                <label for="" class="col-sm-2 control-label">图标</label>
                 <div class="col-sm-10">
-                    <input type="text" name="slug" class="form-control" id="" placeholder=""
-                           value="{{ old('slug', $forum->slug) }}">
-                    @if($errors->has('slug'))
-                        <small class="help-block">{{ $errors->first('slug') }}</small>
+                    <input type="text" name="icon" class="form-control" id="" placeholder=""
+                           value="{{ old('icon', $forum->icon) }}">
+                    @if($errors->has('icon'))
+                        <small class="help-block">{{ $errors->first('icon') }}</small>
                     @endif
                 </div>
             </div>
@@ -45,7 +45,7 @@
                 <label for="" class="col-sm-2 control-label">描述</label>
                 <div class="col-sm-10">
                     <textarea  name="description" class="form-control" id="" placeholder="" rows="4">{{ old('description', $forum->description) }}</textarea>
-                    @if($errors->has('slug'))
+                    @if($errors->has('icon'))
                         <small class="help-block">{{ $errors->first('description') }}</small>
                     @endif
                 </div>

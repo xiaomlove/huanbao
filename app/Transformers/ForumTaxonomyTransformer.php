@@ -17,8 +17,9 @@ class ForumTaxonomyTransformer extends TransformerAbstract
     {
         return [
             'id' => $forumTaxonomy->id,
-            'key' => $forumTaxonomy->id,
+            'key' => $forumTaxonomy->key,
             'name' => $forumTaxonomy->name,
+            'icon' => $forumTaxonomy->icon,
         ];
     }
 

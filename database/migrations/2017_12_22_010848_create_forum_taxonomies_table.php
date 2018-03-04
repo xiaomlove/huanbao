@@ -18,13 +18,14 @@ class CreateForumTaxonomiesTable extends Migration
             $table->increments('id');
             $table->char('key', 36)->comment('唯一码');
             $table->string('name')->comment('名称');
+            $table->string('icon')->nullable()->comment('图标');
+            $table->integer('display_order')->default(0)->comment('显示顺序');
 
             $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 
             $table->unique('key', 'uk_key');
-            $table->index('created_at', 'idx_created_at');
-            $table->index('updated_at', 'idx_updated_at');
+            $table->index('display_order', 'idx_display_order');
         });
         \DB::statement("ALTER TABLE {$this->table} comment '版块分类表'");
     }

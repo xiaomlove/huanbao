@@ -36,7 +36,7 @@
         <tr>
             <th>ID</th>
             <th>名称</th>
-            <th>别名</th>
+            <th>图标</th>
             <th>描述</th>
             <th>最后更新</th>
             <th>操作</th>
@@ -47,7 +47,7 @@
             <tr>
                 <td>{{ $value->id }}</td>
                 <td>{{ $value->name }}</td>
-                <td>{{ $value->slug }}</td>
+                <td>{{ $value->icon }}</td>
                 <td>{{ $value->description }}</td>
                 <td>{{ $value->updated_at->format('Y-m-d H:i') }}</td>
                 <td>

@@ -30,6 +30,17 @@
                 </div>
             </div>
 
+            <div class="form-group{{$errors->has('icon') ? ' has-error' : ''}}">
+                <label for="" class="col-sm-2 control-label">图标</label>
+                <div class="col-sm-10">
+                    <input type="text" name="icon" class="form-control" id="" placeholder=""
+                           value="{{ old('icon', $taxonomy->icon) }}">
+                    @if($errors->has('icon'))
+                        <small class="help-block">{{ $errors->first('icon') }}</small>
+                    @endif
+                </div>
+            </div>
+
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10 text-center">
                     <button type="submit" class="btn btn-primary">提交</button>

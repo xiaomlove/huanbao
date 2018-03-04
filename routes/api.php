@@ -26,6 +26,7 @@ Route::group(['middleware' => $middleware, 'as' => 'api.'], function() {
         Route::any("test", "TestController@test")->name('test');
         Route::resource('user', 'UserController');
         Route::resource('forum', 'ForumController');
+        Route::resource('forumtaxonomy', 'ForumtaxonomyController');
         Route::resource('topic', 'TopicController');
         Route::resource('comment', 'CommentController');
         Route::resource('commentcomment', 'CommentCommentController');
