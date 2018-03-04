@@ -18,6 +18,7 @@ class ForumsTableSeeder extends Seeder
         $data = [
             [
                 'taxonomy' => '地区',
+                'icon' => 'map-marker-outline',
                 'forums' => [
                     ['name' => '罗湖', 'description' => '专业！'],
                     ['name' => '福田', 'description' => '高端！'],
@@ -26,6 +27,7 @@ class ForumsTableSeeder extends Seeder
             ],
             [
                 'taxonomy' => 'HS',
+                'icon' => 'hospital-building',
                 'forums' => [
                     ['name' => '明珠', 'description' => '第一次'],
                     ['name' => '新悦', 'description' => '老牌'],
@@ -33,6 +35,7 @@ class ForumsTableSeeder extends Seeder
             ],
             [
                 'taxonomy' => 'JS',
+                'icon' => 'human-female',
                 'forums' => [
                     ['name' => '小可', 'description' => '泰山'],
                     ['name' => '骚琳', 'description' => '北斗'],
@@ -40,6 +43,7 @@ class ForumsTableSeeder extends Seeder
             ],
             [
                 'taxonomy' => '内容',
+                'icon' => 'table-of-contents',
                 'forums' => [
                     ['name' => '闲聊', 'description' => '吹水'],
                     ['name' => '技术讨论', 'description' => '技术讨论'],
@@ -75,6 +79,7 @@ class ForumsTableSeeder extends Seeder
         {
             $taxonomy = ForumTaxonomy::create([
                 'name' => $value['taxonomy'],
+                'icon' => $value['icon'],
                 'key' => \Uuid::uuid4(),
             ]);
             //无须其他步骤，自动往中间表插入了数据
