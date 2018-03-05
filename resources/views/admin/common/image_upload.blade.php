@@ -1,14 +1,14 @@
 <div class="form-group{{$errors->has($imageFieldName) ? ' has-error' : ''}}">
     <label for="" class="col-sm-2 control-label">{{ $imageFieldLabel }}</label>
     <div class="col-sm-8">
-        <input type="text" name="{{ $imageFieldName}}" class="form-control" placeholder="图片地址，确保域名为 {{ config('filesystems.disks.qiniu.domains.default') }} 且能正常打开，或点击右边上传" value="{{ old($imageFieldName, $imageFieldObject->$imageFieldName) }}">
+        <input type="text" name="{{ $imageFieldName}}" class="form-control" placeholder="图片地址，确保域名为 {{ config('filesystems.disks.qiniu.domains.default') }} 且能正常打开，或点击右边上传" value="{{ old($imageFieldName, attachmentUrl($imageFieldObject->$imageFieldName)) }}">
         @if($errors->has($imageFieldName))
             <small class="help-block">{{ $errors->first($imageFieldName) }}</small>
         @endif
     </div>
     <div class="col-sm-2">
         <input type="file" class="upload">
-        <a class="preview" href="{{ old($imageFieldName, $imageFieldObject->$imageFieldName) }}" target="_blank"><img src="{{ old($imageFieldName, $imageFieldObject->$imageFieldName) }}" /></a>
+        <a class="preview" href="{{ old($imageFieldName, attachmentUrl($imageFieldObject->$imageFieldName)) }}" target="_blank"><img src="{{ old($imageFieldName, attachmentUrl($imageFieldObject->$imageFieldName)) }}" /></a>
     </div>
 </div>
 

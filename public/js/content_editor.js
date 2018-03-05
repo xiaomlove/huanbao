@@ -77,8 +77,8 @@
         var imageModal = new ImageModal({
             uploadUrl: settings.uploadUrl,
             afterUpload: function (response) {
-                var data = {type: "image", data: {attachment_key: response.data.key, url: response.data.url}};
-                var dataToShow = {url: response.data.url, classList: [commonClassName, imageClassName, "text-center"]};
+                var data = {type: "image", data: {attachment_key: response.data.key}};
+                var dataToShow = {attachment_key: response.data.key, classList: [commonClassName, imageClassName, "text-center"]};
                 if (action == "add") {
                     appendData(index, data);
                     activeBlock.after(imageModal.createBlock(dataToShow));

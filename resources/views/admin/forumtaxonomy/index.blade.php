@@ -2,6 +2,8 @@
 
 @section('title', '版块分类列表')
 
+@include('common.admin.material_design')
+
 @section('content_header')
     @include('admin.common.message')
     <form class="form-inline">
@@ -39,7 +41,7 @@
             <tr>
                 <td>{{ $value->id }}</td>
                 <td>{{ $value->name }}</td>
-                <td>{{ $value->icon }}</td>
+                <td><i class="mdi mdi-{{ $value->icon }}"></i></td>
                 <td>{{ $value->updated_at->format('Y-m-d H:i') }}</td>
                 <td>
                     <a href="{{ route('admin.forumtaxonomy.edit', $value->id) }}">编辑</a>

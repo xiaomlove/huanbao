@@ -128,7 +128,7 @@ class ForumController extends Controller
         $forum = Forum::findOrFail($id);
         $forum->update($request->all());
         $forum->taxonomies()->sync($request->taxonomies);
-        return back()->with('success', "更新成功");
+        return redirect()->route('admin.forum.index')->with('success', "更新成功");
     }
 
     /**

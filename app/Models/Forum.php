@@ -7,9 +7,9 @@ use App\Models\Topic;
 
 class Forum extends Model
 {
-    const JISHI = 1;
+    const ID_JISHI = 1;
 
-    const HUISUO = 2;
+    const ID_HUISUO = 2;
 
     protected $fillable = [
         'id',

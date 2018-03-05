@@ -34,6 +34,9 @@ class AppServiceProvider extends ServiceProvider
 
         //监听ORM事件
         $this->listenORMEvent();
+
+        //自定义验证规则
+        $this->customValidateRule();
     }
 
     /**
@@ -81,6 +84,13 @@ class AppServiceProvider extends ServiceProvider
             AttachmentRelationship::TARGET_TYPE_USER_AVATAR => User::class,
 
         ]);
+    }
+
+    private function customValidateRule()
+    {
+        \Validator::extend('attachment', function ($attribute, $value, $parameters, $validator) {
+            return filter_var($value, FILTER_VALIDATE_URL) && strpos($value, config('filesystems.disks.qiniu.domains.default')) !== false;
+        }, ':attribute 不是有效图片地址');
     }
 
     private function listenORMEvent()

@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\Forum;
-use App\Models\ForumTaxonomyRelationship;
 use App\Models\ForumTaxonomy;
 use App\Models\HuisuoJishi;
 
@@ -58,7 +57,7 @@ class ForumsTableSeeder extends Seeder
             if ($type == HuisuoJishi::TYPE_JISHI)
             {
                 Forum::create([
-                    'id' => Forum::JISHI,
+                    'id' => Forum::ID_JISHI,
                     'name' => $value['name'],
                     'key' => \Uuid::uuid4(),
                     'description' => $value['name'] . "专区",
@@ -67,7 +66,7 @@ class ForumsTableSeeder extends Seeder
             elseif ($type == HuisuoJishi::TYPE_HUISUO)
             {
                 Forum::create([
-                    'id' => Forum::HUISUO,
+                    'id' => Forum::ID_HUISUO,
                     'name' => $value['name'],
                     'key' => \Uuid::uuid4(),
                     'description' => $value['name'] . "专区",

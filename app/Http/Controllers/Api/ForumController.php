@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\ForumRepository;
 use App\Transformers\ForumTransformer;
-use App\Transformers\ForumTaxonomyTransformer;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 class ForumController extends Controller
 {
@@ -23,16 +23,23 @@ class ForumController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $list = ForumTaxonomy::with('forums')->get();
+        $list = Forum::when($request->taxonomy_key, function ($query) use ($request) {
+            $key = $request->taxonomy_key;
+            $query->whereHas("taxonomies", function ($query) use ($key) {$query->where('key', $key);});
+        })->paginate($request->get('per_page', 20));
+
         $apiData = fractal()
             ->collection($list)
-            ->transformWith(new ForumTaxonomyTransformer())
-            ->parseIncludes('forums')
+            ->transformWith(new ForumTransformer())
+            ->paginateWith(new IlluminatePaginatorAdapter($list))
             ->toArray();
 
-        return normalize(0, "OK", ['list' => $apiData['data']]);
+        return normalize(0, "OK", [
+            'list' => $apiData['data'],
+            'pagination' => $apiData['meta']['pagination']
+        ]);
     }
 
     /**

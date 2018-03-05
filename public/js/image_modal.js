@@ -63,13 +63,14 @@
 
         this.show = function (data) {
             $modal.modal("show");
-            $preview.attr("src", data && data.url || "");
+            $preview.attr("src", data && (ATTACHMENT_BASE_URI + data.attachment_key) || "");
         }
         this.hide = function () {
             $modal.modal("hide");
         }
         this.createBlock = function (data) {
-            return $('<p class="editor-block editor-block-image"><img src="' + (data && data.url || "") + '" style="max-width: 100%;max-height: 600px" /></p>');
+            let url = (data && (ATTACHMENT_BASE_URI + data.attachment_key)) || "";
+            return $('<p class="editor-block editor-block-image"><a href="' + url +'" target="_blank"><img src="' + url + '" style="max-width: 100%;max-height: 200px" /></a></p>');
         }
         $modal.on("click", ".submit", function () {
             if (file && options && options.uploadUrl) {

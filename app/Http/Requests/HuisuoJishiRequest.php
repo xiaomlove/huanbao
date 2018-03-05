@@ -49,7 +49,7 @@ class HuisuoJishiRequest extends FormRequest
             'province' => 'required',
             'city' => 'required',
             'district' => 'required',
-            'background_image' => 'required|url',
+            'background_image' => 'required|attachment',
             'province' => 'required',
             'city' => 'required',
             'district' => 'required',

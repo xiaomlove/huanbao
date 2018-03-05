@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Forum;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\HuisuoJishi;
@@ -66,7 +67,12 @@ class HuisuoJishiController extends Controller
      */
     public function store(HuisuoJishiRequest $request)
     {
-        $request->request->add(['type' => $this->guessType]);
+        $request->request->add([
+            'type' => $this->guessType,
+            //帖子所需要参数
+            'fid' => $this->guessType == HuisuoJishi::TYPE_HUISUO ? Forum::ID_HUISUO : Forum::ID_JISHI,
+            'title' => $request->name,
+        ]);
 //        dd($request->all());
         $result = $this->huisuoJishi->create($request);
         if ($result['ret'] == 0)
@@ -98,7 +104,10 @@ class HuisuoJishiController extends Controller
      */
     public function edit($id)
     {
-        $huisuoJishi = HuisuoJishi::where("type", $this->guessType)->findOrFail($id);
+        $huisuoJishi = HuisuoJishi::where("type", $this->guessType)
+            ->with(['topic', 'topic.mainFloor', 'topic.mainFloor.detail'])
+            ->findOrFail($id);
+//        dd($huisuoJishi);
         return view('admin.huisuo_jishi.form', compact('huisuoJishi'));
     }
 

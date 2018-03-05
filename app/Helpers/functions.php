@@ -49,4 +49,38 @@ function attachmentKey($url)
     return trim($parsed['path'], "/");
 }
 
+/**
+ * 根据key返回链接
+ * @param $key
+ * @param null $width
+ * @param null $height
+ * @return string
+ */
+function attachmentUrl($key, $width = null, $height = null)
+{
+    if (empty($key))
+    {
+        return '';
+    }
+    static $disk;
+    if (!$disk)
+    {
+        $disk = \Storage::disk('qiniu');
+    }
+    if ($width || $height)
+    {
+        $previewOptions = "imageView2/0";
+        if ($width)
+        {
+            $previewOptions .= "/w/$width";
+        }
+        if ($height)
+        {
+            $previewOptions .= "/h/$height";
+        }
+        return (string)$disk->imagePreviewUrl($key, $previewOptions);
+    }
+    return (string)$disk->url($key);
+}
+
 

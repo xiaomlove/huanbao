@@ -13,8 +13,9 @@ class ForumTransformer extends TransformerAbstract
     {
         return [
             'id' => $forum->id,
-            'key' => $forum->id,
+            'key' => $forum->key,
             'name' => $forum->name,
+            'icon' => (string)$forum->icon,
         ];
     }
     

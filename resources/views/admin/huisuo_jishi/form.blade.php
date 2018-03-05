@@ -55,8 +55,6 @@
 
             @include('admin.common.content_editor', ['contentFieldName' => 'content', 'contentFieldLabel' => '详细描述', 'contentFieldValue' => $huisuoJishi->topic ? $huisuoJishi->topic->mainFloor->detail->content : ""])
 
-            {{ var_dump($errors) }}
-
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10 text-center">
                     <input type="submit" value="提交" class="btn btn-primary">

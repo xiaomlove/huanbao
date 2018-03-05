@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories;
 
+use App\Models\Forum;
 use App\User;
 use Illuminate\Http\Request;
 use App\Models\HuisuoJishi;
@@ -22,14 +23,17 @@ class HuisuoJishiRepository
         try
         {
             //创建帖子
-            $request->request->add([
-
-            ]);
             $topicResult = app(TopicRepository::class)->create($request);
-
+            if ($topicResult['ret'] != 0)
+            {
+                return $topicResult;
+            }
+            //创建HS/JS
+            $topic = $topicResult['data']['topic'];
             $data = $request->all();
             $data['key'] = \Uuid::uuid4();
-            $huisuoJishi = HuisuoJishi::create($data);
+            $data['background_image'] = attachmentKey($data['background_image']);//不存储原始值
+            $huisuoJishi = $topic->huisuoJishi()->create($data);
 
             \DB::commit();
             return normalize(0, "新建成功", $huisuoJishi);
@@ -56,7 +60,15 @@ class HuisuoJishiRepository
         \DB::beginTransaction();
         try
         {
-            $huisuoJishi->update($request->all());
+            //更新帖子
+            $topicResult = app(TopicRepository::class)->update($request, $huisuoJishi->tid);
+            if ($topicResult['ret'] != 0)
+            {
+                return $topicResult;
+            }
+            $data = $request->all();
+            $data['background_image'] = attachmentKey($data['background_image']);//不存储原始值
+            $huisuoJishi->update($data);
             
             \DB::commit();
             return normalize(0, "更新成功", $huisuoJishi);
