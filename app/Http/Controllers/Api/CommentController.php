@@ -27,8 +27,36 @@ class CommentController extends Controller
      */
     public function index(Request $request)
     {
+        $topic = Topic::where('key', $request->topic_key)->firstOrFail();
 
+        $with = [
+            'user',
+            'detail', 'detail.attachments',
+            'firstComments', 'firstComments.user', 'firstComments.detail',
+            'firstComments.parentComment', 'firstComments.parentComment.user',
+        ];
+        $page = (int)$request->page;
+        $comments = $topic->comments()
+            ->where('pid', 0)
+            ->with($with)
+            ->when($page <= 1, function ($query) {$query->where('floor_num', '>', 1);})
+            ->paginate($page <= 1 ? 9 : 10);
 
+//        dd($comments);
+
+        $commentsApiData = fractal()
+            ->collection($comments)
+            ->transformWith(new CommentTransformer())
+            ->parseIncludes($with)
+            ->paginateWith(new IlluminatePaginatorAdapter($comments))
+            ->toArray();
+
+//        dd($commentsApiData);
+
+        return normalize(0, 'OK', [
+            'list' => $commentsApiData['data'],
+            'pagination' => $commentsApiData['meta']['pagination'],
+        ]);
     }
 
     /**

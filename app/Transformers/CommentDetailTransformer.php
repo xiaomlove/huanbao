@@ -15,7 +15,6 @@ class CommentDetailTransformer extends TransformerAbstract
     {
         return [
             'id' => $commentDetail->id,
-            'key' => $commentDetail->id,
             'cid' => $commentDetail->cid,
             'content' => str_limit($this->getCommentText($commentDetail), 100),
         ];

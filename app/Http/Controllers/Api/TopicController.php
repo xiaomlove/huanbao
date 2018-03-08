@@ -32,7 +32,7 @@ class TopicController extends Controller
     {
         $with = ['user', 'mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments'];
         $list = Topic::with($with)
-            ->when($request->fid, function ($query) use ($request) {return $query->where("fid", $request->fid);})
+            ->when($request->forum_key, function ($query) use ($request) {$query->where("forum_key", $request->forum_key);})
             ->paginate($request->get('per_page', 10));
 
 //        dd($list);
@@ -84,39 +84,12 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        $topic = Topic::with('user')->findOrFail($id);
-        $topicApiData = fractal()
+        $topic = Topic::with('user')->where('key', $id)->firstOrFail();
+        $apiData = fractal()
             ->item($topic)
             ->transformWith(new TopicTransformer())
             ->toArray();
-
-        $with = [
-            'user',
-            'detail', 'detail.attachments',
-            'firstComments', 'firstComments.user', 'firstComments.detail',
-            'firstComments.parentComment', 'firstComments.parentComment.user',
-        ];
-        $comments = $topic->comments()
-            ->where('pid', 0)
-            ->with($with)
-            ->paginate(request()->get('per_page', 10));
-
-//        dd($comments);
-
-        $commentsApiData = fractal()
-        ->collection($comments)
-        ->transformWith(new CommentTransformer())
-        ->parseIncludes($with)
-        ->paginateWith(new IlluminatePaginatorAdapter($comments))
-        ->toArray();
-
-//        dd($commentsApiData);
-
-        return normalize(0, 'OK', [
-            'list' => $commentsApiData['data'],
-            'pagination' => $commentsApiData['meta']['pagination'],
-            'topic' => $topicApiData['data'],
-        ]);
+        return normalize(0, 'OK', $apiData['data']);
     }
 
     /**

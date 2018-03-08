@@ -15,7 +15,7 @@ class TopicTransformer extends TransformerAbstract
         $lastCommentTime = \Carbon::createFromTimestamp($topic->last_comment_time);
         return [
             'id' => $topic->id,
-            'key' => $topic->id,
+            'key' => $topic->key,
             'title' => $topic->title,
             'last_comment_time' => $lastCommentTime->format('Y-m-d H:i'),
             'last_comment_time_human' => $lastCommentTime->diffForHumans(),

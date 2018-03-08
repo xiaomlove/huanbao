@@ -71,7 +71,12 @@ class ForumController extends Controller
      */
     public function show($id)
     {
-        //
+        $forum = Forum::where("key", $id)->firstOrFail();
+        $apiData = fractal()
+            ->item($forum)
+            ->transformWith(new ForumTransformer($forum))
+            ->toArray();
+        return normalize(0, "OK", $apiData['data']);
     }
 
     /**

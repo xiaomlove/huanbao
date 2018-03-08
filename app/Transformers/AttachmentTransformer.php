@@ -34,7 +34,7 @@ class AttachmentTransformer extends TransformerAbstract
     {
         return [
             'id' => $attachment->id,
-            'key' => $attachment->id,
+            'key' => $attachment->key,
             'url' => $attachment->url($this->width, $this->height),
         ];
     }
