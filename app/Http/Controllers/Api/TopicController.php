@@ -32,7 +32,12 @@ class TopicController extends Controller
     {
         $with = ['user', 'mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments'];
         $list = Topic::with($with)
-            ->when($request->forum_key, function ($query) use ($request) {$query->where("forum_key", $request->forum_key);})
+            ->when($request->forum_key, function ($query) use ($request) {
+                $key = $request->forum_key;
+                $query->whereHas("forum", function ($query) use ($key) {
+                    $query->where("key", $key);
+                });
+            })
             ->paginate($request->get('per_page', 10));
 
 //        dd($list);

@@ -27,8 +27,6 @@ class CommentController extends Controller
      */
     public function index(Request $request)
     {
-        $topic = Topic::where('key', $request->topic_key)->firstOrFail();
-
         $with = [
             'user',
             'detail', 'detail.attachments',
@@ -36,9 +34,14 @@ class CommentController extends Controller
             'firstComments.parentComment', 'firstComments.parentComment.user',
         ];
         $page = (int)$request->page;
-        $comments = $topic->comments()
+        $comments = Comment::with($with)
+            ->when($request->topic_key, function ($query) use ($request) {
+                $key = $request->topic_key;
+                $query->whereHas('topic', function ($query) use ($key) {
+                    $query->where("key", $key);
+                });
+            })
             ->where('pid', 0)
-            ->with($with)
             ->when($page <= 1, function ($query) {$query->where('floor_num', '>', 1);})
             ->paginate($page <= 1 ? 9 : 10);
 
