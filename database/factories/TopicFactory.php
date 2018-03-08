@@ -11,5 +11,6 @@ $factory->define(App\Models\Topic::class, function (Faker $faker) {
         'title' => $faker->sentence,
         'fid' => ($forums ?: $forums = Forum::all())->random(),
         'uid' => ($users ?: $users = User::limit(50)->get())->random(),
+        'last_comment_time' => time(),
     ];
 });

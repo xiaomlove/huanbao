@@ -59,6 +59,7 @@ class TopicRepository
             $topicData = $request->only(['title', 'fid']);
             $topicData['uid'] = \Auth::id();
             $topicData['key'] = \Uuid::uuid4();
+            $topicData['last_comment_time'] = time();
             $topic = $this->topic->create($topicData);
             //创建主楼
             $comment = $topic->mainFloor()->create([

@@ -86,6 +86,7 @@ class CommentRepository
                 'uid' => \Auth::id(),
                 'pid' => $pid,
                 'root_id' => $rootId,
+                'key' => \Uuid::uuid4(),
             ]);
             //创建详情
 
