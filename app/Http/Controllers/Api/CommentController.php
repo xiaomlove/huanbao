@@ -9,7 +9,7 @@ use App\Repositories\CommentRepository;
 use App\Models\Topic;
 use App\Models\Comment;
 use App\Transformers\CommentTransformer;
-use App\Transformers\CommentCommentTransformer;
+use App\Transformers\TopicTransformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 class CommentController extends Controller
@@ -21,7 +21,7 @@ class CommentController extends Controller
         $this->comment = $comment;
     }
     /**
-     * Display a listing of the resource.
+     * 话题详情的回复列表，首页不包含主楼，且比其他页少取一条(楼层 >= 1)
      *
      * @return \Illuminate\Http\Response
      */
@@ -34,16 +34,17 @@ class CommentController extends Controller
             'firstComments.parentComment', 'firstComments.parentComment.user',
         ];
         $page = (int)$request->page;
+        $perpage = 10;
+        $key = $request->topic_key;
         $comments = Comment::with($with)
-            ->when($request->topic_key, function ($query) use ($request) {
-                $key = $request->topic_key;
+            ->when($key, function ($query) use ($key) {
                 $query->whereHas('topic', function ($query) use ($key) {
                     $query->where("key", $key);
                 });
             })
             ->where('pid', 0)
             ->when($page <= 1, function ($query) {$query->where('floor_num', '>', 1);})
-            ->paginate($page <= 1 ? 9 : 10);
+            ->paginate($page <= 1 ? ($perpage - 1) : $perpage);
 
 //        dd($comments);
 
@@ -56,10 +57,23 @@ class CommentController extends Controller
 
 //        dd($commentsApiData);
 
-        return normalize(0, 'OK', [
+        $out = [
             'list' => $commentsApiData['data'],
             'pagination' => $commentsApiData['meta']['pagination'],
-        ]);
+        ];
+
+        //如果是首页，并要求话题(第一次加载要，后边下拉刷新不需要)，把话题一并返回
+        if ($key && $page <= 1 && $request->include_topic == 1)
+        {
+            $topic = Topic::with('user')->where('key', $key)->firstOrFail();
+            $topicApiData = fractal()
+                ->item($topic)
+                ->transformWith(new TopicTransformer())
+                ->toArray();
+            $out['topic'] = $topicApiData;
+        }
+
+        return normalize(0, 'OK', $out);
     }
 
     /**
@@ -94,7 +108,7 @@ class CommentController extends Controller
     public function show($id)
     {
         $with = ['user', 'detail', 'detail.attachments'];
-        $comment = Comment::with($with)->findOrFail($id);
+        $comment = Comment::with($with)->where('key', $id)->firstOrFail();
         $commentApiData = fractal()
             ->item($comment)
             ->transformWith(new CommentTransformer())
