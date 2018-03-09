@@ -21,7 +21,7 @@ class CommentController extends Controller
         $this->comment = $comment;
     }
     /**
-     * 话题详情的回复列表，首页不包含主楼，且比其他页少取一条(楼层 >= 1)
+     * 话题详情的回复列表，不区分什么主楼
      *
      * @return \Illuminate\Http\Response
      */
@@ -29,12 +29,11 @@ class CommentController extends Controller
     {
         $with = [
             'user',
-            'detail', 'detail.attachments',
+            'detail',
             'firstComments', 'firstComments.user', 'firstComments.detail',
             'firstComments.parentComment', 'firstComments.parentComment.user',
         ];
         $page = (int)$request->page;
-        $perpage = 10;
         $key = $request->topic_key;
         $comments = Comment::with($with)
             ->when($key, function ($query) use ($key) {
@@ -43,8 +42,7 @@ class CommentController extends Controller
                 });
             })
             ->where('pid', 0)
-            ->when($page <= 1, function ($query) {$query->where('floor_num', '>', 1);})
-            ->paginate($page <= 1 ? ($perpage - 1) : $perpage);
+            ->paginate($request->get('per_page', 10));
 
 //        dd($comments);
 
@@ -61,17 +59,6 @@ class CommentController extends Controller
             'list' => $commentsApiData['data'],
             'pagination' => $commentsApiData['meta']['pagination'],
         ];
-
-        //如果是首页，并要求话题(第一次加载要，后边下拉刷新不需要)，把话题一并返回
-        if ($key && $page <= 1 && $request->include_topic == 1)
-        {
-            $topic = Topic::with('user')->where('key', $key)->firstOrFail();
-            $topicApiData = fractal()
-                ->item($topic)
-                ->transformWith(new TopicTransformer())
-                ->toArray();
-            $out['topic'] = $topicApiData;
-        }
 
         return normalize(0, 'OK', $out);
     }

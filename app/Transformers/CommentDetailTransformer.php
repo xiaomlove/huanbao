@@ -7,16 +7,41 @@ use App\Models\CommentDetail;
 
 class CommentDetailTransformer extends TransformerAbstract
 {
+    private static $originalContent = null;
+
     protected $defaultIncludes = [];
 
     protected $availableIncludes = ['attachments'];
-    
+
+    public function __construct()
+    {
+        if (self::$originalContent === null)
+        {
+            if (preg_match('/TopicController/', \Route::current()->getActionName()))
+            {
+                self::$originalContent = false;
+            }
+            else
+            {
+                self::$originalContent = true;
+            }
+        }
+    }
+
     public function transform(CommentDetail $commentDetail)
     {
+        if (self::$originalContent)
+        {
+            $content = json_decode($commentDetail->content, true);
+        }
+        else
+        {
+            $content = str_limit($this->getCommentText($commentDetail), 100);
+        }
         return [
             'id' => $commentDetail->id,
             'cid' => $commentDetail->cid,
-            'content' => str_limit($this->getCommentText($commentDetail), 100),
+            'content' => $content,
         ];
     }
 
