@@ -10,6 +10,7 @@ use App\Transformers\ForumTransformer;
 use App\Transformers\TopicTransformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use App\Models\Topic;
+use App\Models\Forum;
 use App\Http\Requests\TopicRequest;
 
 class TopicController extends Controller
