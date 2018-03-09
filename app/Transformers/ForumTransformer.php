@@ -18,10 +18,5 @@ class ForumTransformer extends TransformerAbstract
             'icon' => (string)$forum->icon,
         ];
     }
-    
-    public function includeChildren(Forum $forum)
-    {
-        return $this->collection($forum->children, $this);
-    }
 }
 

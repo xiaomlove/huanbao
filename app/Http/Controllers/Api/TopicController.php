@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\TopicRepository;
 use App\Repositories\CommentRepository;
-use App\Transformers\CommentTransformer;
+use App\Transformers\ForumTransformer;
 use App\Transformers\TopicTransformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use App\Models\Topic;
@@ -31,9 +31,9 @@ class TopicController extends Controller
     public function index(Request $request)
     {
         $with = ['user', 'mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments'];
+        $key = $request->forum_key;
         $list = Topic::with($with)
-            ->when($request->forum_key, function ($query) use ($request) {
-                $key = $request->forum_key;
+            ->when($key, function ($query) use ($key) {
                 $query->whereHas("forum", function ($query) use ($key) {
                     $query->where("key", $key);
                 });
@@ -51,11 +51,23 @@ class TopicController extends Controller
 
 //        dd($apiData);
 
-        return normalize(0, 'OK', [
-            'list' => $apiData['data'], 
+        $out = [
+            'list' => $apiData['data'],
             'pagination' => $apiData['meta']['pagination']
-            
-        ]);
+        ];
+
+        //若是第一页，包含版块信息
+        if ($key && $request->page <= 1 && $request->include_forum)
+        {
+            $forum = Forum::where("key", $key)->firstOrFail();
+            $apiData = fractal()
+                ->item($forum)
+                ->transformWith(new ForumTransformer($forum))
+                ->toArray();
+            $out['forum'] = $apiData;
+        }
+
+        return normalize(0, 'OK', $out);
     }
 
     /**
