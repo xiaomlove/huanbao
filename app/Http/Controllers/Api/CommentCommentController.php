@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Transformers\CommentCommentTransformer;
+use App\Transformers\CommentTransformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 class CommentCommentController extends Controller
@@ -18,8 +19,13 @@ class CommentCommentController extends Controller
     public function index(Request $request)
     {
         $with = ['user', 'detail', 'parentComment', 'parentComment.user'];
-        $comments = Comment::where("root_id", $request->root_id)
-            ->with($with)
+        $key = $request->root_comment_key;
+        $comments = Comment::with($with)
+            ->when($key, function ($query) use ($key) {
+                $query->whereHas("rootComment", function ($query) use ($key) {
+                    $query->where("key", $key);
+                });
+            })
             ->paginate($request->get('per_page', 10));
 
 //        dd($comments);
@@ -32,11 +38,25 @@ class CommentCommentController extends Controller
             ->toArray();
 
 //        dd($commentsApiData);
-
-        return normalize(0, 'OK', [
+        $out = [
             'list' => $commentsApiData['data'],
             'pagination' => $commentsApiData['meta']['pagination'],
-        ]);
+        ];
+
+        //当第一交请求，同时返回根评论
+        if ($key && $request->page <= 1 && $request->include_root_comment)
+        {
+            $with = ['user', 'detail'];
+            $rootComment = Comment::with($with)->where("key", $key)->firstOrFail();
+            $rootCommentApiData = fractal()
+                ->item($rootComment)
+                ->transformWith(new CommentTransformer())
+                ->parseIncludes($with)
+                ->toArray();
+            $out['root_comment'] = $rootCommentApiData;
+        }
+
+        return normalize(0, 'OK', $out);
     }
 
     /**
