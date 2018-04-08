@@ -37,4 +37,5 @@ Route::group(['middleware' => $middleware, 'as' => 'api.'], function() {
     Route::get('cnarea/city', 'CommonController@city')->name('cnarea.city');
     Route::get('cnarea/district', 'CommonController@district')->name('cnarea.district');
     Route::any('upload/image', 'UploadController@image')->name("upload.image");
+    Route::get('upload/token', 'UploadController@token')->name("upload.token");
 });

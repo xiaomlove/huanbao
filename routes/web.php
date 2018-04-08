@@ -49,5 +49,6 @@ Route::group(['middleware' => ['auth', 'permission'], 'as' => 'admin.'], functio
     Route::get('cnarea/city', 'CommonController@city')->name('cnarea.city');
     Route::get('cnarea/district', 'CommonController@district')->name('cnarea.district');
     Route::any('upload/image', 'UploadController@image')->name("upload.image");
+    Route::get('upload/token', 'UploadController@token')->name("upload.token");
 });
 

@@ -34,4 +34,5 @@ class CommonController extends Controller
         $list = Cnarea::where("level", 2)->where('parent_id', $pid)->get(['id', 'name']);
         return normalize(0, "OK", $list->toArray());
     }
+
 }

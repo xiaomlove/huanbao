@@ -121,9 +121,9 @@ return [
     |
     */
 
-    'log' => env('APP_LOG', 'single'),
+//    'log' => env('APP_LOG', 'single'),//升级5.6已转移到logging
 
-    'log_level' => env('APP_LOG_LEVEL', 'debug'),
+//    'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
     /*
     |--------------------------------------------------------------------------
@@ -182,7 +182,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-        Barryvdh\Debugbar\ServiceProvider::class,
         Spatie\Fractal\FractalServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
@@ -239,7 +238,6 @@ return [
         'Carbon' => Carbon\Carbon::class,
         'LengthAwarePaginator' => Illuminate\Pagination\LengthAwarePaginator::class,
         
-        'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'Fractal' => Spatie\Fractal\FractalFacade::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Uuid' => Ramsey\Uuid\Uuid::class,

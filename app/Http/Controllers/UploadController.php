@@ -62,4 +62,11 @@ class UploadController extends Controller
             'ext' => $ext,
         ]));
     }
+
+    public function token()
+    {
+        $returnBody = '{"key": $(key), "hash": $(etag), "fsize": $(fsize), "fname": $(fname), "imageInfo": $(imageInfo), "exif": $(exif)}';
+        $token = \Storage::disk('qiniu')->uploadToken(null, 1800, ['returnBody' => $returnBody]);
+        return normalize(0, "OK", ['token' => $token]);
+    }
 }
