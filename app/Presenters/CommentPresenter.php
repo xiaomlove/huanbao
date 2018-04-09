@@ -152,7 +152,7 @@ class CommentPresenter
                     }
                     else
                     {
-                        $key = $content['data']['attachment_key'];
+                        $key = $content['data']['key'];
                         $originUrl = $disk->url($key);
                         $previewUrl = $disk->imagePreviewUrl($key, 'imageView2/0/h/400');
                         $htmls[] = sprintf(

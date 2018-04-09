@@ -26,9 +26,9 @@ class CommentDetailObserver
         $contents = json_decode($commentDetail->content, true);
         foreach ($contents as $content)
         {
-            if ($content['type'] == CommentDetail::CONTENT_TYPE_IMAGE && !empty($content['data']['attachment_key']))
+            if ($content['type'] == CommentDetail::CONTENT_TYPE_IMAGE && !empty($content['data']['key']))
             {
-                $key = $content['data']['attachment_key'];
+                $key = $content['data']['key'];
                 $isExists = $commentDetail->attachments()->wherePivot("attachment_key", $key)->count();
                 \Log::info(sprintf("%s, action: %s, key: %s, isExists: %s", __METHOD__, $action, $key, $isExists));
                 if (!$isExists)

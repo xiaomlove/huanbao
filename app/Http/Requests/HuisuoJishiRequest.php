@@ -44,8 +44,7 @@ class HuisuoJishiRequest extends FormRequest
         $id = \Route::current()->parameter('huisuojishi', 0);
         return [
             'name' => 'required|min:2|max:10',
-            'tid' => ["exists:$topicTable,id", Rule::unique($huisuoJishiTable)->ignore($id)],
-            'short_name' => ['required', 'regex:/\w+/i', 'min:2', 'max:10'],
+            'short_name' => ['required'],
             'province' => 'required',
             'city' => 'required',
             'district' => 'required',
@@ -64,15 +63,7 @@ class HuisuoJishiRequest extends FormRequest
             'tid' => '帖子ID',
             'province' => '省',
             'district' => '区',
-
          ];
-    }
-
-    public function messages()
-    {
-        return [
-            'tid.unique' => '帖子ID已经被关联',
-        ];
     }
 
 }

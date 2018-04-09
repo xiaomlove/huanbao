@@ -18,7 +18,7 @@
             wrapId: "{{ $contentFieldName }}",
             uploadUrl: "{{ route('admin.upload.image') }}",
             tokenUrl: "{{ route('admin.upload.token') }}",
-            content: '{!! $contentFieldValue !!}'
+            content: '{!! old($contentFieldName, $contentFieldValue) !!}'
         });
         var $form = $('#{{ $contentFieldName }}').closest("form");
         $form.on("submit", function (e) {

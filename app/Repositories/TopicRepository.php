@@ -78,11 +78,11 @@ class TopicRepository
             {
                 $commentDetail->attachments()->create([
                     'uid' => $uid,
+                    'key' => $image['key'],
                     'mime_type' => "image/" . $image['imageInfo']['format'],
                     'size' => $image['fsize'],
                     'width' => $image['imageInfo']['width'],
                     'height' => $image['imageInfo']['height'],
-
                 ]);
             }
 
@@ -169,23 +169,23 @@ class TopicRepository
         {
             foreach ($contentOriginalArr as $item)
             {
-                if ($item['type'] == self::CONTENT_TYPE_TEXT)
+                if ($item['type'] == CommentDetail::CONTENT_TYPE_TEXT)
                 {
                     $contentArr[] = [
-                        'type' => self::CONTENT_TYPE_TEXT,
+                        'type' => CommentDetail::CONTENT_TYPE_TEXT,
                         'data' => [
                             'text' => $item['data']['text'],
                         ],
                     ];
                 }
-                elseif ($item['type'] == self::CONTENT_TYPE_IMAGE)
+                elseif ($item['type'] == CommentDetail::CONTENT_TYPE_IMAGE)
                 {
                     //图片不需要保存那么多字段，比如exif不要放在详情字段里边
                     $key = $item['data']['key'];
                     $contentArr[] = [
-                        'type' => self::CONTENT_TYPE_IMAGE,
+                        'type' => CommentDetail::CONTENT_TYPE_IMAGE,
                         'data' => [
-                            'attachment_key' => $key,
+                            'key' => $key,
                             'width' => $item['data']['imageInfo']['width'],
                             'height' => $item['data']['imageInfo']['height'],
                         ],
@@ -197,7 +197,7 @@ class TopicRepository
         else
         {
             $contentArr[] = [
-                'type' => self::CONTENT_TYPE_TEXT,
+                'type' => CommentDetail::CONTENT_TYPE_TEXT,
                 'data' => ['text' => (string)$content],
             ];
         }

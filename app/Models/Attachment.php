@@ -24,6 +24,11 @@ class Attachment extends Model
         'mime_type',
         'key',
         'size',
+        'width',
+        'height',
+        'latitude',
+        'longitude',
+        'location',
     ];
     
     public function user()

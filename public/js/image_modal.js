@@ -70,13 +70,13 @@
 
         this.show = function (data) {
             $modal.modal("show");
-            $preview.attr("src", data && (ATTACHMENT_BASE_URI + data.attachment_key) || "");
+            $preview.attr("src", data && (ATTACHMENT_BASE_URI + data.key) || "");
         }
         this.hide = function () {
             $modal.modal("hide");
         }
         this.createBlock = function (data) {
-            let url = (data && (ATTACHMENT_BASE_URI + data.attachment_key)) || "";
+            let url = (data && (ATTACHMENT_BASE_URI + data.key)) || "";
             return $('<p class="editor-block editor-block-image"><a href="' + url +'" target="_blank"><img src="' + url + '" style="max-width: 100%;max-height: 200px" /></a></p>');
         }
         $modal.on("click", ".submit", function () {

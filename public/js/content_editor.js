@@ -80,7 +80,7 @@
             tokenUrl: settings.tokenUrl,
             afterUpload: function (response) {
                 var data = {type: "image", data: response};
-                var dataToShow = {attachment_key: response.key, classList: [commonClassName, imageClassName, "text-center"]};
+                var dataToShow = {key: response.key, classList: [commonClassName, imageClassName, "text-center"]};
                 if (action == "add") {
                     appendData(index, data);
                     activeBlock.after(imageModal.createBlock(dataToShow));

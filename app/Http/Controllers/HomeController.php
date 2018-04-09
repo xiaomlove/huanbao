@@ -33,8 +33,15 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
-        $user = User::find(1);
-        $r = array_pull($user, 'name');
-        dd($r);
+        $commentDetail = CommentDetail::findOrFail(4);
+        $attachment = $commentDetail->attachments()->create([
+            'uid' => \Auth::id(),
+            'key' => (string)\Uuid::uuid4(),
+            'mime_type' => "image/jpeg",
+            'size' => 444,
+            'width' => 2222,
+            'height' => 22222,
+        ]);
+        dd($attachment);
     }
 }

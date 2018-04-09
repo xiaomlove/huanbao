@@ -47,7 +47,7 @@ class CommentDetailPresenter
                         $htmls[] = sprintf(
                             '<p><a href="%s" target="_blank"><img src="%s" class="image"></a></p>',
                             $content['data']['url'],
-                            !empty($content['data']['attachment_key']) ? $disk->imagePreviewUrl($content['data']['attachment_key'], 'imageView2/0/h/400') : $content['data']['url']
+                            !empty($content['data']['key']) ? $disk->imagePreviewUrl($content['data']['key'], 'imageView2/0/h/400') : $content['data']['url']
                         );
                     }
                     break;
