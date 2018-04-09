@@ -6,7 +6,7 @@ use App\Models\Forum;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\HuisuoJishi;
-use App\Models\Contact;
+use App\Models\CommentDetail;
 use App\Repositories\HuisuoJishiRepository;
 use App\Http\Requests\HuisuoJishiRequest;
 
@@ -74,6 +74,8 @@ class HuisuoJishiController extends Controller
             'title' => $request->name,
         ]);
 //        dd($request->all());
+//        $contentJsonString = CommentDetail::getContentJsonString();
+//        dd($contentJsonString);
         $result = $this->huisuoJishi->create($request);
         if ($result['ret'] == 0)
         {

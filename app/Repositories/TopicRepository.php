@@ -57,7 +57,8 @@ class TopicRepository
         {
             //创建话题
             $topicData = $request->only(['title', 'fid']);
-            $topicData['uid'] = \Auth::id();
+            $uid = \Auth::id();
+            $topicData['uid'] = $uid;
             $topicData['key'] = \Uuid::uuid4();
             $topicData['last_comment_time'] = time();
             $topic = $this->topic->create($topicData);
@@ -68,9 +69,22 @@ class TopicRepository
                 'floor_num' => 1,//创建帖子时候创建的评论，肯定是1楼
             ]);
             //创建主楼详情
+            $contentArr = self::getContents();
             $commentDetail = $comment->detail()->create([
-                'content' => $this->getContentJsonString($request),
+                'content' => json_encode($contentArr['contents'], JSON_UNESCAPED_UNICODE),
             ]);
+            //保存附件
+            foreach ($contentArr['images'] as $image)
+            {
+                $commentDetail->attachments()->create([
+                    'uid' => $uid,
+                    'mime_type' => "image/" . $image['imageInfo']['format'],
+                    'size' => $image['fsize'],
+                    'width' => $image['imageInfo']['width'],
+                    'height' => $image['imageInfo']['height'],
+
+                ]);
+            }
 
             \DB::commit();
 
@@ -143,5 +157,50 @@ class TopicRepository
         ->paginate($args['per_page'], ['*'], 'page', $args['page']);
     
         return normalize(0, "OK", ['list' => $list]);
+    }
+
+    public static function getContents()
+    {
+        $content = request()->get('content');
+        $contentOriginalArr = json_decode($content, true);
+        $contentArr = [];
+        $imageArr = [];
+        if ($contentOriginalArr && is_array($contentOriginalArr))
+        {
+            foreach ($contentOriginalArr as $item)
+            {
+                if ($item['type'] == self::CONTENT_TYPE_TEXT)
+                {
+                    $contentArr[] = [
+                        'type' => self::CONTENT_TYPE_TEXT,
+                        'data' => [
+                            'text' => $item['data']['text'],
+                        ],
+                    ];
+                }
+                elseif ($item['type'] == self::CONTENT_TYPE_IMAGE)
+                {
+                    //图片不需要保存那么多字段，比如exif不要放在详情字段里边
+                    $key = $item['data']['key'];
+                    $contentArr[] = [
+                        'type' => self::CONTENT_TYPE_IMAGE,
+                        'data' => [
+                            'attachment_key' => $key,
+                            'width' => $item['data']['imageInfo']['width'],
+                            'height' => $item['data']['imageInfo']['height'],
+                        ],
+                    ];
+                    $imageArr[] = $item['data'];//图片全部信息返回
+                }
+            }
+        }
+        else
+        {
+            $contentArr[] = [
+                'type' => self::CONTENT_TYPE_TEXT,
+                'data' => ['text' => (string)$content],
+            ];
+        }
+        return ['contents' => $contentArr, 'images' => $imageArr];
     }
 }

@@ -9,6 +9,7 @@
 </div>
 
 @push('js')
+    <script src="https://unpkg.com/qiniu-js@2.2.1/dist/qiniu.min.js"></script>
     <script src="{{ asset('js/text_modal.js') }}"></script>
     <script src="{{ asset('js/image_modal.js') }}"></script>
     <script src="{{ asset('js/content_editor.js') }}"></script>
@@ -16,6 +17,7 @@
         var {{ $contentFieldName }}ContentEditor = new ContentEditor({
             wrapId: "{{ $contentFieldName }}",
             uploadUrl: "{{ route('admin.upload.image') }}",
+            tokenUrl: "{{ route('admin.upload.token') }}",
             content: '{!! $contentFieldValue !!}'
         });
         var $form = $('#{{ $contentFieldName }}').closest("form");

@@ -12,6 +12,7 @@
             wrapId: "", //内容包裹容器ID
             content: "", //内容
             uploadUrl: "",//文件上传url
+            tokenUrl: "",//获取上传token
             formId: "",//表单ID
             submitBtnSelector: "",//提交按钮选择器
             createdRedirectUrl: "", //创建后提交url
@@ -76,9 +77,10 @@
         //添加图片
         var imageModal = new ImageModal({
             uploadUrl: settings.uploadUrl,
+            tokenUrl: settings.tokenUrl,
             afterUpload: function (response) {
-                var data = {type: "image", data: {attachment_key: response.data.key}};
-                var dataToShow = {attachment_key: response.data.key, classList: [commonClassName, imageClassName, "text-center"]};
+                var data = {type: "image", data: response};
+                var dataToShow = {attachment_key: response.key, classList: [commonClassName, imageClassName, "text-center"]};
                 if (action == "add") {
                     appendData(index, data);
                     activeBlock.after(imageModal.createBlock(dataToShow));

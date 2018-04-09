@@ -2,6 +2,7 @@
     var ImageModal = function (options) {
         var defaults = {
             uploadUrl: "",
+            tokenUrl: "",
             uploadName: "image",
             afterUpload: function (response) {
             }
@@ -33,7 +34,7 @@
         var $preview = $modal.find(".preview");
         var $selectImage = $modal.find(".select-image");
         var $submitBtn = $modal.find(".submit");
-        var self = this, file, result, isUploading = false;
+        var self = this, file, result, isUploading = false, mimeTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
 
         $modal.appendTo($("body")).modal({
             keyboard: false,
@@ -54,6 +55,12 @@
                 return;
             }
             file = e.target.files[0];
+            console.log(file);
+            if (!file.type || !mimeTypes.includes(file.type)) {
+                alert('不支持的图片类型：' + file.type);
+                file = null;
+                return;
+            }
             var fr = new FileReader();
             fr.onload = function (e) {
                 $preview.attr("src", e.target.result);
@@ -73,7 +80,48 @@
             return $('<p class="editor-block editor-block-image"><a href="' + url +'" target="_blank"><img src="' + url + '" style="max-width: 100%;max-height: 200px" /></a></p>');
         }
         $modal.on("click", ".submit", function () {
-            if (file && options && options.uploadUrl) {
+            if (file && options && options.uploadUrl && options.tokenUrl) {
+                //获取token
+                $.get(options.tokenUrl, function (response) {
+                    console.log(response);
+                    if (response.ret != 0) {
+                        alert(response.msg);
+                        return;
+                    }
+                    let token = response.data.token;
+                    let key = response.data.key + "." + file.type.split('/')[1];
+                    let observable = qiniu.upload(file, key, token);
+                    var subscription;
+
+                    let observer = {
+                        next: (res) => {
+                            console.log(res);
+                        },
+                        error: (err) => {
+                            console.log(err);
+                        },
+                        complete: (res) => {
+                            console.log(res);
+                            subscription.unsubscribe();
+                            $submitBtn.removeAttr("disabled").text("确定");
+                            isUploading = false;
+                            file = null;
+                            $selectImage.val("");
+                            if (options.afterUpload && $.isFunction(options.afterUpload)) {
+                                options.afterUpload.call(self, res);
+                            }
+                            self.hide();
+                        }
+                    }
+                    //开始上传
+                    $submitBtn.attr("disabled", "disabled").text("上传中...");
+                    isUploading = true;
+                    subscription = observable.subscribe(observer);
+
+                }, "json");
+
+                return;//改直接传七牛，使用七牛的sdk
+
                 //进行上传操作
                 var formData = new FormData();
                 formData.append(options.uploadName, file);
