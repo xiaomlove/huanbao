@@ -76,13 +76,17 @@ class TopicRepository
             //保存附件
             foreach ($contentArr['images'] as $image)
             {
-                $commentDetail->attachments()->create([
+                $attachment = $commentDetail->attachments()->create([
                     'uid' => $uid,
                     'key' => $image['key'],
                     'mime_type' => "image/" . $image['imageInfo']['format'],
                     'size' => $image['fsize'],
                     'width' => $image['imageInfo']['width'],
                     'height' => $image['imageInfo']['height'],
+                ]);
+                //关联有问题，只能再更新一波 !!! FUCK ！
+                $commentDetail->attachments()->updateExistingPivot($attachment->id, [
+                    'attachment_key' => $image['key'],
                 ]);
             }
 

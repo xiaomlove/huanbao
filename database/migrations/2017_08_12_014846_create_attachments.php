@@ -20,6 +20,11 @@ class CreateAttachments extends Migration
             $table->string('mime_type')->comment('媒体类型');
             $table->string('key')->comment('文件key');
             $table->bigInteger('size')->comment('文件大小');
+            $table->integer('width')->nullable()->comment('宽度');
+            $table->integer('height')->nullable()->comment('高度');
+            $table->float('latitude', 10, 4)->nullable()->comment('纬度');
+            $table->float('longitude', 10, 4)->nullable()->comment('经度');
+            $table->string('location')->nullable()->comment('位置');
             
             $table->dateTime('created_at')->default(\DB::raw('CURRENT_TIMESTAMP'));
             $table->dateTime('updated_at')->default(\DB::raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));

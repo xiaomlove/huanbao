@@ -117,4 +117,6 @@ return [
 
     ],
 
+    'cnarea_sql_file' => env('CNAREA_SQL_FILE'),
+
 ];
