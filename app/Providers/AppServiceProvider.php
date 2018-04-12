@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\CommentDetail;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Pagination\Paginator;
 use App\Models\AttachmentRelationship;
 use App\Models\Comment;
 use App\User;
@@ -25,7 +26,8 @@ class AppServiceProvider extends ServiceProvider
     {
         \Carbon\Carbon::setLocale('zh');//设置Carbon使用中文
         \Illuminate\Support\Facades\Schema::defaultStringLength(191);//应该限制索引长度，不应该限制字符长度。坑爹这里不支持设置索引长度
-        
+        Paginator::defaultView('pagination::default');
+
         //记录sql语句
         $this->logSql();
         

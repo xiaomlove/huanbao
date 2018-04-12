@@ -42,7 +42,7 @@ class Attachment extends Model
             CommentDetail::class,
             "target",
             AttachmentRelationship::TABLE_NAME,
-            "attachment_key",
+            "attachment_id",
             "target_id",
             "key",
             "cid"
@@ -55,7 +55,7 @@ class Attachment extends Model
             User::class,
             "target",
             AttachmentRelationship::TABLE_NAME,
-            "attachment_key",
+            "attachment_id",
             "target_id",
             "key",
             "id"

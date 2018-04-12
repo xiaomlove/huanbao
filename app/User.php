@@ -113,7 +113,7 @@ class User extends Authenticatable
             "target",
             AttachmentRelationship::TABLE_NAME,
             "target_id",
-            "attachment_key",
+            "attachment_id",
             "id",
             "key"
         );

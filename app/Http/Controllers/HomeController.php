@@ -33,15 +33,15 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
-        $commentDetail = CommentDetail::findOrFail(4);
+        $commentDetail = CommentDetail::findOrFail(61);
         $attachment = $commentDetail->attachments()->create([
             'uid' => \Auth::id(),
             'key' => (string)\Uuid::uuid4(),
             'mime_type' => "image/jpeg",
-            'size' => 8888,
-            'width' => 888,
-            'height' => 888,
+            'size' => 999,
+            'width' => 889998,
+            'height' => 99,
         ]);
-        $commentDetail->attachments()->updateExistingPivot($attachment->id, ['attachment_key' => 'sbsb']);
+//        $commentDetail->attachments()->updateExistingPivot($attachment->id, ['attachment_key' => 'sbsb']);
     }
 }

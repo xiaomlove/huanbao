@@ -17,7 +17,7 @@ class AttachmentRelationship extends Model
     protected $fillable = [
         'target_type', 
         'target_id', 
-        'attachment_key',
+        'attachment_id',
     ];
     
     

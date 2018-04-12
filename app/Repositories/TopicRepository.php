@@ -84,10 +84,6 @@ class TopicRepository
                     'width' => $image['imageInfo']['width'],
                     'height' => $image['imageInfo']['height'],
                 ]);
-                //关联有问题，只能再更新一波 !!! FUCK ！
-                $commentDetail->attachments()->updateExistingPivot($attachment->id, [
-                    'attachment_key' => $image['key'],
-                ]);
             }
 
             \DB::commit();
