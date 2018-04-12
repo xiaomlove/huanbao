@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\CommentDetail;
 use App\User;
 use App\Models\Forum;
+use App\Models\Topic;
 use GuzzleHttp\Client;
 use App\Models\HuisuoJishi;
 
@@ -33,15 +34,8 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
-        $commentDetail = CommentDetail::findOrFail(61);
-        $attachment = $commentDetail->attachments()->create([
-            'uid' => \Auth::id(),
-            'key' => (string)\Uuid::uuid4(),
-            'mime_type' => "image/jpeg",
-            'size' => 999,
-            'width' => 889998,
-            'height' => 99,
-        ]);
-//        $commentDetail->attachments()->updateExistingPivot($attachment->id, ['attachment_key' => 'sbsb']);
+        $topic = Topic::with('mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments')->findOrFail(4);
+        $attachmentKeyHad = $topic->mainFloor->detail->attachments->pluck(null, 'key');
+        dd($attachmentKeyHad->pluck('pivot.attachment_id'));
     }
 }

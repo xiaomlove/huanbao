@@ -83,12 +83,15 @@ class TopicRepository
                     'size' => $image['fsize'],
                     'width' => $image['imageInfo']['width'],
                     'height' => $image['imageInfo']['height'],
+                    'shoot_time' => $image['exif'] ? self::getDateTimeFromExif($image['exif']) : null,
+                    'latitude' => $image['exif'] ? self::getLatitudeFromExif($image['exif']) : null,
+                    'longitude' => $image['exif'] ? self::getLongitudeFromExif($image['exif']): null,
                 ]);
             }
 
             \DB::commit();
 
-            return normalize(0, "OK", [
+            return normalize(0, "发布成功", [
                 'topic' => $topic,
             ]);
         }
@@ -111,15 +114,46 @@ class TopicRepository
         \DB::beginTransaction();
         try
         {
-            $topic = $this->topic->with('mainFloor', 'mainFloor.detail')->findOrFail($id);
+            $topic = $this->topic->with('mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments')->findOrFail($id);
             $topic->update($request->only(['title', 'fid']));
+            $contentArr = self::getContents();
+//            dd($contentArr);
             $topic->mainFloor->detail->update([
-                'content' => $this->getContentJsonString($request),
+                'content' => json_encode($contentArr['contents'], JSON_UNESCAPED_UNICODE),
             ]);
+            //原来拥有的(对象)
+            $had = $topic->mainFloor->detail->attachments->pluck(null, 'key');
+            //现在前端传递过来的(数组)
+            $now = collect($contentArr['images'])->pluck(null, 'key');
+            //要新增的
+            $toAdd = $now->diffKeys($had);
+            //要解除关联的
+            $toRemove = $had->diffKeys($now);
+//            dd($had, $now);
+            $uid = \Auth::id();
+            foreach ($toAdd as $image)
+            {
+                $topic->mainFloor->detail->attachments()->create([
+                    'uid' => $uid,
+                    'key' => $image['key'],
+                    'mime_type' => "image/" . $image['imageInfo']['format'],
+                    'size' => $image['fsize'],
+                    'width' => $image['imageInfo']['width'],
+                    'height' => $image['imageInfo']['height'],
+                    'shoot_time' => $image['exif'] ? self::getDateTimeFromExif($image['exif']) : null,
+                    'latitude' => $image['exif'] ? self::getLatitudeFromExif($image['exif']) : null,
+                    'longitude' => $image['exif'] ? self::getLongitudeFromExif($image['exif']): null,
+                ]);
+            }
+            if ($toRemove->isNotEmpty())
+            {
+                $toRemoveTargetIdArr = $toRemove->pluck('pivot.attachment_id')->all();
+                $topic->mainFloor->detail->attachments()->detach($toRemoveTargetIdArr);
+            }
 
             \DB::commit();
 
-            return normalize(0, "OK", $topic);
+            return normalize(0, "更新成功", $topic);
         }
         catch (\Exception $e)
         {
@@ -186,8 +220,9 @@ class TopicRepository
                         'type' => CommentDetail::CONTENT_TYPE_IMAGE,
                         'data' => [
                             'key' => $key,
-                            'width' => $item['data']['imageInfo']['width'],
-                            'height' => $item['data']['imageInfo']['height'],
+                            //新上传的与旧的不同格式
+                            'width' => isset($item['data']['imageInfo']) ? $item['data']['imageInfo']['width'] : $item['data']['width'],
+                            'height' => isset($item['data']['imageInfo']) ? $item['data']['imageInfo']['height'] : $item['data']['height'],
                         ],
                     ];
                     $imageArr[] = $item['data'];//图片全部信息返回
@@ -203,4 +238,40 @@ class TopicRepository
         }
         return ['contents' => $contentArr, 'images' => $imageArr];
     }
+
+    public static function getDateTimeFromExif(array $exif)
+    {
+        foreach (['DateTime', 'DateTimeDigitized', 'DateTimeOriginal'] as $field)
+        {
+            if (empty($exif[$field]))
+            {
+                continue;
+            }
+            $dateTime = $exif[$field]['val'];
+            if (!preg_match('/[\s]+/', $dateTime))
+            {
+                $dateTime .= " 00:00:00";
+            }
+            return $dateTime;
+        }
+    }
+
+    public static function getLatitudeFromExif(array $exif)
+    {
+        if (!empty($exif['GPSLatitude']))
+        {
+            $valueArr = preg_split('/[\s,]+/', $exif['GPSLatitude']['val']);
+            return $valueArr[0] + ($valueArr[1]/60) + ($valueArr[2]/3600);
+        }
+    }
+
+    public static function getLongitudeFromExif(array $exif)
+    {
+        if (!empty($exif['GPSLongitude']))
+        {
+            $valueArr = preg_split('/[\s,]+/', $exif['GPSLongitude']['val']);
+            return $valueArr[0] + ($valueArr[1]/60) + ($valueArr[2]/3600);
+        }
+    }
+
 }

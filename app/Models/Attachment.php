@@ -26,6 +26,7 @@ class Attachment extends Model
         'size',
         'width',
         'height',
+        'shoot_time',
         'latitude',
         'longitude',
         'location',
@@ -44,7 +45,7 @@ class Attachment extends Model
             AttachmentRelationship::TABLE_NAME,
             "attachment_id",
             "target_id",
-            "key",
+            "id",
             "cid"
         );
     }
@@ -57,7 +58,7 @@ class Attachment extends Model
             AttachmentRelationship::TABLE_NAME,
             "attachment_id",
             "target_id",
-            "key",
+            "id",
             "id"
         );
     }

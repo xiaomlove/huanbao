@@ -73,7 +73,14 @@ class TopicController extends Controller
         $data = $request->all();
         $result = $this->topic->create($request);
 
-        return $result;
+        if ($result['ret'] == 0)
+        {
+            return redirect()->route("admin.topic.show", ['id' => $result['data']['topic']['id']])->with('success', $result['msg']);
+        }
+        else
+        {
+            return back()->withInput()->with('danger', $result['msg']);
+        }
     }
 
     /**
@@ -113,8 +120,14 @@ class TopicController extends Controller
     public function update(TopicRequest $request, $id)
     {
         $result = $this->topic->update($request, $id);
-
-        return $result;
+        if ($result['ret'] == 0)
+        {
+            return redirect()->route("admin.topic.show", ['id' => $result['data']['id']])->with('success', $result['msg']);
+        }
+        else
+        {
+            return back()->withInput()->with('danger', $result['msg']);
+        }
     }
 
     /**
