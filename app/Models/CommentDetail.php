@@ -30,7 +30,7 @@ class CommentDetail extends Model
             "target_id",
             "attachment_id",
             "cid",
-            "key"
+            "id"
         );
     }
 
