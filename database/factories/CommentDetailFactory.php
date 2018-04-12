@@ -15,7 +15,7 @@ $factory->define(App\Models\CommentDetail::class, function (Faker $faker) use ($
     ];
     if (rand(1, 10) > 7)
     {
-        $content[] = ['type' => 'image', 'data' => ['attachment_key' => $attachmentKeys->random()]];
+        $content[] = ['type' => 'image', 'data' => ['key' => $attachmentKeys->random()]];
     }
     return [
         'content' => json_encode($content, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),

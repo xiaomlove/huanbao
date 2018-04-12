@@ -38,10 +38,10 @@ class HomeController extends Controller
             'uid' => \Auth::id(),
             'key' => (string)\Uuid::uuid4(),
             'mime_type' => "image/jpeg",
-            'size' => 444,
-            'width' => 2222,
-            'height' => 22222,
+            'size' => 8888,
+            'width' => 888,
+            'height' => 888,
         ]);
-        dd($attachment);
+        $commentDetail->attachments()->updateExistingPivot($attachment->id, ['attachment_key' => 'sbsb']);
     }
 }
