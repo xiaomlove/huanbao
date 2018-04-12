@@ -28,7 +28,7 @@ class CommentDetail extends Model
             "target",
             AttachmentRelationship::TABLE_NAME,
             "target_id",
-            "attachment_key",
+            "attachment_id",
             "cid",
             "id"
         );
