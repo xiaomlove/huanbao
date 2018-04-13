@@ -26,6 +26,7 @@ class HuisuoJishiRepository
             $topicResult = app(TopicRepository::class)->create($request);
             if ($topicResult['ret'] != 0)
             {
+                \DB::rollBack();
                 return $topicResult;
             }
             //创建HS/JS
@@ -64,6 +65,7 @@ class HuisuoJishiRepository
             $topicResult = app(TopicRepository::class)->update($request, $huisuoJishi->tid);
             if ($topicResult['ret'] != 0)
             {
+                \DB::rollBack();
                 return $topicResult;
             }
             $data = $request->all();
