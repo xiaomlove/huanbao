@@ -66,12 +66,12 @@ class UploadController extends Controller
     public function token()
     {
         $returnBody = '{"key": $(key), "hash": $(etag), "fsize": $(fsize), "fname": $(fname), "ext": $(ext), "imageInfo": $(imageInfo), "exif": $(exif)}';
+        $key = str_replace("-", "", \Uuid::uuid4());
         $policy = [
-            'saveKey' => '$(key)$(ext)',
+            'saveKey' => $key . '$(ext)',
             'returnBody' => $returnBody,
         ];
         $token = \Storage::disk('qiniu')->uploadToken(null, 1800, $policy);
-        $key = str_replace("-", "", \Uuid::uuid4());
         return normalize(0, "OK", ['token' => $token, 'key' => $key]);
     }
 }
