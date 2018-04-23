@@ -39,13 +39,18 @@ class UserRepository
         {
             $user->update($update);
             $user->syncRoles($request->get('roles', []));
+            //保存附件
+            if (!empty($update['avatar']))
+            {
+
+            }
             \DB::commit();
             return normalize(0, "OK", $user);
         }
         catch (\Exception $e)
         {
             \DB::rollBack();
-            return normalize($e->getMessage(), $update);
+            return normalize(1, $e->getMessage(), $update);
         }
 
     }

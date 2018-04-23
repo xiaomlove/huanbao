@@ -7,8 +7,6 @@ use Illuminate\Validation\Rule;
 
 class UserRequest extends FormRequest
 {
-    use FormatErrorsTrait;
-    
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -35,7 +33,6 @@ class UserRequest extends FormRequest
     {
         $uid = \Route::current()->parameter('user');
         $uid = intval($uid);
-        $qiniuHost = config('filesystems.disks.qiniu.domains.default');
         $v = \Validator::make(\Input::all(), [
             'name' => [
                 Rule::unique('users')->ignore($uid),
@@ -45,7 +42,7 @@ class UserRequest extends FormRequest
                 'email', 
                 Rule::unique('users')->ignore($uid),
             ],
-            'avatar' => ['url', "regex:/{$qiniuHost}/"],
+            'avatar' => ['url', "attachment"],
         ]);
         $v->sometimes(
             'password', 

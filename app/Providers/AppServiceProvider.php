@@ -98,6 +98,6 @@ class AppServiceProvider extends ServiceProvider
     private function listenORMEvent()
     {
 //        CommentDetail::observe(CommentDetailObserver::class);
-        User::observe(UserObserver::class);
+//        User::observe(UserObserver::class);
     }
 }
