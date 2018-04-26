@@ -69,7 +69,7 @@ class TopicRepository
                 'floor_num' => 1,//创建帖子时候创建的评论，肯定是1楼
             ]);
             //创建主楼详情
-            $contentArr = self::getContents();
+            $contentArr = CommentRepository::getContents();
             $commentDetail = $comment->detail()->create([
                 'content' => json_encode($contentArr['contents'], JSON_UNESCAPED_UNICODE),
             ]);
@@ -83,9 +83,9 @@ class TopicRepository
                     'size' => $image['fsize'],
                     'width' => $image['imageInfo']['width'],
                     'height' => $image['imageInfo']['height'],
-                    'shoot_time' => $image['exif'] ? self::getDateTimeFromExif($image['exif']) : null,
-                    'latitude' => $image['exif'] ? self::getLatitudeFromExif($image['exif']) : null,
-                    'longitude' => $image['exif'] ? self::getLongitudeFromExif($image['exif']): null,
+                    'shoot_time' => $image['exif'] ? CommentRepository::getDateTimeFromExif($image['exif']) : null,
+                    'latitude' => $image['exif'] ? CommentRepository::getLatitudeFromExif($image['exif']) : null,
+                    'longitude' => $image['exif'] ? CommentRepository::getLongitudeFromExif($image['exif']): null,
                 ]);
             }
 
@@ -114,42 +114,11 @@ class TopicRepository
         \DB::beginTransaction();
         try
         {
-            $topic = $this->topic->with('mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments')->findOrFail($id);
+            $topic = $this->topic->with('mainFloor')->findOrFail($id);
+            //更新话题
             $topic->update($request->only(['title', 'fid']));
-            $contentArr = self::getContents();
-//            dd($contentArr);
-            $topic->mainFloor->detail->update([
-                'content' => json_encode($contentArr['contents'], JSON_UNESCAPED_UNICODE),
-            ]);
-            //原来拥有的(对象)
-            $had = $topic->mainFloor->detail->attachments->pluck(null, 'key');
-            //现在前端传递过来的(数组)
-            $now = collect($contentArr['images'])->pluck(null, 'key');
-            //要新增的
-            $toAdd = $now->diffKeys($had);
-            //要解除关联的
-            $toRemove = $had->diffKeys($now);
-//            dd($had, $now);
-            $uid = \Auth::id();
-            foreach ($toAdd as $image)
-            {
-                $topic->mainFloor->detail->attachments()->create([
-                    'uid' => $uid,
-                    'key' => $image['key'],
-                    'mime_type' => "image/" . $image['imageInfo']['format'],
-                    'size' => $image['fsize'],
-                    'width' => $image['imageInfo']['width'],
-                    'height' => $image['imageInfo']['height'],
-                    'shoot_time' => $image['exif'] ? self::getDateTimeFromExif($image['exif']) : null,
-                    'latitude' => $image['exif'] ? self::getLatitudeFromExif($image['exif']) : null,
-                    'longitude' => $image['exif'] ? self::getLongitudeFromExif($image['exif']): null,
-                ]);
-            }
-            if ($toRemove->isNotEmpty())
-            {
-                $toRemoveTargetIdArr = $toRemove->pluck('pivot.attachment_id')->all();
-                $topic->mainFloor->detail->attachments()->detach($toRemoveTargetIdArr);
-            }
+            //更新主楼
+            app(CommentRepository::class)->update($request, $topic->mainFloor->id);
 
             \DB::commit();
 
@@ -191,87 +160,6 @@ class TopicRepository
         ->paginate($args['per_page'], ['*'], 'page', $args['page']);
     
         return normalize(0, "OK", ['list' => $list]);
-    }
-
-    public static function getContents()
-    {
-        $content = request()->get('content');
-        $contentOriginalArr = json_decode($content, true);
-        $contentArr = [];
-        $imageArr = [];
-        if ($contentOriginalArr && is_array($contentOriginalArr))
-        {
-            foreach ($contentOriginalArr as $item)
-            {
-                if ($item['type'] == CommentDetail::CONTENT_TYPE_TEXT)
-                {
-                    $contentArr[] = [
-                        'type' => CommentDetail::CONTENT_TYPE_TEXT,
-                        'data' => [
-                            'text' => $item['data']['text'],
-                        ],
-                    ];
-                }
-                elseif ($item['type'] == CommentDetail::CONTENT_TYPE_IMAGE)
-                {
-                    //图片不需要保存那么多字段，比如exif不要放在详情字段里边
-                    $key = $item['data']['key'];
-                    $contentArr[] = [
-                        'type' => CommentDetail::CONTENT_TYPE_IMAGE,
-                        'data' => [
-                            'key' => $key,
-                            //新上传的与旧的不同格式
-                            'width' => isset($item['data']['imageInfo']) ? $item['data']['imageInfo']['width'] : $item['data']['width'],
-                            'height' => isset($item['data']['imageInfo']) ? $item['data']['imageInfo']['height'] : $item['data']['height'],
-                        ],
-                    ];
-                    $imageArr[] = $item['data'];//图片全部信息返回
-                }
-            }
-        }
-        else
-        {
-            $contentArr[] = [
-                'type' => CommentDetail::CONTENT_TYPE_TEXT,
-                'data' => ['text' => (string)$content],
-            ];
-        }
-        return ['contents' => $contentArr, 'images' => $imageArr];
-    }
-
-    public static function getDateTimeFromExif(array $exif)
-    {
-        foreach (['DateTime', 'DateTimeDigitized', 'DateTimeOriginal'] as $field)
-        {
-            if (empty($exif[$field]))
-            {
-                continue;
-            }
-            $dateTime = $exif[$field]['val'];
-            if (!preg_match('/[\s]+/', $dateTime))
-            {
-                $dateTime .= " 00:00:00";
-            }
-            return $dateTime;
-        }
-    }
-
-    public static function getLatitudeFromExif(array $exif)
-    {
-        if (!empty($exif['GPSLatitude']))
-        {
-            $valueArr = preg_split('/[\s,]+/', $exif['GPSLatitude']['val']);
-            return $valueArr[0] + ($valueArr[1]/60) + ($valueArr[2]/3600);
-        }
-    }
-
-    public static function getLongitudeFromExif(array $exif)
-    {
-        if (!empty($exif['GPSLongitude']))
-        {
-            $valueArr = preg_split('/[\s,]+/', $exif['GPSLongitude']['val']);
-            return $valueArr[0] + ($valueArr[1]/60) + ($valueArr[2]/3600);
-        }
     }
 
 }

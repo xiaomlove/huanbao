@@ -20,40 +20,13 @@
     @endif
             {{ csrf_field() }}
             <input type="hidden" name="tid" value="{{ request('tid', $comment->tid) }}">
-            <div class="form-group{{$errors->has('content') ? ' has-error' : ''}}">
-                <label for="" class="col-sm-2 control-label">回复内容</label>
-                <div class="col-sm-10">
-                    <div id="content"></div>
-                    @if($errors->has('slug'))
-                        <small class="help-block">{{ $errors->first('content') }}</small>
-                    @endif
-                </div>
-            </div>
+
+            @include('admin.common.content_editor', ['contentFieldName' => 'content', 'contentFieldLabel' => '内容', 'contentFieldValue' => $comment->detail ? $comment->detail->content : ""])
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10 text-center">
-                    <a class="btn btn-primary submit">提交</a>
+                    <input type="submit" value="提交" class="btn btn-primary">
                 </div>
             </div>
         </form>
-@stop
-
-@section('js')
-    <script src="{{ asset('js/text_modal.js') }}"></script>
-    <script src="{{ asset('js/image_modal.js') }}"></script>
-    <script src="{{ asset('js/content_editor.js') }}"></script>
-
-    <script>
-        var tid = "{{ request('tid') }}";
-        var contentEditor = new ContentEditor({
-            formId: "form",
-            wrapId: "content",
-            uploadUrl: "{{ route('admin.upload.image') }}",
-            content: '{!! $comment->detail? $comment->detail->content : "" !!}',
-            submitBtnSelector: ".submit",
-            createdRedirectUrl: tid && "{{ route('admin.topic.show', ['tid' => request('tid')]) }}",
-            updatedRedirectUrl: ""
-        });
-
-    </script>
 @stop

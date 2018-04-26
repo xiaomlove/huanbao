@@ -68,9 +68,9 @@ class CommentController extends Controller
     public function store(CommentRequest $request)
     {
         $result = $this->comment->create($request);
-        if ($request->expectsJson())
+        if ($result['ret'] == 0)
         {
-            return $result;
+            return redirect()->route('admin.comment.show', $result['data'])->with("success", $result['msg']);
         }
         else
         {
@@ -126,13 +126,13 @@ class CommentController extends Controller
     public function update(CommentRequest $request, $id)
     {
         $result = $this->comment->update($request, $id);
-        if ($request->expectsJson())
+        if ($result['ret'] == 0)
         {
-            return $result;
+            return redirect()->route('admin.comment.show', $id);
         }
         else
         {
-            return back()->with('success', $result['msg']);
+            return back()->with('danger', $result['msg']);
         }
     }
 
