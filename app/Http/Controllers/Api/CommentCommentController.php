@@ -32,16 +32,14 @@ class CommentCommentController extends Controller
 
         $commentsApiData = fractal()
             ->collection($comments)
-            ->transformWith(new CommentCommentTransformer())
+            ->transformWith(new CommentTransformer())
             ->parseIncludes($with)
             ->paginateWith(new IlluminatePaginatorAdapter($comments))
             ->toArray();
 
 //        dd($commentsApiData);
-        $out = [
-            'list' => $commentsApiData['data'],
-            'pagination' => $commentsApiData['meta']['pagination'],
-        ];
+
+        $list = $commentsApiData['data'];
 
         //当第一交请求，同时返回根评论
         if ($key && $request->page <= 1 && $request->include_root_comment)
@@ -53,8 +51,13 @@ class CommentCommentController extends Controller
                 ->transformWith(new CommentTransformer())
                 ->parseIncludes($with)
                 ->toArray();
-            $out['root_comment'] = $rootCommentApiData;
+            array_unshift($list, $rootCommentApiData);
         }
+
+        $out = [
+            'list' => $list,
+            'pagination' => $commentsApiData['meta']['pagination'],
+        ];
 
         return normalize(0, 'OK', $out);
     }

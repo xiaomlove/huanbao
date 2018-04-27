@@ -8,7 +8,7 @@ use App\Presenters\CommentPresenter;
 
 class CommentTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['detail', 'firstComments', 'user', 'comments'];
+    protected $availableIncludes = ['detail', 'firstComments', 'user', 'comments', 'parentComment'];
     
     public function transform(Comment $comment)
     {
@@ -38,7 +38,7 @@ class CommentTransformer extends TransformerAbstract
         $firstComments = $comment->firstComments;
         if ($firstComments->isNotEmpty())
         {
-            return $this->collection($firstComments, new CommentCommentTransformer());
+            return $this->collection($firstComments, $this);
         }
     }
 
@@ -47,7 +47,16 @@ class CommentTransformer extends TransformerAbstract
         $comments = $comment->comments;
         if ($comments->isNotEmpty())
         {
-            return $this->collection($comments, new CommentCommentTransformer());
+            return $this->collection($comments, $this);
+        }
+    }
+
+    public function includeParentComment(Comment $comment)
+    {
+        $parent = $comment->parentComment;
+        if ($parent && $parent->floor_num == -1)
+        {
+            return $this->item($parent, $this);
         }
     }
 }
