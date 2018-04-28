@@ -20,6 +20,7 @@ class CommentTransformer extends TransformerAbstract
             'created_at_human' => $comment->created_at->diffForHumans(),
             'floor_num' => $comment->floor_num,
             'floor_num_human' => app(CommentPresenter::class)->getFloorNumHuman($comment),
+            'is_first' => $comment->floor_num == 1 ? 1 : 0,
         ];
     }
     

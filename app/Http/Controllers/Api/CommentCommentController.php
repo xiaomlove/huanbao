@@ -50,7 +50,9 @@ class CommentCommentController extends Controller
                 ->transformWith(new CommentTransformer())
                 ->parseIncludes($with)
                 ->toArray();
-            array_unshift($list, $rootCommentApiData['data']);
+            $item = $rootCommentApiData['data'];
+            $item['is_first'] = 1;
+            array_unshift($list, $item);
         }
 
         $out = [
