@@ -46,7 +46,7 @@ class TopicTransformer extends TransformerAbstract
     }
     public function includeMainFloor(Topic $topic)
     {
-        return $this->item($topic->mainFloor, new CommentCommentTransformer());
+        return $this->item($topic->mainFloor, new CommentTransformer());
     }
 }
 

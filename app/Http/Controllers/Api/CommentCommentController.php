@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
-use App\Transformers\CommentCommentTransformer;
 use App\Transformers\CommentTransformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
