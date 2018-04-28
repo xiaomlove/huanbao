@@ -40,8 +40,8 @@ class CommentCommentController extends Controller
 
         $list = $commentsApiData['data'];
 
-        //当第一交请求，同时返回根评论
-        if ($key && $request->page <= 1 && $request->include_root_comment)
+        //当第一页时，同时返回根评论
+        if ($key && $request->page <= 1)
         {
             $with = ['user', 'detail'];
             $rootComment = Comment::with($with)->where("key", $key)->firstOrFail();
