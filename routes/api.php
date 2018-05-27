@@ -29,7 +29,7 @@ Route::group(['middleware' => $middleware, 'as' => 'api.'], function() {
         Route::resource('forumtaxonomy', 'ForumtaxonomyController');
         Route::resource('topic', 'TopicController');
         Route::resource('comment', 'CommentController');
-        Route::get('comment/comment', 'CommentController@comment')->name('comment.comment');
+        Route::get('comment/comment/list', 'CommentController@comment')->name('comment.comment');
         Route::post('token/refresh', 'AuthenticateController@refreshToken')->name('token.refresh');
         Route::post('logout', 'AuthenticateController@logout')->name('logout');
         Route::post('register', 'AuthenticateController@register')->name('register');
