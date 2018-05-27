@@ -99,13 +99,13 @@ class CommentController extends Controller
             'comment_key' => $result['data']['comment']->key,
         ];
         \Log::info(sprintf("%s, I will add params: %s", __METHOD__, json_encode($toAppendParams)));
-        $request->request->add($toAppendParams);
+        $request->query->add($toAppendParams);
 
         \Log::info(sprintf("%s, I will set sbsb = sbsb", __METHOD__));
-        $request->request->set('sbsb', 'sbsb');
+        $request->query->set('sbsb', 'sbsb');
         if ($request->pid)
         {
-            $request->request->set("root_comment_key", $result['data']['root_comment']->key);
+            $request->query->set("root_comment_key", $result['data']['root_comment']->key);
             //转发至评论的评论列表
             \Log::info(sprintf("%s, has pid: %s, goto comment, request params: %s", __METHOD__, $request->pid, json_encode($request->all())));
             return $this->comment($request);
@@ -116,7 +116,7 @@ class CommentController extends Controller
             \Log::info(sprintf(
                 "%s, no pid, goto index, request request params: %s, request params: %s",
                     __METHOD__,
-                    json_encode($request->request->all()),
+                    json_encode($request->query->all()),
                     json_encode($request->all())
             ));
             return $this->index($request);
