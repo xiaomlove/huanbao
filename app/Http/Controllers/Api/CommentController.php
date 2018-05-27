@@ -106,7 +106,7 @@ class CommentController extends Controller
         else
         {
             //直接当前页的评论列表
-            \Log::info(sprintf("%s, no pid: %s, goto index, request params: %s", __METHOD__, json_encode($request->all())));
+            \Log::info(sprintf("%s, no pid, goto index, request params: %s", __METHOD__, json_encode($request->all())));
             return $this->index($request);
         }
     }
