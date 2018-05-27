@@ -27,6 +27,7 @@ class CommentController extends Controller
      */
     public function index(Request $request)
     {
+        \Log::info(sprintf("%s, request params: %s", __METHOD__, json_encode($request->all())));
         $with = [
             'user',
             'detail',
@@ -99,11 +100,13 @@ class CommentController extends Controller
         {
             $request->request->set("root_comment_key", $result['data']['root_comment']->key);
             //转发至评论的评论列表
+            \Log::info(sprintf("%s, has pid: %s, goto comment, request params: %s", __METHOD__, $request->pid, json_encode($request->all())));
             return $this->comment($request);
         }
         else
         {
             //直接当前页的评论列表
+            \Log::info(sprintf("%s, no pid: %s, goto index, request params: %s", __METHOD__, json_encode($request->all())));
             return $this->index($request);
         }
     }
@@ -171,6 +174,7 @@ class CommentController extends Controller
      */
     public function comment(Request $request)
     {
+        \Log::info(sprintf("%s, request params: %s", __METHOD__, json_encode($request->all())));
         $with = ['user', 'detail', 'parentComment', 'parentComment.user'];
         $rootCommentKey = $request->root_comment_key;
         $commentKey = $request->comment_key;
