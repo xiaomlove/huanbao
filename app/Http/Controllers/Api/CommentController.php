@@ -98,6 +98,7 @@ class CommentController extends Controller
             'topic_key' => $result['data']['topic']->key,
             'comment_key' => $result['data']['comment']->key,
         ]);
+        $request->request->set('sbsb', 'sbsb');
         if ($request->pid)
         {
             $request->request->set("root_comment_key", $result['data']['root_comment']->key);
