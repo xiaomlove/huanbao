@@ -86,39 +86,27 @@ class CommentController extends Controller
      */
     public function store(CommentRequest $request)
     {
-        \Log::info(sprintf("%s, init request params: %s", __METHOD__, json_encode($request->all())));
         $result = $this->comment->create($request);
         if ($result['ret'] !== 0)
         {
             return $result;
         }
-        \Log::info(sprintf("%s, create comment result: %s", __METHOD__, json_encode($result)));
         //立即返回列表，只包含当前最新的这条评论
         $toAppendParams = [
             'topic_key' => $result['data']['topic']->key,
             'comment_key' => $result['data']['comment']->key,
         ];
-        \Log::info(sprintf("%s, I will add params: %s", __METHOD__, json_encode($toAppendParams)));
         $request->query->add($toAppendParams);
 
-        \Log::info(sprintf("%s, I will set sbsb = sbsb", __METHOD__));
-        $request->query->set('sbsb', 'sbsb');
         if ($request->pid)
         {
             $request->query->set("root_comment_key", $result['data']['root_comment']->key);
             //转发至评论的评论列表
-            \Log::info(sprintf("%s, has pid: %s, goto comment, request params: %s", __METHOD__, $request->pid, json_encode($request->all())));
             return $this->comment($request);
         }
         else
         {
             //直接当前页的评论列表
-            \Log::info(sprintf(
-                "%s, no pid, goto index, request request params: %s, request params: %s",
-                    __METHOD__,
-                    json_encode($request->query->all()),
-                    json_encode($request->all())
-            ));
             return $this->index($request);
         }
     }

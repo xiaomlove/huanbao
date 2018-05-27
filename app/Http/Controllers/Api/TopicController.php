@@ -33,11 +33,15 @@ class TopicController extends Controller
     {
         $with = ['user', 'mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments'];
         $forumKey = $request->forum_key;
+        $topicKey = $request->topic_key;
         $list = Topic::with($with)
             ->when($forumKey, function ($query) use ($forumKey) {
                 $query->whereHas("forum", function ($query) use ($forumKey) {
                     $query->where("key", $forumKey);
                 });
+            })
+            ->when($topicKey, function ($query) use ($topicKey) {
+                $query->where('key', $topicKey);
             })
             ->paginate($request->get('per_page', 10));
 
@@ -90,8 +94,15 @@ class TopicController extends Controller
     public function store(TopicRequest $request)
     {
         $result = $this->topic->create($request);
-        //         dd($result);
-        return $result;
+        if ($result['ret'] !== 0)
+        {
+            return $result;
+        }
+        $request->query->add([
+            'forum_key' => $result['data']['forum']->key,
+            'topic_key' => $result['data']['topic']->key,
+        ]);
+        return $this->index($request);
     }
 
     /**

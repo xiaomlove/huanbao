@@ -55,6 +55,7 @@ class TopicRepository
         \DB::beginTransaction();
         try
         {
+            $forum = Forum::findOrFail($request->fid);
             //创建话题
             $topicData = $request->only(['title', 'fid']);
             $uid = \Auth::id();
@@ -93,6 +94,7 @@ class TopicRepository
 
             return normalize(0, "发布成功", [
                 'topic' => $topic,
+                'forum' => $forum,
             ]);
         }
         catch (\Exception $e)
