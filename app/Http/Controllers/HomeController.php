@@ -34,8 +34,13 @@ class HomeController extends Controller
 
     public function test(Request $request)
     {
-        $topic = Topic::with('mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments')->findOrFail(4);
-        $attachmentKeyHad = $topic->mainFloor->detail->attachments->pluck(null, 'key');
-        dd($attachmentKeyHad->pluck('pivot.attachment_id'));
+        $request->request->set('aaa', 1111);
+        dd(__CLASS__);
+        return app()->call(__CLASS__ . "@test2");
+    }
+
+    public function test2()
+    {
+        dd(request()->all());
     }
 }

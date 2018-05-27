@@ -27,12 +27,6 @@ class CommentPresenter
         {
             case 1:
                 return '主帖';
-            case 2:
-                return '沙发';
-            case 3:
-                return '板凳';
-            case 4:
-                return '地板';
             default:
                 return "{$floorNum}楼";
         }

@@ -15,53 +15,7 @@ class CommentCommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
-    {
-        $with = ['user', 'detail', 'parentComment', 'parentComment.user'];
-        $key = $request->root_comment_key;
-        $comments = Comment::with($with)
-            ->when($key, function ($query) use ($key) {
-                $query->whereHas("rootComment", function ($query) use ($key) {
-                    $query->where("key", $key);
-                });
-            })
-            ->paginate($request->get('per_page', 10));
 
-//        dd($comments);
-
-        $commentsApiData = fractal()
-            ->collection($comments)
-            ->transformWith(new CommentTransformer())
-            ->parseIncludes($with)
-            ->paginateWith(new IlluminatePaginatorAdapter($comments))
-            ->toArray();
-
-//        dd($commentsApiData);
-
-        $list = $commentsApiData['data'];
-
-        //当第一页时，同时返回根评论
-        if ($key && $request->page <= 1)
-        {
-            $with = ['user', 'detail'];
-            $rootComment = Comment::with($with)->where("key", $key)->firstOrFail();
-            $rootCommentApiData = fractal()
-                ->item($rootComment)
-                ->transformWith(new CommentTransformer())
-                ->parseIncludes($with)
-                ->toArray();
-            $item = $rootCommentApiData['data'];
-            $item['is_first'] = 1;
-            array_unshift($list, $item);
-        }
-
-        $out = [
-            'list' => $list,
-            'pagination' => $commentsApiData['meta']['pagination'],
-        ];
-
-        return normalize(0, 'OK', $out);
-    }
 
     /**
      * Show the form for creating a new resource.

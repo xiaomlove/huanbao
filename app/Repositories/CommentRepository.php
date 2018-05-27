@@ -52,6 +52,7 @@ class CommentRepository
         $topic = $this->topic->findOrFail($request->tid);
         $rootId = $pid = 0;
         $parentComment = null;
+        $rootComment = null;
         
         //判断 pid是否有效
         if ($request->pid)
@@ -76,7 +77,7 @@ class CommentRepository
                 $rootComment = $parentComment;
             }
         }
-        
+
         \DB::beginTransaction();
         try
         {
@@ -149,7 +150,12 @@ class CommentRepository
         //插入评论成功，触发“评论添加事件”
         event(new CommentCreated($comment));
         
-        return normalize(0, "回复成功", $comment);
+        return normalize(0, "回复成功", [
+            'topic' => $topic,
+            'comment' => $comment,
+            'parent_comment' => $parentComment,
+            'root_comment' => $rootComment,
+        ]);
     }
     
     /**

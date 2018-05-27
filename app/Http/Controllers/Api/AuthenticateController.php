@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 use App\Http\Controllers\Controller;
+use App\Repositories\UserRepository;
 use GuzzleHttp\Client;
 
 
@@ -67,6 +69,18 @@ class AuthenticateController extends Controller
         {
             return normalize("删除token失败");
         }
+    }
+
+    public function register(UserRequest $request)
+    {
+        $result = (new UserRepository())->create($request);
+        if ($result['ret'] !== 0)
+        {
+            return $result;
+        }
+        //注册成功后直接登录
+        $request->request->set('username', $request->email);
+        return $this->login($request);
     }
 
     private function requestOAuthServer($method, $url, array $options = [], $failureCode = -1)

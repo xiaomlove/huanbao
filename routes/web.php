@@ -22,7 +22,8 @@ Route::get('api', function() {
     return file_get_contents(resource_path('views/d520fd5be6e91bafcae36178781ed907.html'));
 });
 
-Route::any('test', 'HomeController@test');
+Route::any('test', 'HomeController@test')->name('test');
+Route::get('test2', 'HomeController@test2')->name('test2');
 
 
 //后台路由

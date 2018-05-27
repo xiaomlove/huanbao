@@ -32,11 +32,11 @@ class TopicController extends Controller
     public function index(Request $request)
     {
         $with = ['user', 'mainFloor', 'mainFloor.detail', 'mainFloor.detail.attachments'];
-        $key = $request->forum_key;
+        $forumKey = $request->forum_key;
         $list = Topic::with($with)
-            ->when($key, function ($query) use ($key) {
-                $query->whereHas("forum", function ($query) use ($key) {
-                    $query->where("key", $key);
+            ->when($forumKey, function ($query) use ($forumKey) {
+                $query->whereHas("forum", function ($query) use ($forumKey) {
+                    $query->where("key", $forumKey);
                 });
             })
             ->paginate($request->get('per_page', 10));
@@ -58,9 +58,9 @@ class TopicController extends Controller
         ];
 
         //若是第一页，包含版块信息
-        if ($key && $request->page <= 1 && $request->include_forum)
+        if ($forumKey && $request->page <= 1 && $request->include_forum)
         {
-            $forum = Forum::where("key", $key)->firstOrFail();
+            $forum = Forum::where("key", $forumKey)->firstOrFail();
             $apiData = fractal()
                 ->item($forum)
                 ->transformWith(new ForumTransformer($forum))

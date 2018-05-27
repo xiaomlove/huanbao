@@ -34,12 +34,16 @@ class CommentController extends Controller
             'firstComments.parentComment', 'firstComments.parentComment.user',
         ];
         $page = (int)$request->page;
-        $key = $request->topic_key;
+        $topicKey = $request->topic_key;
+        $commentKey = $request->comment_key;//回复后立即返回列表的结构，只需要新发的那条的信息
         $comments = Comment::with($with)
-            ->when($key, function ($query) use ($key) {
-                $query->whereHas('topic', function ($query) use ($key) {
-                    $query->where("key", $key);
+            ->when($topicKey, function ($query) use ($topicKey) {
+                $query->whereHas('topic', function ($query) use ($topicKey) {
+                    $query->where("key", $topicKey);
                 });
+            })
+            ->when($commentKey, function ($query) use ($commentKey) {
+                $query->where('key', $commentKey);
             })
             ->where('pid', 0)
             ->paginate($request->get('per_page', 10));
@@ -82,8 +86,26 @@ class CommentController extends Controller
     public function store(CommentRequest $request)
     {
         $result = $this->comment->create($request);
-
-        return $result;
+        if ($result['ret'] !== 0)
+        {
+            return $result;
+        }
+        //立即返回列表，只包含当前最新的这条评论
+        $request->request->add([
+            'topic_key' => $result['data']['topic']->key,
+            'comment_key' => $result['data']['comment']->key,
+        ]);
+        if ($request->pid)
+        {
+            $request->request->set("root_comment_key", $result['data']['root_comment']->key);
+            //转发至评论的评论列表
+            return $this->comment($request);
+        }
+        else
+        {
+            //直接当前页的评论列表
+            return $this->index($request);
+        }
     }
 
     /**
@@ -139,5 +161,64 @@ class CommentController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * 评论的评论列表
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function comment(Request $request)
+    {
+        $with = ['user', 'detail', 'parentComment', 'parentComment.user'];
+        $rootCommentKey = $request->root_comment_key;
+        $commentKey = $request->comment_key;
+        $includeRootComment = $request->include_root_comment;
+        $comments = Comment::with($with)
+            ->when($rootCommentKey, function ($query) use ($rootCommentKey) {
+                $query->whereHas("rootComment", function ($query) use ($rootCommentKey) {
+                    $query->where("key", $rootCommentKey);
+                });
+            })
+            ->when($commentKey, function ($query) use ($commentKey) {
+                $query->where("key", $commentKey);
+            })
+            ->paginate($request->get('per_page', 10));
+
+//        dd($comments);
+
+        $commentsApiData = fractal()
+            ->collection($comments)
+            ->transformWith(new CommentTransformer())
+            ->parseIncludes($with)
+            ->paginateWith(new IlluminatePaginatorAdapter($comments))
+            ->toArray();
+
+//        dd($commentsApiData);
+
+        $list = $commentsApiData['data'];
+
+        //当第一页时，同时返回根评论
+        if ($rootCommentKey && $request->page <= 1 && $includeRootComment)
+        {
+            $with = ['user', 'detail'];
+            $rootComment = Comment::with($with)->where("key", $rootCommentKey)->firstOrFail();
+            $rootCommentApiData = fractal()
+                ->item($rootComment)
+                ->transformWith(new CommentTransformer())
+                ->parseIncludes($with)
+                ->toArray();
+            $item = $rootCommentApiData['data'];
+            $item['is_first'] = 1;
+            array_unshift($list, $item);
+        }
+
+        $out = [
+            'list' => $list,
+            'pagination' => $commentsApiData['meta']['pagination'],
+        ];
+
+        return normalize(0, 'OK', $out);
     }
 }
