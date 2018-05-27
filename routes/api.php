@@ -14,6 +14,7 @@
 //API 路由
 Route::group(['namespace' => 'Api', 'as' => 'api.'], function() {
     Route::post('login', 'AuthenticateController@login')->name('login');
+    Route::post('register', 'AuthenticateController@register')->name('register');
 });
 
 $middleware = ['auth:api', 'permission'];
@@ -32,7 +33,6 @@ Route::group(['middleware' => $middleware, 'as' => 'api.'], function() {
         Route::get('comment/comment/list', 'CommentController@comment')->name('comment.comment');
         Route::post('token/refresh', 'AuthenticateController@refreshToken')->name('token.refresh');
         Route::post('logout', 'AuthenticateController@logout')->name('logout');
-        Route::post('register', 'AuthenticateController@register')->name('register');
     });
     Route::get('cnarea/province', 'CommonController@province')->name('cnarea.province');
     Route::get('cnarea/city', 'CommonController@city')->name('cnarea.city');
