@@ -86,11 +86,13 @@ class CommentController extends Controller
      */
     public function store(CommentRequest $request)
     {
+        \Log::info(sprintf("%s, init request params: %s", __METHOD__, json_encode($request->all())));
         $result = $this->comment->create($request);
         if ($result['ret'] !== 0)
         {
             return $result;
         }
+        \Log::info(sprintf("%s, create comment result: %s", __METHOD__, json_encode($result)));
         //立即返回列表，只包含当前最新的这条评论
         $request->request->add([
             'topic_key' => $result['data']['topic']->key,
