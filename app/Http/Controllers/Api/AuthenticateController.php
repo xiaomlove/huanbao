@@ -79,7 +79,7 @@ class AuthenticateController extends Controller
             return $result;
         }
         //注册成功后直接登录
-        $request->request->set('username', $request->email);
+        $request->query->set('username', $request->email);
         return $this->login($request);
     }
 
