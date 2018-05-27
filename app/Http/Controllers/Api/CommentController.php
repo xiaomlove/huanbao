@@ -94,10 +94,14 @@ class CommentController extends Controller
         }
         \Log::info(sprintf("%s, create comment result: %s", __METHOD__, json_encode($result)));
         //立即返回列表，只包含当前最新的这条评论
-        $request->request->add([
+        $toAppendParams = [
             'topic_key' => $result['data']['topic']->key,
             'comment_key' => $result['data']['comment']->key,
-        ]);
+        ];
+        \Log::info(sprintf("%s, I will add params: %s", __METHOD__, json_encode($toAppendParams)));
+        $request->request->add($toAppendParams);
+
+        \Log::info(sprintf("%s, I will set sbsb = sbsb", __METHOD__));
         $request->request->set('sbsb', 'sbsb');
         if ($request->pid)
         {
