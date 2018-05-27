@@ -56,7 +56,7 @@ class UserRepository
             $user = User::create([
                 'key' => \Uuid::uuid4(),
                 'name' => $request->get('username', '用户_' . microtime(true)),
-                'email' => $request->username,//现在都是使用邮箱注册
+                'email' => $request->email,//现在都是使用邮箱注册
                 'password' => bcrypt($request->password),
             ]);
             $user->syncRoles($request->get('roles', []));
